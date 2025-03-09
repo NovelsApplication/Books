@@ -156,6 +156,8 @@ namespace Books.UI
                 {
                     while (_units.TryPop(out var unitGO))
                         UnityEngine.Object.Destroy(unitGO);
+
+                    _ctx.Data.RootTransform.gameObject.SetActive(false);
                     return base.OnAsyncDispose();
                 }
             }

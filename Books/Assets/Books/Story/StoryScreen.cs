@@ -3,11 +3,13 @@ using Shared.Disposable;
 using Shared.Reactive;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Books.Story.StoryBubble;
 
-namespace Books.Story 
+namespace Books.Story
 {
     public sealed class StoryScreen
     {
@@ -47,8 +49,7 @@ namespace Books.Story
                         }
                     }).AddTo(this);
 
-                    _ctx.Data.TextPrefab.gameObject.SetActive(false);
-                    _ctx.Data.ButtonPrefab.gameObject.SetActive(false);
+                    _ctx.Data.StoryBubble.gameObject.SetActive(false);
                     _ctx.Data.RootTransform.gameObject.SetActive(true);
 
                     UpdateScreen();
@@ -66,42 +67,106 @@ namespace Books.Story
 
                 public async UniTask ShowStory()
                 {
+                    _story.Continue();
+
+                    var mainCharacter = string.Empty;
                     var storyInProgress = true;
                     while (storyInProgress) 
                     {
                         ClearAll();
+                        StoryBubble storyBubble = null;
                         while (_story.canContinue)
                         {
                             ClearAll();
+                            storyBubble = null;
 
                             var text = _story.Continue();
                             text = text.Trim();
-                            Debug.Log(text);
-                            CreateContentView(text);
 
-                            while (!Input.GetMouseButtonUp(0))
-                                await UniTask.NextFrame();
+                            if (string.IsNullOrEmpty(text)) continue;
 
-                            await UniTask.Delay(100);
+                            var rawTexts = text.Split(":");
+                            var header = rawTexts.Length > 1 ?
+                                rawTexts[0].Split("(").FirstOrDefault() :
+                                string.Empty;
+                            var attributes = rawTexts[0].Contains("(") ?
+                                rawTexts[0].Split("(").LastOrDefault().Split(")").FirstOrDefault() :
+                                string.Empty;
+                            var body = rawTexts.Length > 1 ?
+                                rawTexts[1] :
+                                text;
+
+                            var headerForLogic = header.Trim().ToLower();
+                            switch (headerForLogic) 
+                            {
+                                case "аннотация":
+                                    continue;
+                                case "камера":
+                                    continue;
+                                case "жанры":
+                                    continue;
+                                case "статы":
+                                    continue;
+                                case "локация":
+                                    continue;
+                                case "музыка":
+                                    continue;
+                                case "звук":
+                                    continue;
+                                case "звуки окружения":
+                                    continue;
+                                case "уведомление":
+                                    continue;
+                                case "ожидание":
+                                    continue;
+                                case "кат-сцена":
+                                    continue;
+                                case "клавиатура":
+                                    mainCharacter = body.Trim();
+                                    continue;
+                            }
+
+                            var side = Side.Right;
+                            if (headerForLogic == mainCharacter.ToLower()) side = Side.Left;
+                            else if (headerForLogic == "...") side = Side.Center;
+
+                            storyBubble = CreateStoryBubble(side, header, body);
+
+                            if (_story.canContinue) 
+                            {
+                                while (!Input.GetMouseButtonUp(0))
+                                    await UniTask.NextFrame();
+
+                                await UniTask.Delay(100);
+                            }
                         }
 
                         if (_story.currentChoices.Count > 0)
                         {
                             var waitChoice = true;
-                            for (int i = 0; i < _story.currentChoices.Count; i++)
-                            {
-                                var choice = _story.currentChoices[i];
-                                var button = CreateChoiceView(choice.text.Trim());
 
-                                button.onClick.RemoveAllListeners();
-                                button.onClick.AddListener(() =>
-                                {
-                                    _story.ChooseChoiceIndex(choice.index);
-                                    waitChoice = false;
-                                });
+                            if (storyBubble == null)
+                                storyBubble = CreateStoryBubble(Side.Center, string.Empty, string.Empty);
+
+                            var buttons = _story.currentChoices.Select(c => (c.text, c.index)).ToArray();
+                            storyBubble.UpdateButtons(idx => 
+                            {
+                                _story.ChooseChoiceIndex(idx);
+                                waitChoice = false;
+                            }, buttons);
+
+                            if (buttons.Length == 1 && buttons[0].text.Trim().ToLower() == "играть") 
+                            {
+                                _story.ChooseChoiceIndex(buttons[0].index);
+                                waitChoice = false;
                             }
-                            while (waitChoice)
-                                await UniTask.NextFrame();
+                            else 
+                            {
+                                while (waitChoice)
+                                    await UniTask.NextFrame();
+
+                                await UniTask.Delay(100);
+                            }
                         }
                         else
                         {
@@ -111,30 +176,16 @@ namespace Books.Story
                     }
                 }
 
-                private void CreateContentView(string text)
+                private StoryBubble CreateStoryBubble(Side side, string header, string body)
                 {
-                    var storyText = UnityEngine.Object.Instantiate(_ctx.Data.TextPrefab);
-                    storyText.text = text;
-                    storyText.transform.SetParent(_ctx.Data.TextPrefab.transform.parent, false);
-                    storyText.gameObject.SetActive(true);
+                    var storyBubble = UnityEngine.Object.Instantiate(_ctx.Data.StoryBubble);
+                    storyBubble.transform.SetParent(_ctx.Data.StoryBubble.transform.parent, false);
+                    storyBubble.gameObject.SetActive(true);
+                    storyBubble.UpdateText(side, header, body);
 
-                    _units.Push(storyText.gameObject);
-                }
+                    _units.Push(storyBubble.gameObject);
 
-                private Button CreateChoiceView(string text)
-                {
-                    var choice = UnityEngine.Object.Instantiate(_ctx.Data.ButtonPrefab);
-                    choice.transform.SetParent(_ctx.Data.ButtonPrefab.transform.parent, false);
-                    choice.gameObject.SetActive(true);
-
-                    var choiceText = choice.GetComponentInChildren<TMP_Text>();
-                    choiceText.text = text;
-
-                    var layoutGroup = choice.GetComponent<HorizontalLayoutGroup>();
-
-                    _units.Push(choice.gameObject);
-
-                    return choice;
+                    return storyBubble;
                 }
 
                 protected override UniTask OnAsyncDispose()
@@ -186,14 +237,12 @@ namespace Books.Story
         public struct Data
         {
             [SerializeField] private RectTransform _rootTransform;
-            [SerializeField] private TMP_Text _textPrefab;
-            [SerializeField] private Button _buttonPrefab;
             [SerializeField] private TextAsset _textAsset;
+            [SerializeField] private StoryBubble _storyBubble;
 
             public readonly RectTransform RootTransform => _rootTransform;
-            public readonly TMP_Text TextPrefab => _textPrefab;
-            public readonly Button ButtonPrefab => _buttonPrefab;
             public readonly TextAsset TextAsset => _textAsset;
+            public readonly StoryBubble StoryBubble => _storyBubble;
         }
     }
 }
