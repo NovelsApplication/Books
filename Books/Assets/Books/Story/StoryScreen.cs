@@ -3,6 +3,7 @@ using Shared.Disposable;
 using Shared.Reactive;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -125,11 +126,10 @@ namespace Books.Story
                     choice.transform.SetParent(_ctx.Data.ButtonPrefab.transform.parent, false);
                     choice.gameObject.SetActive(true);
 
-                    Text choiceText = choice.GetComponentInChildren<Text>();
+                    var choiceText = choice.GetComponentInChildren<TMP_Text>();
                     choiceText.text = text;
 
                     var layoutGroup = choice.GetComponent<HorizontalLayoutGroup>();
-                    layoutGroup.childForceExpandHeight = false;
 
                     _units.Push(choice.gameObject);
 
@@ -184,11 +184,11 @@ namespace Books.Story
         [Serializable]
         public struct Data
         {
-            [SerializeField] private UnityEngine.UI.Text _textPrefab;
+            [SerializeField] private TMP_Text _textPrefab;
             [SerializeField] private Button _buttonPrefab;
             [SerializeField] private TextAsset _textAsset;
 
-            public readonly UnityEngine.UI.Text TextPrefab => _textPrefab;
+            public readonly TMP_Text TextPrefab => _textPrefab;
             public readonly Button ButtonPrefab => _buttonPrefab;
             public readonly TextAsset TextAsset => _textAsset;
         }
