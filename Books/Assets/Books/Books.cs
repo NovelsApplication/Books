@@ -23,6 +23,9 @@ namespace Books
             {
                 _ctx = ctx;
 
+                _ctx.Data.BooksScreenData.RootTransform.gameObject.SetActive(false);
+                _ctx.Data.StoriesScreenData.RootTransform.gameObject.SetActive(false);
+
                 AsyncInit();
             }
 

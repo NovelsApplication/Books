@@ -750,6 +750,7 @@ MonoBehaviour:
       _bookScrollUnit: {fileID: 1921846529}
       _bookUnit: {fileID: 1456002832}
     _storyScreenData:
+      _rootTransform: {fileID: 2116386167}
       _textPrefab: {fileID: 1546134331}
       _buttonPrefab: {fileID: 184613981978811969}
       _textAsset: {fileID: 4900000, guid: e210d4adfdf376847b94afea73dfde88, type: 3}
@@ -1407,10 +1408,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 184613981998228667}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 91.235, y: -25.11}
-  m_SizeDelta: {x: 172.47, y: 40.22}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1524160886
 MonoBehaviour:
@@ -1529,7 +1530,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1546134329
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1547,7 +1548,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 540, y: -983.03284}
-  m_SizeDelta: {x: 600, y: 44.69}
+  m_SizeDelta: {x: 600, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1546134330
 MonoBehaviour:
@@ -2498,7 +2499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &184613981998228667
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2517,7 +2518,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 540, y: -1040.4879}
-  m_SizeDelta: {x: 182.47, y: 50.22}
+  m_SizeDelta: {x: 182.47, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &184613981998516261
 CanvasRenderer:

@@ -46,6 +46,8 @@ namespace Books.UI
                         }
                     }).AddTo(this);
 
+                    _ctx.Data.RootTransform.gameObject.SetActive(true);
+
                     UpdateScreen();
                 }
 

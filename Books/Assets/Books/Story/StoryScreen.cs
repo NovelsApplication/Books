@@ -47,10 +47,11 @@ namespace Books.Story
                         }
                     }).AddTo(this);
 
-                    UpdateScreen();
-
                     _ctx.Data.TextPrefab.gameObject.SetActive(false);
                     _ctx.Data.ButtonPrefab.gameObject.SetActive(false);
+                    _ctx.Data.RootTransform.gameObject.SetActive(true);
+
+                    UpdateScreen();
                 }
 
                 private void UpdateScreen()
@@ -184,10 +185,12 @@ namespace Books.Story
         [Serializable]
         public struct Data
         {
+            [SerializeField] private RectTransform _rootTransform;
             [SerializeField] private TMP_Text _textPrefab;
             [SerializeField] private Button _buttonPrefab;
             [SerializeField] private TextAsset _textAsset;
 
+            public readonly RectTransform RootTransform => _rootTransform;
             public readonly TMP_Text TextPrefab => _textPrefab;
             public readonly Button ButtonPrefab => _buttonPrefab;
             public readonly TextAsset TextAsset => _textAsset;
