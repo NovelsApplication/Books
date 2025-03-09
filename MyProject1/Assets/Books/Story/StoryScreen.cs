@@ -70,6 +70,8 @@ namespace Books.Story
                         ClearAll();
                         while (_story.canContinue)
                         {
+                            ClearAll();
+
                             var text = _story.Continue();
                             text = text.Trim();
                             Debug.Log(text);
@@ -79,8 +81,6 @@ namespace Books.Story
                                 await UniTask.NextFrame();
 
                             await UniTask.Delay(100);
-
-                            ClearAll();
                         }
 
                         if (_story.currentChoices.Count > 0)
