@@ -4,6 +4,7 @@ using Shared.Disposable;
 using Shared.Reactive;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -29,9 +30,13 @@ namespace Books.UI
                 private int _screenWidth;
                 private int _screenHeight;
 
-                public Logic(Ctx ctx)
+                private UniTaskCompletionSource<string> _completeSource;
+
+                public Logic(Ctx ctx, UniTaskCompletionSource<string> completeSource)
                 {
                     _ctx = ctx;
+
+                    _completeSource = completeSource;
 
                     _units = new ();
 
@@ -89,11 +94,49 @@ namespace Books.UI
 
                     foreach (var bookPath in bookPaths)
                     {
-                        var image = await GetTexture($"{bookPath}/Image.jpg");
-                        var bookCardRaw = await GetText($"{bookPath}/Card.json");
-                        var bookCard = JsonConvert.DeserializeObject<BookCard>(bookCardRaw);
+                        var storyText = await GetText($"{bookPath}/story.json");
+                        var story = new Ink.Runtime.Story(storyText);
 
-                        AddBook(image, bookCard.Title, bookCard.Genres, bookCard.Description);
+                        var title = story.Continue();
+                        var genres = new string[0];
+                        var description = string.Empty;
+
+                        while (story.canContinue)
+                        {
+                            var tempText = story.Continue();
+                            tempText = tempText.Trim();
+
+                            if (string.IsNullOrEmpty(tempText)) continue;
+
+                            var rawTexts = tempText.Split(":");
+                            var header = rawTexts.Length > 1 ?
+                                rawTexts[0].Split("(").FirstOrDefault() :
+                                string.Empty;
+                            var attributes = rawTexts[0].Contains("(") ?
+                                rawTexts[0].Split("(").LastOrDefault().Split(")").FirstOrDefault() :
+                                string.Empty;
+                            var body = rawTexts.Length > 1 ?
+                                rawTexts[1] :
+                                tempText;
+
+                            var headerForLogic = header.Trim().ToLower();
+                            switch (headerForLogic)
+                            {
+                                case "аннотация":
+                                    description = body;
+                                    continue;
+                                case "жанры":
+                                    genres = body.Split(",").ToArray();
+                                    continue;
+                            }
+                        }
+
+                        var image = await GetTexture($"{bookPath}/image.jpg");
+
+                        AddBook(image, title, genres, description, () => 
+                        {
+                            _completeSource.TrySetResult($"{bookPath}/story.json");
+                        });
                     }
                 }
 
@@ -132,20 +175,20 @@ namespace Books.UI
                     request.SetRequestHeader("Access-Control-Allow-Origin", "*");
                 }
 
-                private void AddBook(Texture mainImage, string title, List<string> genres, string description)
+                private void AddBook(Texture mainImage, string title, string[] genres, string description, Action onClick)
                 {
                     _ctx.Data.BookScrollUnit.gameObject.SetActive(false);
                     _ctx.Data.BookUnit.gameObject.SetActive(false);
 
                     var bookScrollUnit = UnityEngine.Object.Instantiate(_ctx.Data.BookScrollUnit, _ctx.Data.BookScrollUnit.transform.parent);
                     bookScrollUnit.gameObject.SetActive(true);
-                    bookScrollUnit.SetData(mainImage, title, genres, description);
+                    bookScrollUnit.SetData(mainImage, title, genres, description, onClick);
 
                     _units.Push(bookScrollUnit.gameObject);
 
                     var bookUnit = UnityEngine.Object.Instantiate(_ctx.Data.BookUnit, _ctx.Data.BookUnit.transform.parent);
                     bookUnit.gameObject.SetActive(true);
-                    bookUnit.SetData(mainImage, title, genres, description);
+                    bookUnit.SetData(mainImage, title, genres, description, onClick);
 
                     _units.Push(bookUnit.gameObject);
 
@@ -157,17 +200,10 @@ namespace Books.UI
                     while (_units.TryPop(out var unitGO))
                         UnityEngine.Object.Destroy(unitGO);
 
-                    _ctx.Data.RootTransform.gameObject.SetActive(false);
+                    if (_ctx.Data.RootTransform != null)
+                        _ctx.Data.RootTransform.gameObject.SetActive(false);
                     return base.OnAsyncDispose();
                 }
-            }
-
-            [Serializable]
-            public struct BookCard
-            {
-                public string Title;
-                public List<string> Genres;
-                public string Description;
             }
 
             public struct Ctx
@@ -179,33 +215,21 @@ namespace Books.UI
             private readonly Ctx _ctx;
 
             private readonly Logic _logic;
-            private UniTaskCompletionSource<int> _completeSource;
 
-            public Entity(Ctx ctx, UniTaskCompletionSource<int> completeSource)
+            public Entity(Ctx ctx, UniTaskCompletionSource<string> completeSource)
             {
                 _ctx = ctx;
-
-                _completeSource = completeSource;
 
                 _logic = new Logic(new Logic.Ctx
                 {
                     OnUpdate = _ctx.OnUpdate,
-                    Data = _ctx.Data,
-                }).AddTo(this);
+                    Data = _ctx.Data
+                }, completeSource).AddTo(this);
             }
 
             public async UniTask AsyncInit()
             {
                 await _logic.AsyncInit();
-
-                TestWait();
-            }
-
-            private async void TestWait() 
-            {
-                await UniTask.Delay(5000);
-
-                _completeSource.TrySetResult(1);
             }
         }
 

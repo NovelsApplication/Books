@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,8 +10,11 @@ namespace Books.UI
         [SerializeField] private RawImage _image;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private TMP_Text _title;
+        [SerializeField] private TMP_Text _description;
+        [SerializeField] private TMP_Text _genres;
+        [SerializeField] private Button _readButton;
 
-        public void SetData(Texture mainImage, string title, List<string> genres, string description) 
+        public void SetData(Texture mainImage, string title, string[] genres, string description, Action onClick) 
         {
             if (_image != null) 
             {
@@ -22,9 +25,16 @@ namespace Books.UI
                 }
             }
 
-            if (_title != null) 
+            if (_title != null) _title.text = title;
+            if (_description != null) _description.text = description;
+            if (_genres != null) _genres.text = string.Join(",", genres);
+
+            _readButton.onClick.RemoveAllListeners();
+            _readButton.gameObject.SetActive(false);
+            if (onClick != null) 
             {
-                _title.text = title;
+                _readButton.onClick.AddListener(() => onClick.Invoke());
+                _readButton.gameObject.SetActive(true);
             }
         }
     }

@@ -4,9 +4,7 @@ using Shared.Reactive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using static Books.Story.StoryBubble;
 
 namespace Books.Story
@@ -21,6 +19,7 @@ namespace Books.Story
                 {
                     public IReadOnlyReactiveCommand<float> OnUpdate;
                     public Data Data;
+                    public string StoryText;
                 }
 
                 private readonly Ctx _ctx;
@@ -62,7 +61,7 @@ namespace Books.Story
 
                 public async UniTask LoadStory()
                 {
-                    _story = new Ink.Runtime.Story(_ctx.Data.TextAsset.text);
+                    _story = new Ink.Runtime.Story(_ctx.StoryText);
                 }
 
                 public async UniTask ShowStory()
@@ -118,6 +117,10 @@ namespace Books.Story
                                 case "уведомление":
                                     continue;
                                 case "ожидание":
+                                    if (int.TryParse(body, out var waitTime)) 
+                                    {
+                                        await UniTask.Delay(waitTime * 1000);
+                                    }
                                     continue;
                                 case "кат-сцена":
                                     continue;
@@ -171,7 +174,7 @@ namespace Books.Story
                         else
                         {
                             ClearAll();
-                            _story = new Ink.Runtime.Story(_ctx.Data.TextAsset.text);
+                            _story = new Ink.Runtime.Story(_ctx.StoryText);
                         }
                     }
                 }
@@ -205,6 +208,7 @@ namespace Books.Story
             {
                 public IReadOnlyReactiveCommand<float> OnUpdate;
                 public Data Data;
+                public string StoryText;
             }
 
             private readonly Ctx _ctx;
@@ -219,29 +223,22 @@ namespace Books.Story
                 {
                     OnUpdate = _ctx.OnUpdate,
                     Data = _ctx.Data,
+                    StoryText = _ctx.StoryText,
                 }).AddTo(this);
             }
 
-            public async UniTask LoadStory()
-            {
-                await _logic.LoadStory();
-            }
+            public async UniTask LoadStory() => await _logic.LoadStory();
 
-            public async UniTask ShowStory() 
-            {
-                await _logic.ShowStory();
-            }
+            public async UniTask ShowStory() => await _logic.ShowStory();
         }
 
         [Serializable]
         public struct Data
         {
             [SerializeField] private RectTransform _rootTransform;
-            [SerializeField] private TextAsset _textAsset;
             [SerializeField] private StoryBubble _storyBubble;
 
             public readonly RectTransform RootTransform => _rootTransform;
-            public readonly TextAsset TextAsset => _textAsset;
             public readonly StoryBubble StoryBubble => _storyBubble;
         }
     }

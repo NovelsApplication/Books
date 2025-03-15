@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
+using PlasticGui.WorkspaceWindow;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
 using UnityEngine;
 using UnityEngine.LowLevel;
+using UnityEngine.Networking;
 
 namespace Books
 {
@@ -38,7 +40,7 @@ namespace Books
                 }).AddTo(this);
 
                 loadingScreen.ShowImmediate();
-                var bookScreenCompletionSource = new UniTaskCompletionSource<int>();
+                var bookScreenCompletionSource = new UniTaskCompletionSource<string>();
                 var booksScreen = new UI.BooksScreen.Entity(new UI.BooksScreen.Entity.Ctx
                 {
                     OnUpdate = _ctx.OnUpdate,
@@ -51,19 +53,30 @@ namespace Books
                 while (bookScreenCompletionSource.GetStatus(0) != UniTaskStatus.Succeeded)
                     await UniTask.NextFrame();
 
-                while (bookScreenCompletionSource.GetResult(0) != 1)
-                    await UniTask.NextFrame();
-
                 await loadingScreen.Show();
                 await booksScreen.AsyncDispose();
+
+                var storyPath = bookScreenCompletionSource.GetResult(0);
+                var storyText = await GetText(storyPath);
+
                 var storyScreen = new Story.StoryScreen.Entity(new Story.StoryScreen.Entity.Ctx
                 {
                     OnUpdate = _ctx.OnUpdate,
                     Data = _ctx.Data.StoriesScreenData,
+                    StoryText = storyText,
                 }).AddTo(this);
                 await storyScreen.LoadStory();
                 await loadingScreen.Hide();
                 await storyScreen.ShowStory();
+            }
+
+            private async UniTask<string> GetText(string localPath)
+            {
+                using var request = UnityWebRequest.Get($"{Application.streamingAssetsPath}/Books/{localPath}");
+
+                await request.SendWebRequest();
+
+                return request.downloadHandler.text;
             }
         }
 
