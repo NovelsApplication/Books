@@ -63,7 +63,6 @@ namespace Books
                     Data = _ctx.Data.StoriesScreenData,
                     StoryText = storyText,
                 }).AddTo(this);
-                await storyScreen.LoadStory();
                 await loadingScreen.Hide();
                 await storyScreen.ShowStory();
             }

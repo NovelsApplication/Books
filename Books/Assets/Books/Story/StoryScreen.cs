@@ -59,13 +59,10 @@ namespace Books.Story
                     
                 }
 
-                public async UniTask LoadStory()
-                {
-                    _story = new Ink.Runtime.Story(_ctx.StoryText);
-                }
-
                 public async UniTask ShowStory()
                 {
+                    _story = new Ink.Runtime.Story(_ctx.StoryText);
+
                     _story.Continue();
 
                     var mainCharacter = string.Empty;
@@ -212,8 +209,6 @@ namespace Books.Story
                     StoryText = _ctx.StoryText,
                 }).AddTo(this);
             }
-
-            public async UniTask LoadStory() => await _logic.LoadStory();
 
             public async UniTask ShowStory() => await _logic.ShowStory();
         }
