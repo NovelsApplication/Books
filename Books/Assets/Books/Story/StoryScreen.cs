@@ -79,23 +79,9 @@ namespace Books.Story
                             ClearAll();
                             storyBubble = null;
 
-                            var text = _story.Continue();
-                            text = text.Trim();
+                            if (!_story.Continue().TryProcessLine(out var header, out var attributes, out var body)) continue;
 
-                            if (string.IsNullOrEmpty(text)) continue;
-
-                            var rawTexts = text.Split(":");
-                            var header = rawTexts.Length > 1 ?
-                                rawTexts[0].Split("(").FirstOrDefault() :
-                                string.Empty;
-                            var attributes = rawTexts[0].Contains("(") ?
-                                rawTexts[0].Split("(").LastOrDefault().Split(")").FirstOrDefault() :
-                                string.Empty;
-                            var body = rawTexts.Length > 1 ?
-                                rawTexts[1] :
-                                text;
-
-                            var headerForLogic = header.Trim().ToLower();
+                            var headerForLogic = header.ToLower();
                             switch (headerForLogic) 
                             {
                                 case "аннотация":

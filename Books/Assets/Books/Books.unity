@@ -1298,7 +1298,6 @@ MonoBehaviour:
       _bookUnit: {fileID: 1456002832}
     _storyScreenData:
       _rootTransform: {fileID: 2116386167}
-      _textAsset: {fileID: 4900000, guid: e210d4adfdf376847b94afea73dfde88, type: 3}
       _storyBubble: {fileID: 1024384150}
 --- !u!4 &404478306
 Transform:

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace Books.UI 
@@ -89,12 +88,12 @@ namespace Books.UI
 
                 public async UniTask AsyncInit()
                 {
-                    var rawBooks = await GetText("books.json");
+                    var rawBooks = await new AssetRequests().GetText("books.json");
                     var bookPaths = JsonConvert.DeserializeObject<List<string>>(rawBooks);
 
                     foreach (var bookPath in bookPaths)
                     {
-                        var storyText = await GetText($"{bookPath}/story.json");
+                        var storyText = await new AssetRequests().GetText($"{bookPath}/story.json");
                         var story = new Ink.Runtime.Story(storyText);
 
                         var title = story.Continue();
@@ -103,24 +102,9 @@ namespace Books.UI
 
                         while (story.canContinue)
                         {
-                            var tempText = story.Continue();
-                            tempText = tempText.Trim();
+                            if (!story.Continue().TryProcessLine(out var header, out var attributes, out var body)) continue;
 
-                            if (string.IsNullOrEmpty(tempText)) continue;
-
-                            var rawTexts = tempText.Split(":");
-                            var header = rawTexts.Length > 1 ?
-                                rawTexts[0].Split("(").FirstOrDefault() :
-                                string.Empty;
-                            var attributes = rawTexts[0].Contains("(") ?
-                                rawTexts[0].Split("(").LastOrDefault().Split(")").FirstOrDefault() :
-                                string.Empty;
-                            var body = rawTexts.Length > 1 ?
-                                rawTexts[1] :
-                                tempText;
-
-                            var headerForLogic = header.Trim().ToLower();
-                            switch (headerForLogic)
+                            switch (header.ToLower())
                             {
                                 case "аннотация":
                                     description = body;
@@ -131,48 +115,13 @@ namespace Books.UI
                             }
                         }
 
-                        var image = await GetTexture($"{bookPath}/image.jpg");
+                        var image = await new AssetRequests().GetTexture($"{bookPath}/image.jpg");
 
                         AddBook(image, title, genres, description, () => 
                         {
                             _completeSource.TrySetResult($"{bookPath}/story.json");
                         });
                     }
-                }
-
-                private async UniTask<string> GetText(string localPath)
-                {
-                    using var request = UnityWebRequest.Get(GetPath(localPath));
-
-                    SetHeaders(request);
-
-                    await request.SendWebRequest();
-
-                    return request.downloadHandler.text;
-                }
-
-                private async UniTask<Texture2D> GetTexture(string localPath)
-                {
-                    using var request = UnityWebRequestTexture.GetTexture(GetPath(localPath));
-
-                    SetHeaders(request);
-
-                    await request.SendWebRequest();
-
-                    return DownloadHandlerTexture.GetContent(request);
-                }
-
-                private string GetPath(string localPath)
-                {
-                    return $"{Application.streamingAssetsPath}/Books/{localPath}";
-                }
-
-                private void SetHeaders(UnityWebRequest request)
-                {
-                    request.SetRequestHeader("Access-Control-Allow-Credentials", "true");
-                    request.SetRequestHeader("Access-Control-Allow-Headers", "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time");
-                    request.SetRequestHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-                    request.SetRequestHeader("Access-Control-Allow-Origin", "*");
                 }
 
                 private void AddBook(Texture mainImage, string title, string[] genres, string description, Action onClick)
