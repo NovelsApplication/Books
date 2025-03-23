@@ -9,9 +9,9 @@ namespace Shared.LocalCache
     {
         public static bool IsCached(this string fileName) 
         {
-            DirtyHackWitPlayerPrefs();
+            DirtyHackWithPlayerPrefs();
             var file = ConvertPath(fileName);
-
+            Debug.Log($"IsCached: {file}");
             return File.Exists(file);
         }
 
@@ -25,7 +25,7 @@ namespace Shared.LocalCache
 
         private static byte[] FromCache(this string fileName) 
         {
-            DirtyHackWitPlayerPrefs();
+            DirtyHackWithPlayerPrefs();
 
             var file = ConvertPath(fileName);
 
@@ -50,7 +50,7 @@ namespace Shared.LocalCache
         private static byte[] ToCache(this byte[] data, string fileName) 
         {
             Debug.Log("ToCache1.1");
-            DirtyHackWitPlayerPrefs();
+            DirtyHackWithPlayerPrefs();
             Debug.Log("ToCache1.2");
             var file = ConvertPath(fileName);
             Debug.Log("ToCache1.3");
@@ -67,10 +67,9 @@ namespace Shared.LocalCache
             return data;
         }
 
-        private static void DirtyHackWitPlayerPrefs() 
+        private static void DirtyHackWithPlayerPrefs() 
         {
-            if (!PlayerPrefs.HasKey("Cacher"))
-                PlayerPrefs.SetString("Cacher", DateTime.UtcNow.ToString());
+            PlayerPrefs.SetString("Cacher", DateTime.UtcNow.ToString());
         }
 
         private static string ConvertPath(string fileName) 
