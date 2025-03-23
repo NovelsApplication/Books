@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.LowLevel;
 
@@ -26,10 +27,10 @@ namespace Books
                 _ctx.Data.BooksScreenData.RootTransform.gameObject.SetActive(false);
                 _ctx.Data.StoriesScreenData.RootTransform.gameObject.SetActive(false);
 
-                AsyncInit();
+                AsyncProcess();
             }
 
-            private async void AsyncInit()
+            private async void AsyncProcess()
             {
                 var loadingScreen = new LoadingScreen.LoadingScreen.Entity(new LoadingScreen.LoadingScreen.Entity.Ctx
                 {
@@ -47,6 +48,8 @@ namespace Books
                 bookScreenCompletionSource).AddTo(this);
                 await booksScreen.AsyncInit();
                 await loadingScreen.Hide();
+
+                Debug.Log(Application.persistentDataPath);
 
                 while (bookScreenCompletionSource.GetStatus(0) != UniTaskStatus.Succeeded)
                     await UniTask.NextFrame();
@@ -81,7 +84,7 @@ namespace Books
         }
 
         [SerializeField] private Data _data;
-
+        [SerializeField] private TMP_Text _consoleText;
         private IReactiveCommand<float> _onUpdate;
 
         private void OnEnable()
@@ -95,11 +98,24 @@ namespace Books
                 OnUpdate = _onUpdate,
                 Data = _data,
             }).AddTo(this);
+
+            Application.logMessageReceived += ReceiveLog;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Application.logMessageReceived -= ReceiveLog;
         }
 
         private void Update()
         {
             _onUpdate.Execute(Time.deltaTime);
+        }
+
+        private void ReceiveLog(string condition, string stackTrace, LogType type) 
+        {
+            _consoleText.text += $"\n{type}: {condition}";
         }
     }
 }
