@@ -51,36 +51,6 @@ namespace Books
                 await booksScreen.AsyncInit();
                 await loadingScreen.Hide();
 
-                var localFilesPath = $"{Application.persistentDataPath}/SaveFiles";
-#if !UNITY_EDITOR && UNITY_WEBGL
-                localFilesPath = "idbfs/SaveFiles";
-#endif
-
-                if (!Directory.Exists(localFilesPath))
-                    Directory.CreateDirectory(localFilesPath);
-
-                var testFile = $"{localFilesPath}/Test.txt";
-                if (!File.Exists(testFile)) 
-                {
-                    Debug.Log($"Create file in: {testFile}");
-                    using var fs = File.Create(testFile);
-                    var info = new UTF8Encoding(true).GetBytes("Some test text");
-                    fs.Write(info, 0, info.Length);
-                }
-
-                using (var sr = File.OpenText(testFile))
-                {
-                    var s = sr.ReadToEnd();
-                    Debug.Log($"Read file: {s}");
-                }
-
-                if (!PlayerPrefs.HasKey("Test")) 
-                {
-                    Debug.Log($"Create playerPrefs in: {DateTime.UtcNow}");
-                    PlayerPrefs.SetString("Test", DateTime.UtcNow.ToString());
-                }
-                Debug.Log($"Read playerPrefs: {PlayerPrefs.GetString("Test")}");
-
                 while (bookScreenCompletionSource.GetStatus(0) != UniTaskStatus.Succeeded)
                     await UniTask.NextFrame();
 
@@ -119,6 +89,8 @@ namespace Books
 
         private void OnEnable()
         {
+            Application.logMessageReceived += ReceiveLog;
+
             var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
             PlayerLoopHelper.Initialize(ref playerLoop);
 
@@ -128,14 +100,13 @@ namespace Books
                 OnUpdate = _onUpdate,
                 Data = _data,
             }).AddTo(this);
-
-            Application.logMessageReceived += ReceiveLog;
         }
 
         protected override void OnDisable()
         {
-            base.OnDisable();
             Application.logMessageReceived -= ReceiveLog;
+
+            base.OnDisable();
         }
 
         private void Update()

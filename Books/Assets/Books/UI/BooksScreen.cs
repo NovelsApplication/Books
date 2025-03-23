@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Shared.Disposable;
+using Shared.LocalCache;
 using Shared.Reactive;
 using System;
 using System.Collections.Generic;
@@ -115,7 +116,23 @@ namespace Books.UI
                             }
                         }
 
-                        var image = await new AssetRequests().GetTexture($"{bookPath}/image.jpg");
+                        Texture2D image = null;
+                        var previewCacheName = $"Preview_{bookPath}";
+                        if (previewCacheName.IsCached()) 
+                        {
+                            Debug.Log("Cached");
+                            image = previewCacheName.TextureFromCache();
+                        }
+                        else 
+                        {
+                            Debug.Log($"NotCached: {previewCacheName}");
+                            var imagePath = $"{bookPath}/image.jpg";
+                            Debug.Log("NotCached1");
+                            var imageRaw = await new AssetRequests().GetTexture(imagePath);
+                            Debug.Log($"NotCached2: {imageRaw.width} x {imageRaw.height}");
+                            image = imageRaw.ToCache(previewCacheName);
+                            Debug.Log($"NotCached3: {image.width} x {image.height}");
+                        }
 
                         AddBook(image, title, genres, description, () => 
                         {

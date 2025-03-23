@@ -25,7 +25,9 @@ namespace Shared.Disposable
 
             await request.SendWebRequest();
 
-            return DownloadHandlerTexture.GetContent(request);
+            var result = DownloadHandlerTexture.GetContent(request);
+
+            return result;
         }
 
         private string GetPath(string localPath)
