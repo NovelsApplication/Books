@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
+using System.IO;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.LowLevel;
@@ -49,7 +51,21 @@ namespace Books
                 await booksScreen.AsyncInit();
                 await loadingScreen.Hide();
 
-                Debug.Log(Application.persistentDataPath);
+                var localFilesPath = Application.persistentDataPath;
+                var testFile = $"{localFilesPath}/Test.txt";
+                if (!File.Exists(testFile)) 
+                {
+                    Debug.Log($"Create file in: {testFile}");
+                    using var fs = File.Create(testFile);
+                    var info = new UTF8Encoding(true).GetBytes("Some test text");
+                    fs.Write(info, 0, info.Length);
+                }
+
+                using (var sr = File.OpenText(testFile))
+                {
+                    var s = sr.ReadToEnd();
+                    Debug.Log($"Read file: {s}");
+                }
 
                 while (bookScreenCompletionSource.GetStatus(0) != UniTaskStatus.Succeeded)
                     await UniTask.NextFrame();
