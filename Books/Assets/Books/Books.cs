@@ -74,6 +74,13 @@ namespace Books
                     Debug.Log($"Read file: {s}");
                 }
 
+                if (!PlayerPrefs.HasKey("Test")) 
+                {
+                    Debug.Log($"Create playerPrefs in: {DateTime.UtcNow}");
+                    PlayerPrefs.SetString("Test", DateTime.UtcNow.ToString());
+                }
+                Debug.Log($"Read playerPrefs: {PlayerPrefs.GetString("Test")}");
+
                 while (bookScreenCompletionSource.GetStatus(0) != UniTaskStatus.Succeeded)
                     await UniTask.NextFrame();
 
