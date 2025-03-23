@@ -51,7 +51,14 @@ namespace Books
                 await booksScreen.AsyncInit();
                 await loadingScreen.Hide();
 
-                var localFilesPath = Application.persistentDataPath;
+                var localFilesPath = $"{Application.persistentDataPath}/SaveFiles";
+#if !UNITY_EDITOR && UNITY_WEBGL
+                localFilesPath = "idbfs/SaveFiles";
+#endif
+
+                if (!Directory.Exists(localFilesPath))
+                    Directory.CreateDirectory(localFilesPath);
+
                 var testFile = $"{localFilesPath}/Test.txt";
                 if (!File.Exists(testFile)) 
                 {
