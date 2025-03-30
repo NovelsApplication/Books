@@ -74,17 +74,11 @@ namespace Books.UI
                         horizontalLayoutElement.minWidth = _ctx.Data.RootTransform.rect.width - _ctx.Data.ScrollPadding * 2;
                     }
 
-                    _ctx.Data.BookLayout.padding.top = _ctx.Data.ScrollPadding;
-                    _ctx.Data.BookLayout.padding.right = _ctx.Data.ScrollPadding;
-                    _ctx.Data.BookLayout.padding.bottom = _ctx.Data.ScrollPadding;
-                    _ctx.Data.BookLayout.padding.left = _ctx.Data.ScrollPadding;
-                    _ctx.Data.BookLayout.spacing = Vector2.one * _ctx.Data.ScrollPadding;
-
                     _ctx.Data.BookLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
 
                     var bookSize = _ctx.Data.RootTransform.rect.width / _ctx.Data.BookLayout.constraintCount;
-                    bookSize -= (_ctx.Data.ScrollPadding * (_ctx.Data.BookLayout.constraintCount + 1)) / _ctx.Data.BookLayout.constraintCount;
-                    _ctx.Data.BookLayout.cellSize = Vector2.one * bookSize;
+                    bookSize -= (_ctx.Data.BookLayout.spacing.x * (_ctx.Data.BookLayout.constraintCount + 1)) / _ctx.Data.BookLayout.constraintCount;
+                    _ctx.Data.BookLayout.cellSize = new Vector2(bookSize, bookSize / _ctx.Data.AspectRatio);
                 }
 
                 public async UniTask AsyncInit()
@@ -221,6 +215,7 @@ namespace Books.UI
             [SerializeField] private int _scrollPadding;
             [SerializeField] private LayoutElement _booksScrollLayout;
             [SerializeField] private GridLayoutGroup _booksLayout;
+            [SerializeField] private float _aspectRatio;
 
             [SerializeField] private BookUnit _bookScrollUnit;
             [SerializeField] private BookUnit _bookUnit;
@@ -230,6 +225,7 @@ namespace Books.UI
             public readonly int ScrollPadding => _scrollPadding;
             public readonly LayoutElement BookScrollLayout => _booksScrollLayout;
             public readonly GridLayoutGroup BookLayout => _booksLayout;
+            public readonly float AspectRatio => _aspectRatio;
 
             public readonly BookUnit BookScrollUnit => _bookScrollUnit;
             public readonly BookUnit BookUnit => _bookUnit;
