@@ -32,7 +32,11 @@ namespace Shared.Disposable
 
         private string GetPath(string localPath)
         {
-            return $"{Application.streamingAssetsPath}/Books/{localPath}";
+            var result = $"{Application.streamingAssetsPath}/Books/{localPath}";
+            #if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
+            result = $"file://{result}";
+            #endif
+            return result;
         }
 
         private void SetHeaders(UnityWebRequest request)

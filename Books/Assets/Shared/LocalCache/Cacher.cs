@@ -1,6 +1,6 @@
-using Cysharp.Threading.Tasks;
 using System;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 namespace Shared.LocalCache 
@@ -11,7 +11,6 @@ namespace Shared.LocalCache
         {
             DirtyHackWithPlayerPrefs();
             var file = ConvertPath(fileName);
-            Debug.Log($"IsCached: {file}");
             return File.Exists(file);
         }
 
@@ -21,6 +20,12 @@ namespace Shared.LocalCache
             Texture2D image = new(0, 0);
             ImageConversion.LoadImage(image, rawData);
             return image;
+        }
+
+        public static string TextFromCache(this string fileName) 
+        {
+            var rawData = FromCache(fileName);
+            return Encoding.UTF8.GetString(rawData);
         }
 
         private static byte[] FromCache(this string fileName) 
@@ -39,30 +44,28 @@ namespace Shared.LocalCache
 
         public static Texture2D ToCache(this Texture2D data, string fileName) 
         {
-            Debug.Log("ToCache0");
             var rawData = data.EncodeToPNG();
-            Debug.Log($"ToCache1: {rawData.Length}");
             rawData.ToCache(fileName);
-            Debug.Log($"ToCache2: {fileName}");
             return fileName.TextureFromCache();
+        }
+
+        public static string ToCache(this string data, string fileName) 
+        {
+            var rawData = Encoding.UTF8.GetBytes(data);;
+            rawData.ToCache(fileName);
+            return fileName.TextFromCache();
         }
 
         private static byte[] ToCache(this byte[] data, string fileName) 
         {
-            Debug.Log("ToCache1.1");
             DirtyHackWithPlayerPrefs();
-            Debug.Log("ToCache1.2");
             var file = ConvertPath(fileName);
-            Debug.Log("ToCache1.3");
             if (File.Exists(file))
                 File.Delete(file);
-            Debug.Log("ToCache1.4");
             using (var fs = File.Create(file))
             {
-                Debug.Log("ToCache1.5");
                 fs.Write(data, 0, data.Length);
             }
-            Debug.Log("ToCache1.6");
 
             return data;
         }

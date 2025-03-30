@@ -94,7 +94,22 @@ namespace Books.UI
 
                     foreach (var bookPath in bookPaths)
                     {
-                        var storyText = await new AssetRequests().GetText($"{bookPath}/story.json");
+                        var storyPath = $"{bookPath}/story.json";
+                        var storyCacheName = storyPath.Replace("/", "_");
+                        var storyText = string.Empty;
+                        if (storyCacheName.IsCached()) 
+                        {
+                            Debug.Log($"Cached: {storyCacheName}");
+                            storyText = storyCacheName.TextFromCache();
+                        }
+                        else 
+                        {
+                            Debug.Log($"NotCached: {storyCacheName}");
+                            
+                            var rawText = await new AssetRequests().GetText(storyPath);
+                            storyText = rawText.ToCache(storyCacheName);
+                        }
+                        
                         var story = new Ink.Runtime.Story(storyText);
 
                         var title = story.Continue();
@@ -117,26 +132,25 @@ namespace Books.UI
                         }
 
                         Texture2D image = null;
-                        var previewCacheName = $"Preview_{bookPath}";
-                        if (previewCacheName.IsCached()) 
+                        var imagePath = $"{bookPath}/image.jpg";
+                        var imageCacheName = imagePath.Replace("/", "_");
+
+                        if (imageCacheName.IsCached()) 
                         {
-                            Debug.Log("Cached");
-                            image = previewCacheName.TextureFromCache();
+                            Debug.Log($"Cached: {imageCacheName}");
+                            image = imageCacheName.TextureFromCache();
                         }
                         else 
                         {
-                            Debug.Log($"NotCached: {previewCacheName}");
-                            var imagePath = $"{bookPath}/image.jpg";
-                            Debug.Log("NotCached1");
+                            Debug.Log($"NotCached: {imageCacheName}");
+                            
                             var imageRaw = await new AssetRequests().GetTexture(imagePath);
-                            Debug.Log($"NotCached2: {imageRaw.width} x {imageRaw.height}");
-                            image = imageRaw.ToCache(previewCacheName);
-                            Debug.Log($"NotCached3: {image.width} x {image.height}");
+                            image = imageRaw.ToCache(imageCacheName);
                         }
 
                         AddBook(image, title, genres, description, () => 
                         {
-                            _completeSource.TrySetResult($"{bookPath}/story.json");
+                            _completeSource.TrySetResult(storyPath);
                         });
                     }
                 }
