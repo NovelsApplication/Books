@@ -47,13 +47,13 @@ namespace Books.UI
                             _screenWidth = Screen.width;
                             _screenHeight = Screen.height;
 
-                            UpdateScreen();
+                            //UpdateScreen();
                         }
                     }).AddTo(this);
 
                     _ctx.Data.RootTransform.gameObject.SetActive(true);
 
-                    UpdateScreen();
+                    //UpdateScreen();
                 }
 
                 private void UpdateScreen()
@@ -65,13 +65,13 @@ namespace Books.UI
                     verticalGroup.padding.left = _ctx.Data.ScrollPadding;
                     verticalGroup.spacing = _ctx.Data.ScrollPadding;
 
-                    _ctx.Data.BookScrollLayout.minHeight = _ctx.Data.RootTransform.rect.width - _ctx.Data.ScrollPadding * 2;
+                    //_ctx.Data.BookScrollLayout.minHeight = _ctx.Data.RootTransform.rect.width - _ctx.Data.ScrollPadding * 2;
                     var horizontalGroup = _ctx.Data.BookScrollLayout.GetComponentInChildren<HorizontalLayoutGroup>(true);
                     horizontalGroup.spacing = _ctx.Data.ScrollPadding * 2;
                     for (var j = 0; j < horizontalGroup.transform.childCount; j++)
                     {
                         if (!horizontalGroup.transform.GetChild(j).TryGetComponent<LayoutElement>(out var horizontalLayoutElement)) continue;
-                        horizontalLayoutElement.minWidth = _ctx.Data.RootTransform.rect.width - _ctx.Data.ScrollPadding * 2;
+                        //horizontalLayoutElement.minWidth = _ctx.Data.RootTransform.rect.width - _ctx.Data.ScrollPadding * 2;
                     }
 
                     _ctx.Data.BookLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
@@ -146,6 +146,10 @@ namespace Books.UI
                         {
                             _completeSource.TrySetResult(storyPath);
                         });
+
+                        _ctx.Data.BookScrollLayout.gameObject.SetActive(false);
+                        await UniTask.NextFrame();
+                        _ctx.Data.BookScrollLayout.gameObject.SetActive(true);
                     }
                 }
 
@@ -166,7 +170,7 @@ namespace Books.UI
 
                     _units.Push(bookUnit.gameObject);
 
-                    UpdateScreen();
+                    //UpdateScreen();
                 }
 
                 protected override UniTask OnAsyncDispose()
@@ -203,6 +207,10 @@ namespace Books.UI
 
             public async UniTask AsyncInit()
             {
+                await _logic.AsyncInit();
+                await _logic.AsyncInit();
+                await _logic.AsyncInit();
+                await _logic.AsyncInit();
                 await _logic.AsyncInit();
             }
         }

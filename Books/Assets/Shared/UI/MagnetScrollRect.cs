@@ -11,6 +11,14 @@ namespace Shared.UI
 
         private void Update()
         {
+            for (var i = 0; i < _targetScrollRect.content.transform.childCount; i++)
+            {
+                var childTransform = _targetScrollRect.content.transform.GetChild(i);
+                var distance = Vector3.Distance(childTransform.position, _targetScrollRect.viewport.transform.position);
+                Debug.Log(distance);
+                childTransform.localScale = Vector3.one * Mathf.Lerp(1.1f, 1.0f, (Mathf.Clamp(distance, 0f, 1000f) / 1000f));
+            }
+
             if (Input.GetMouseButton(0)) return;
 
             var targetPos = _targetScrollRect.content.localPosition;
