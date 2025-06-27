@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -6,9 +7,22 @@ namespace Shared.Disposable
 {
     public class AssetRequests
     {
+        public async UniTask<T> GetData<T>(string localPath)
+        {
+            var path = GetPath(localPath);
+            using var request = UnityWebRequest.Get(path);
+
+            SetHeaders(request);
+
+            await request.SendWebRequest();
+
+            return JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
+        }
+
         public async UniTask<string> GetText(string localPath)
         {
-            using var request = UnityWebRequest.Get(GetPath(localPath));
+            var path = GetPath(localPath);
+            using var request = UnityWebRequest.Get(path);
 
             SetHeaders(request);
 
@@ -19,7 +33,8 @@ namespace Shared.Disposable
 
         public async UniTask<Texture2D> GetTexture(string localPath)
         {
-            using var request = UnityWebRequestTexture.GetTexture(GetPath(localPath));
+            var path = GetPath(localPath);
+            using var request = UnityWebRequestTexture.GetTexture(path);
 
             SetHeaders(request);
 
@@ -32,7 +47,7 @@ namespace Shared.Disposable
 
         private string GetPath(string localPath)
         {
-            var result = $"{Application.streamingAssetsPath}/Books/{localPath}";
+            var result = $"{Application.streamingAssetsPath}/{localPath}";
             #if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
             result = $"file://{result}";
             #endif

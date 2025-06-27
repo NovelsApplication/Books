@@ -3,18 +3,18 @@ using System;
 
 namespace Shared.Disposable
 {
-    public class DisposeObserver : ITaskDisposable
+    public class DisposeObserver : IDisposable
     {
-        private Func<UniTask> _onDispose;
+        private Action _onDispose;
 
-        public DisposeObserver(Func<UniTask> onDispose)
+        public DisposeObserver(Action onDispose)
         {
             _onDispose = onDispose;
         }
 
-        public async UniTask AsyncDispose()
+        public void Dispose()
         {
-            await _onDispose.Invoke();
+            _onDispose.Invoke();
         }
     }
 }

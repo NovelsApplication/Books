@@ -1,55 +1,38 @@
-using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Shared.Disposable 
 {
     public static class BaseDisposableEx 
     {
-        public static T AddTo<T>(this T disposable, IBaseDisposable owner) where T : ITaskDisposable
+        public static T AddTo<T>(this T disposable, IBaseDisposable owner) where T : IDisposable
         {
             owner.AddDisposable(disposable);
             return disposable;
         }
     }
 
-    public interface IBaseDisposable 
+    public interface IBaseDisposable : IDisposable
     {
-        public void AddDisposable(ITaskDisposable disposable);
+        public void AddDisposable(IDisposable disposable);
     }
 
-    public abstract class BaseDisposable : ITaskDisposable, IBaseDisposable
+    public abstract class BaseDisposable : IBaseDisposable
     {
-        private readonly Stack<ITaskDisposable> _disposables = new ();
+        private readonly Stack<IDisposable> _disposables = new ();
+        public bool IsDisposed = false;
 
-        public async UniTask AsyncDispose()
+        public void Dispose()
         {
             while (_disposables.Count > 0)
-                await _disposables.Pop().AsyncDispose();
-            await OnAsyncDispose();
+                _disposables.Pop().Dispose();
+            IsDisposed = true;
+            OnDispose();
         }
 
-        public void AddDisposable(ITaskDisposable disposable) => _disposables.Push(disposable);
+        public void AddDisposable(IDisposable disposable) => _disposables.Push(disposable);
 
-        protected virtual async UniTask OnAsyncDispose() => await UniTask.CompletedTask;
-    }
-
-    public abstract class BaseDisposableMB : MonoBehaviour, ITaskDisposable, IBaseDisposable
-    {
-        private readonly Stack<ITaskDisposable> _disposables = new();
-
-        protected virtual async void OnDisable() => await AsyncDispose();
-
-        public async UniTask AsyncDispose()
-        {
-            while (_disposables.Count > 0)
-                await _disposables.Pop().AsyncDispose();
-            await OnAsyncDispose();
-        }
-
-        public void AddDisposable(ITaskDisposable disposable) => _disposables.Push(disposable);
-
-        protected virtual async UniTask OnAsyncDispose() => await UniTask.CompletedTask;
+        protected virtual void OnDispose() { }
     }
 }
 
