@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.LocalCache;
+using Shared.Requests;
 using System;
+using UnityEngine;
 
 namespace Books 
 {
@@ -29,6 +31,10 @@ namespace Books
 
         public async UniTask AsyncProcess()
         {
+            var prefab = await new AssetRequests().GetAsset<GameObject>("Test");
+            Debug.Log(prefab.name);
+            //var catalog = await new AssetRequests().GetCatalog("Remote/WebGL");
+
             while (!IsDisposed) 
             {
                 Menu.Entity.StoryManifest? storyManifest = null;

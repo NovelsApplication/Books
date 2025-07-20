@@ -1,12 +1,29 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.Networking;
 
-namespace Shared.Disposable 
+namespace Shared.Requests 
 {
     public class AssetRequests
     {
+        public async UniTask<T> GetAsset<T>(string key)
+        {
+            Debug.Log($"Start loading {key}");
+            var result = await Addressables.LoadAssetAsync<T>(key);
+            Debug.Log(result.GetType().FullName);
+            return result;
+        }
+
+        private async UniTask<IResourceLocator> GetCatalog(string localCatalogPath)
+        {
+            var path = GetPath(localCatalogPath);
+            var result = await Addressables.LoadContentCatalogAsync(path);
+            return result;
+        }
+
         public async UniTask<T> GetData<T>(string localPath)
         {
             var path = GetPath(localPath);

@@ -16,7 +16,19 @@ MonoBehaviour:
   m_GUID: b21216cfdbc1bad458107f3d17399edf
   m_SerializeEntries:
   - m_GUID: 3c89e05f6a20ff14d96050fb112482bd
-    m_Address: Assets/Remote/Test
+    m_Address: Test
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Test
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 540fae96dfd640b4c948d4c12fc2feaa
+    m_Address: Test1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Test
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e30903a2d9df64345b5a47c0ca3870fc
+    m_Address: Test2
     m_ReadOnly: 0
     m_SerializedLabels:
     - Test
