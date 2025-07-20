@@ -31,11 +31,6 @@ namespace Books
 
         public async UniTask AsyncProcess()
         {
-            Debug.Log($"start loading {"Test"}");
-            //var prefab = await new AssetRequests().GetAsset<GameObject>("Test");
-            //Debug.Log(prefab.name);
-            //var catalog = await new AssetRequests().GetCatalog("Remote/WebGL");
-
             while (!IsDisposed) 
             {
                 Menu.Entity.StoryManifest? storyManifest = null;
