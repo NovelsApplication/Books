@@ -11,9 +11,8 @@ namespace Shared.Requests
     {
         public async UniTask<T> GetAsset<T>(string key)
         {
-            Debug.Log($"Start loading {key}");
             var result = await Addressables.LoadAssetAsync<T>(key);
-            Debug.Log(result.GetType().FullName);
+
             return result;
         }
 
