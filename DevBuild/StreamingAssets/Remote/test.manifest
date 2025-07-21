@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.0.27f1
+CRC: 1557447321
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3b549ab929070ca3c8d0efc940c61e8c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 767148d2cba1a92a15442f2b767884c0
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 2eca2d21b53b6a0507fc67d03049653c
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Remote/Test.prefab
+Dependencies: []

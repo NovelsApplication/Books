@@ -7,6 +7,20 @@ namespace Shared.Requests
 {
     public class AssetRequests
     {
+        public async UniTask<Object> GetBundle(string localPath)
+        {
+            var path = GetPath($"Remote/{localPath}");
+            using var request = UnityWebRequestAssetBundle.GetAssetBundle(path);
+
+            SetHeaders(request);
+
+            await request.SendWebRequest();
+
+            var result = DownloadHandlerAssetBundle.GetContent(request);
+
+            return await result.LoadAssetAsync(localPath);
+        }
+
         public async UniTask<T> GetData<T>(string localPath)
         {
             var path = GetPath(localPath);

@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.LocalCache;
+using Shared.Requests;
 using System;
+using UnityEngine;
 
 namespace Books 
 {
@@ -29,6 +31,11 @@ namespace Books
 
         public async UniTask AsyncProcess()
         {
+            var asset = await new AssetRequests().GetBundle("test");
+            Debug.Log($"assetName {asset.name}");
+            var go = GameObject.Instantiate(asset);
+            Debug.Log($"objectName {go.name}");
+
             while (!IsDisposed) 
             {
                 Menu.Entity.StoryManifest? storyManifest = null;
