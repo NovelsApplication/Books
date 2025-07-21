@@ -851,8 +851,19 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Standalone: INK_RUNTIME;INK_EDITOR
-    WebGL: INK_RUNTIME;INK_EDITOR
+    Android: ENABLE_JSON_CATALOG
+    EmbeddedLinux: ENABLE_JSON_CATALOG
+    LinuxHeadlessSimulation: ENABLE_JSON_CATALOG
+    Nintendo Switch: ENABLE_JSON_CATALOG
+    PS4: ENABLE_JSON_CATALOG
+    QNX: ENABLE_JSON_CATALOG
+    Server: ENABLE_JSON_CATALOG
+    Standalone: ENABLE_JSON_CATALOG;INK_RUNTIME;INK_EDITOR
+    WebGL: ENABLE_JSON_CATALOG;INK_RUNTIME;INK_EDITOR
+    Windows Store Apps: ENABLE_JSON_CATALOG
+    XboxOne: ENABLE_JSON_CATALOG
+    iPhone: ENABLE_JSON_CATALOG
+    tvOS: ENABLE_JSON_CATALOG
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

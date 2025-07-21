@@ -1,20 +1,12 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace Shared.Requests 
 {
     public class AssetRequests
     {
-        public async UniTask<T> GetAsset<T>(string key)
-        {
-            var result = await Addressables.LoadAssetAsync<T>(key);
-
-            return result;
-        }
-
         public async UniTask<T> GetData<T>(string localPath)
         {
             var path = GetPath(localPath);
