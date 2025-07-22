@@ -1,6 +1,7 @@
 using Books.Loading.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
+using Shared.LocalCache;
 using Shared.Requests;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace Books.Loading
 
         public async UniTask Init() 
         {
-            var asset = await new AssetRequests().GetBundle("Main", _ctx.Data.ScreenName);
+            var asset = await Cacher.GetBundle("Main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
             _screen = go.GetComponent<IScreen>();
         }

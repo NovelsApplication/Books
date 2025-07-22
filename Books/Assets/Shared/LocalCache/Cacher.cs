@@ -1,8 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Shared.Requests;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UnityEngine;
 
@@ -10,30 +12,58 @@ namespace Shared.LocalCache
 {
     public static class Cacher
     {
+        private static readonly Dictionary<string, AssetBundle> _bundles = new();
+        public static async UniTask<UnityEngine.Object> GetBundle(string assetPath, string assetName)
+        {
+            if (!_bundles.TryGetValue(assetPath, out var bundle))
+            {
+                DirtyHackWithPlayerPrefs();
+                if (IsCached(assetPath)) 
+                {
+                    bundle = await BundleFromCache(assetPath);
+                    Debug.Log("GetBundleFromCache");
+                }
+                else
+                {
+                    var bundleData = await new AssetRequests().GetBundle(assetPath);
+                    bundle = await BundleToCache(bundleData.Item2, assetPath);
+                    Debug.Log("LoadBundleFromURL");
+                }
+
+                _bundles[assetPath] = bundle;
+            }
+
+            return await bundle.LoadAssetAsync(assetName);
+        }
+
         public static async UniTask<string> GetTextAsync(this string fileName) 
         {
             DirtyHackWithPlayerPrefs();
 
-            var versionedFileName = fileName;
-            return IsCached(versionedFileName) ?
-                TextFromCache(versionedFileName) :
-                ToCache(await new AssetRequests().GetText(versionedFileName), versionedFileName);
+            return IsCached(fileName) ?
+                TextFromCache(fileName) :
+                ToCache(await new AssetRequests().GetText(fileName), fileName);
         }
 
         public static async UniTask<Texture2D> GetTextureAsync(this string fileName) 
         {
             DirtyHackWithPlayerPrefs();
 
-            var versionedFileName = fileName;
-            return IsCached(versionedFileName) ?
-                TextureFromCache(versionedFileName) :
-                ToCache(await new AssetRequests().GetTexture(versionedFileName), versionedFileName);
+            return IsCached(fileName) ?
+                TextureFromCache(fileName) :
+                ToCache(await new AssetRequests().GetTexture(fileName), fileName);
         }
 
         private static bool IsCached(this string fileName) 
         {
             var file = ConvertPath(fileName);
             return File.Exists(file);
+        }
+
+        private static async UniTask<AssetBundle> BundleFromCache(this string fileName)
+        {
+            var rawData = FromCache(fileName);
+            return await AssetBundle.LoadFromMemoryAsync(rawData);
         }
 
         private static Texture2D TextureFromCache(this string fileName) 
@@ -74,6 +104,12 @@ namespace Shared.LocalCache
             var rawData = Encoding.UTF8.GetBytes(data);
             rawData.ToCache(fileName);
             return fileName.TextFromCache();
+        }
+
+        private static async UniTask<AssetBundle> BundleToCache(this byte[] data, string fileName)
+        {
+            data.ToCache(fileName);
+            return await fileName.BundleFromCache();
         }
 
         private static byte[] ToCache(this byte[] data, string fileName) 

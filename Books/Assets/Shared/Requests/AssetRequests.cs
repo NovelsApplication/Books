@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -8,25 +8,17 @@ namespace Shared.Requests
 {
     public class AssetRequests
     {
-        private static readonly Dictionary<string, AssetBundle> _bundles = new();
-
-        public async UniTask<Object> GetBundle(string assetPath, string assetName)
+        public async UniTask<(AssetBundle, byte[])> GetBundle(string assetPath)
         {
-            if (!_bundles.TryGetValue(assetPath, out var bundle)) 
-            {
-                var path = GetPath($"Remote/{assetPath}");
-                using var request = UnityWebRequestAssetBundle.GetAssetBundle(path);
+            var path = GetPath($"Remote/{assetPath}");
+            using var request = UnityWebRequest.Get(path);// UnityWebRequestAssetBundle.GetAssetBundle(path);
 
-                SetHeaders(request);
+            SetHeaders(request);
 
-                await request.SendWebRequest();
+            await request.SendWebRequest();
 
-                bundle = DownloadHandlerAssetBundle.GetContent(request);
-
-                _bundles[assetPath] = bundle;
-            }
-
-            return await bundle.LoadAssetAsync(assetName);
+            //return (DownloadHandlerAssetBundle.GetContent(request), request.downloadHandler.data);
+            return (null, request.downloadHandler.data);
         }
 
         public async UniTask<T> GetData<T>(string localPath)
