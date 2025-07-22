@@ -18,6 +18,8 @@ namespace Books.Story.View
         public UniTask ShowLocation(Texture2D image);
         public UniTask HideLocation();
         public void HideLocationImmediate();
+
+        public void Release();
     }
 
     public class Screen : MonoBehaviour, IScreen
@@ -68,6 +70,11 @@ namespace Books.Story.View
         public void HideLocationImmediate() 
         {
             _location.HideImmediate();
+        }
+
+        public void Release() 
+        {
+            GameObject.Destroy(gameObject);
         }
     }
 }

@@ -1,5 +1,8 @@
+using Books.Loading.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
+using Shared.Requests;
+using UnityEngine;
 
 namespace Books.Loading
 {
@@ -10,6 +13,7 @@ namespace Books.Loading
             public Data Data;
         }
 
+        private IScreen _screen;
         private Ctx _ctx;
 
         public Entity(Ctx ctx)
@@ -17,10 +21,23 @@ namespace Books.Loading
             _ctx = ctx;
         }
 
-        public void ShowImmediate() => _ctx.Data.Screen.ShowImmediate();
-        public void HideImmediate() => _ctx.Data.Screen.HideImmediate();
+        public async UniTask Init() 
+        {
+            var asset = await new AssetRequests().GetBundle("Main", _ctx.Data.ScreenName);
+            var go = GameObject.Instantiate(asset as GameObject);
+            _screen = go.GetComponent<IScreen>();
+        }
 
-        public async UniTask Show() => await _ctx.Data.Screen.Show();
-        public async UniTask Hide() => await _ctx.Data.Screen.Hide();
+        public void ShowImmediate() => _screen.ShowImmediate();
+        public void HideImmediate() => _screen.HideImmediate();
+
+        public async UniTask Show() => await _screen.Show();
+        public async UniTask Hide() => await _screen.Hide();
+
+        protected override void OnDispose()
+        {
+            base.OnDispose();
+            _screen.Release();
+        }
     }
 }

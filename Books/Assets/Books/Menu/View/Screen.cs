@@ -155,6 +155,8 @@ namespace Books.Menu.View
             {
                 GameObject.Destroy(_objects.Pop());
             }
+
+            GameObject.Destroy(gameObject);
         }
     }
 }

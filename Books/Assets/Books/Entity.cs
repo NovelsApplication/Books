@@ -1,9 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.LocalCache;
-using Shared.Requests;
 using System;
-using UnityEngine;
 
 namespace Books 
 {
@@ -14,27 +12,22 @@ namespace Books
             public Data Data;
         }
 
+        private Loading.Entity _loading;
         private readonly Ctx _ctx;
-
-        private readonly Loading.Entity _loading;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
-
-            _loading = new Loading.Entity(new Loading.Entity.Ctx
-            {
-                Data = _ctx.Data.LoadingData,
-            }).AddTo(this);
-            _loading.ShowImmediate();
         }
 
         public async UniTask AsyncProcess()
         {
-            var asset = await new AssetRequests().GetBundle("test");
-            Debug.Log($"assetName {asset.name}");
-            var go = GameObject.Instantiate(asset);
-            Debug.Log($"objectName {go.name}");
+            _loading = new Loading.Entity(new Loading.Entity.Ctx
+            {
+                Data = _ctx.Data.LoadingData,
+            }).AddTo(this);
+            await _loading.Init();
+            _loading.ShowImmediate();
 
             while (!IsDisposed) 
             {
@@ -82,6 +75,7 @@ namespace Books
                 RootFolderName = storyPath,
                 StoryText = storyText,
             }).AddTo(this);
+            await storyScreen.Init();
 
             storyScreen.ShowImmediate();
             storyScreen.ShowStoryProcess(onDone).Forget();

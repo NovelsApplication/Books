@@ -1,6 +1,9 @@
+using Books.Story.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
+using Shared.Requests;
 using System;
+using UnityEngine;
 
 namespace Books.Story 
 {
@@ -13,17 +16,24 @@ namespace Books.Story
             public string StoryText;
         }
 
+        private IScreen _screen;
+        private Logic _logic;
         private readonly Ctx _ctx;
-
-        private readonly Logic _logic;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
+        }
+
+        public async UniTask Init()
+        {
+            var asset = await new AssetRequests().GetBundle("Main", _ctx.Data.ScreenName);
+            var go = GameObject.Instantiate(asset as GameObject);
+            _screen = go.GetComponent<IScreen>();
 
             _logic = new Logic(new Logic.Ctx
             {
-                Screen = _ctx.Data.Screen,
+                Screen = _screen,
                 RootFolderName = _ctx.RootFolderName,
                 StoryText = _ctx.StoryText,
             }).AddTo(this);
@@ -31,13 +41,14 @@ namespace Books.Story
 
         public async UniTask ShowStoryProcess(Action onDone) => await _logic.ShowStoryProcess(onDone);
 
-        public void ShowImmediate() => _ctx.Data.Screen.ShowImmediate();
-        public void HideImmediate() => _ctx.Data.Screen.HideImmediate();
+        public void ShowImmediate() => _screen.ShowImmediate();
+        public void HideImmediate() => _screen.HideImmediate();
 
         protected override void OnDispose()
         {
-            HideImmediate();
             base.OnDispose();
+            HideImmediate();
+            _screen.Release();
         }
     }
 }

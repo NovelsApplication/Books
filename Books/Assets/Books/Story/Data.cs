@@ -6,8 +6,8 @@ namespace Books.Story
     [Serializable]
     public struct Data
     {
-        [SerializeField] private View.Screen _screen;
+        [SerializeField] private string _screenName;
 
-        public readonly View.IScreen Screen => _screen;
+        public readonly string ScreenName => _screenName;
     }
 }

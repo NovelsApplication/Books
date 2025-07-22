@@ -9,6 +9,7 @@ namespace Books.Loading.View
         public void HideImmediate();
         public UniTask Show();
         public UniTask Hide();
+        public void Release();
     }
 
     public class Screen : MonoBehaviour, IScreen
@@ -72,6 +73,11 @@ namespace Books.Loading.View
 
             _canvasGroup.alpha = 0f;
             _canvasGroup.gameObject.SetActive(false);
+        }
+
+        public void Release() 
+        {
+            GameObject.Destroy(gameObject);
         }
     }
 }
