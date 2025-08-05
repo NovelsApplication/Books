@@ -75,19 +75,19 @@ namespace Shared.Requests
 
             try 
             {
-                Debug.Log($"Try {audioType} - {request.downloadHandler.data.Length}");
-                
+                Debug.Log($"Try1 {audioType} - {dh.audioClip.loadState} {dh.audioClip.loadType}");
+
+                dh.audioClip.LoadAudioData();
+
+                Debug.Log($"Try2 {audioType} - {dh.audioClip.loadState} {dh.audioClip.loadType}");
+
+                while (dh.audioClip.loadState != AudioDataLoadState.Loaded) await UniTask.Yield();
+
+                Debug.Log($"Try3 {audioType} - {dh.audioClip.loadState} {dh.audioClip.loadType}");
+
                 var clip = dh.audioClip;
 
-                Debug.Log($"Try1 {audioType} - {clip.loadState} {clip.loadType}");
-
-                clip.LoadAudioData();
-
-                Debug.Log($"Try2 {audioType} - {clip.loadState} {clip.loadType}");
-
-                while (clip.loadState != AudioDataLoadState.Loaded) await UniTask.Yield();
-
-                Debug.Log($"Try3 {audioType} - {clip.loadState} {clip.loadType}");
+                Debug.Log($"Try {audioType} - {request.downloadHandler.data.Length}");
 
                 return clip;
             }
