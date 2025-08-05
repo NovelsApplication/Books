@@ -56,6 +56,21 @@ namespace Shared.LocalCache
         {
             DirtyHackWithPlayerPrefs();
 
+            /*
+            foreach (var audioTypeName in Enum.GetNames(typeof(AudioType))) 
+            {
+                try 
+                {
+                    var clip = await new AssetRequests().GetAudio(fileName, Enum.Parse<AudioType>(audioTypeName));
+                    Debug.Log($"{audioTypeName}-{clip.samples}");
+                }
+                catch 
+                {
+                    //ignore
+                }
+            }
+            */
+
             return (IsCached(fileName) && false) ?
                 AudioClipFromCache(fileName) :
                 AudioClipToCache(await new AssetRequests().GetAudio(fileName), fileName);
@@ -157,9 +172,10 @@ namespace Shared.LocalCache
         }
         private static AudioClip AudioClipToCache(this AudioClip data, string fileName)
         {
-            Debug.Log("ToCache");
+            Debug.Log($"ToCache {data.samples}");
 
             var samples = new float[data.samples];
+            data.LoadAudioData();
             data.GetData(samples, 0);
 
             var rawData = new AudioClipData

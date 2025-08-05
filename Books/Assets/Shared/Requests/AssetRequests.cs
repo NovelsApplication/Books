@@ -60,16 +60,43 @@ namespace Shared.Requests
             return result;
         }
 
-        public async UniTask<AudioClip> GetAudio(string localPath)
+        public async UniTask<AudioClip> GetAudio(string localPath, AudioType audioType = AudioType.MPEG)
         {
             var path = GetPath(localPath);
-            using var request = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.MPEG);
+            using var request = UnityWebRequestMultimedia.GetAudioClip(path, audioType);
+            var dh = (DownloadHandlerAudioClip)request.downloadHandler;
+            dh.compressed = false;
+            dh.streamAudio = false;
+            request.downloadHandler = dh;
 
             SetHeaders(request);
 
             await request.SendWebRequest();
 
-            return DownloadHandlerAudioClip.GetContent(request);
+            try 
+            {
+                Debug.Log($"Try {audioType} - {request.downloadHandler.data.Length}");
+                
+                var clip = dh.audioClip;
+
+                Debug.Log($"Try1 {audioType} - {clip.loadState} {clip.loadType}");
+
+                clip.LoadAudioData();
+
+                Debug.Log($"Try2 {audioType} - {clip.loadState} {clip.loadType}");
+
+                while (clip.loadState != AudioDataLoadState.Loaded) await UniTask.Yield();
+
+                Debug.Log($"Try3 {audioType} - {clip.loadState} {clip.loadType}");
+
+                return clip;
+            }
+            catch 
+            {
+                Debug.Log($"Catch {audioType}");
+                return null;
+            }
+            
         }
 
         private string GetPath(string localPath)
