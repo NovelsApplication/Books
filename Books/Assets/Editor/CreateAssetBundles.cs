@@ -7,13 +7,27 @@ public class CreateAssetBundles
     [MenuItem("Assets/Build AssetBundles")]
     static void BuildAllAssetBundles()
     {
-        var assetBundleDirectory = "Assets/StreamingAssets/Remote";
-        if (!Directory.Exists(assetBundleDirectory)) 
+        var remotePath = "Assets/StreamingAssets/Remote";
+        if (!Directory.Exists(remotePath))
         {
-            Debug.LogError("Create remote folder");
-            return;
+            Directory.CreateDirectory(remotePath);
+            Debug.Log($"Create remote folder {remotePath}");
         }
 
-        BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.None, BuildTarget.WebGL);
+        var assetBundleDirectoryWebGL = $"{remotePath}/WebGL";
+        if (!Directory.Exists(assetBundleDirectoryWebGL)) 
+        {
+            Directory.CreateDirectory(assetBundleDirectoryWebGL);
+            Debug.Log($"Create remote folder {assetBundleDirectoryWebGL}");
+        }
+        BuildPipeline.BuildAssetBundles(assetBundleDirectoryWebGL, BuildAssetBundleOptions.None, BuildTarget.WebGL);
+
+        var assetBundleDirectoryWin = $"{remotePath}/Win";
+        if (!Directory.Exists(assetBundleDirectoryWin))
+        {
+            Directory.CreateDirectory(assetBundleDirectoryWin);
+            Debug.Log($"Create remote folder {assetBundleDirectoryWin}");
+        }
+        BuildPipeline.BuildAssetBundles(assetBundleDirectoryWin, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
     }
 }

@@ -24,7 +24,7 @@ namespace Books.Loading
 
         public async UniTask Init() 
         {
-            var asset = await Cacher.GetBundle("main", _ctx.Data.ScreenName);
+            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
             var go = GameObject.Instantiate(asset as GameObject);
             _screen = go.GetComponent<IScreen>();
         }

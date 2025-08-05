@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Shared.Requests;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Shared.LocalCache
     public static class Cacher
     {
         private static readonly Dictionary<string, AssetBundle> _bundles = new();
-        public static async UniTask<UnityEngine.Object> GetBundle(string assetPath, string assetName)
+        public static async UniTask<UnityEngine.Object> GetBundleAsync(string assetPath, string assetName)
         {
             if (!_bundles.TryGetValue(assetPath, out var bundle))
             {
@@ -20,13 +21,11 @@ namespace Shared.LocalCache
                 if (IsCached(assetPath)) 
                 {
                     bundle = await BundleFromCache(assetPath);
-                    Debug.Log("GetBundleFromCache");
                 }
                 else
                 {
                     var bundleData = await new AssetRequests().GetBundle(assetPath);
-                    bundle = await BundleToCache(bundleData.Item2, assetPath);
-                    Debug.Log("LoadBundleFromURL");
+                    bundle = await BundleToCache(bundleData, assetPath);
                 }
 
                 _bundles[assetPath] = bundle;
@@ -41,7 +40,7 @@ namespace Shared.LocalCache
 
             return IsCached(fileName) ?
                 TextFromCache(fileName) :
-                ToCache(await new AssetRequests().GetText(fileName), fileName);
+                TextToCache(await new AssetRequests().GetText(fileName), fileName);
         }
 
         public static async UniTask<Texture2D> GetTextureAsync(this string fileName) 
@@ -50,7 +49,16 @@ namespace Shared.LocalCache
 
             return IsCached(fileName) ?
                 TextureFromCache(fileName) :
-                ToCache(await new AssetRequests().GetTexture(fileName), fileName);
+                TextureToCache(await new AssetRequests().GetTexture(fileName), fileName);
+        }
+
+        public static async UniTask<AudioClip> GetAudioClipAsync(this string fileName)
+        {
+            DirtyHackWithPlayerPrefs();
+
+            return (IsCached(fileName) && false) ?
+                AudioClipFromCache(fileName) :
+                AudioClipToCache(await new AssetRequests().GetAudio(fileName), fileName);
         }
 
         private static bool IsCached(this string fileName) 
@@ -63,6 +71,20 @@ namespace Shared.LocalCache
         {
             var rawData = FromCache(fileName);
             return await AssetBundle.LoadFromMemoryAsync(rawData);
+        }
+
+        private static AudioClip AudioClipFromCache(this string fileName)
+        {
+            Debug.Log($"FromCache {DateTime.UtcNow}");
+
+            var rawData = TextFromCache(fileName);
+
+            var audioData = JsonConvert.DeserializeObject<AudioClipData>(rawData);
+
+            var audioClip = AudioClip.Create(audioData.Name, audioData.Samples.Count, audioData.Channels, audioData.Frequency, false);
+            audioClip.SetData(audioData.Samples.ToArray(), 0);
+
+            return audioClip;
         }
 
         private static Texture2D TextureFromCache(this string fileName) 
@@ -91,27 +113,51 @@ namespace Shared.LocalCache
             }
         }
 
-        private static Texture2D ToCache(this Texture2D data, string fileName) 
+        private static Texture2D TextureToCache(this Texture2D data, string fileName) 
         {
             var rawData = data.EncodeToPNG();
-            rawData.ToCache(fileName);
+            rawData.ArrayToCache(fileName);
             return fileName.TextureFromCache();
         }
 
-        private static string ToCache(this string data, string fileName) 
+        private static string TextToCache(this string data, string fileName) 
         {
             var rawData = Encoding.UTF8.GetBytes(data);
-            rawData.ToCache(fileName);
+            rawData.ArrayToCache(fileName);
             return fileName.TextFromCache();
         }
 
         private static async UniTask<AssetBundle> BundleToCache(this byte[] data, string fileName)
         {
-            data.ToCache(fileName);
+            data.ArrayToCache(fileName);
             return await fileName.BundleFromCache();
         }
 
-        private static byte[] ToCache(this byte[] data, string fileName) 
+        [Serializable]
+        public struct AudioClipData 
+        {
+            public string Name;
+            public int Channels;
+            public int Frequency;
+            public List<float> Samples;
+
+        }
+        private static AudioClip AudioClipToCache(this AudioClip data, string fileName)
+        {
+            Debug.Log($"ToCache {DateTime.UtcNow}");
+            var samples = new float[data.samples];
+            data.GetData(samples, 0);
+            JsonConvert.SerializeObject(new AudioClipData
+            {
+                Name = data.name,
+                Channels = data.channels,
+                Frequency = data.frequency,
+                Samples = samples.ToList(),
+            }).TextToCache(fileName);
+            return fileName.AudioClipFromCache();
+        }
+
+        private static byte[] ArrayToCache(this byte[] data, string fileName) 
         {
             var file = ConvertPath(fileName);
             if (File.Exists(file))
