@@ -75,16 +75,29 @@ namespace Shared.LocalCache
 
         private static AudioClip AudioClipFromCache(this string fileName)
         {
-            Debug.Log($"FromCache {DateTime.UtcNow}");
+            Debug.Log("FromCache");
 
-            var rawData = TextFromCache(fileName);
+            using (Stream stream = File.Open(ConvertPath(fileName), FileMode.Open))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                var audioData = (AudioClipData)binaryFormatter.Deserialize(stream);
+
+                var audioClip = AudioClip.Create(audioData.Name, audioData.Samples.Length, audioData.Channels, audioData.Frequency, false);
+                audioClip.SetData(audioData.Samples, 0);
+
+                return audioClip;
+            }
+
+            /*
+            var rawData = Encoding.UTF8.GetString(FromCache(fileName));
 
             var audioData = JsonConvert.DeserializeObject<AudioClipData>(rawData);
 
-            var audioClip = AudioClip.Create(audioData.Name, audioData.Samples.Count, audioData.Channels, audioData.Frequency, false);
-            audioClip.SetData(audioData.Samples.ToArray(), 0);
+            var audioClip = AudioClip.Create(audioData.Name, audioData.Samples.Length, audioData.Channels, audioData.Frequency, false);
+            audioClip.SetData(audioData.Samples, 0);
 
             return audioClip;
+            */
         }
 
         private static Texture2D TextureFromCache(this string fileName) 
@@ -139,22 +152,53 @@ namespace Shared.LocalCache
             public string Name;
             public int Channels;
             public int Frequency;
-            public List<float> Samples;
+            public float[] Samples;
 
         }
         private static AudioClip AudioClipToCache(this AudioClip data, string fileName)
         {
-            Debug.Log($"ToCache {DateTime.UtcNow}");
+            Debug.Log("ToCache");
+
             var samples = new float[data.samples];
             data.GetData(samples, 0);
-            JsonConvert.SerializeObject(new AudioClipData
+
+            var rawData = new AudioClipData
             {
-                Name = data.name,
+                Name = fileName.Split("/").Last(),
                 Channels = data.channels,
                 Frequency = data.frequency,
-                Samples = samples.ToList(),
-            }).TextToCache(fileName);
+                Samples = samples,
+            };
+
+            //var rawText = JsonConvert.SerializeObject(rawData);
+
+            var file = ConvertPath(fileName);
+            if (File.Exists(file))
+                File.Delete(file);
+            using (var stream = File.Open(ConvertPath(fileName), FileMode.Create))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(stream, rawData);
+            }
+
             return fileName.AudioClipFromCache();
+
+            /*
+            var samples = new float[data.samples];
+            data.GetData(samples, 0);
+
+            var rawText = JsonConvert.SerializeObject(new AudioClipData
+            {
+                Name = fileName.Split("/").Last(),
+                Channels = data.channels,
+                Frequency = data.frequency,
+                Samples = samples,
+            });
+            var rawData = Encoding.UTF8.GetBytes(rawText);
+            rawData.ArrayToCache(fileName);
+
+            return fileName.AudioClipFromCache();
+            */
         }
 
         private static byte[] ArrayToCache(this byte[] data, string fileName) 
