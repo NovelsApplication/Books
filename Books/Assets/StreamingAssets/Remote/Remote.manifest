@@ -1,9 +1,0 @@
-ManifestFileVersion: 0
-UnityVersion: 6000.0.27f1
-CRC: 941892463
-HashAppended: 0
-AssetBundleManifest:
-  AssetBundleInfos:
-    Info_0:
-      Name: main
-      Dependencies: {}

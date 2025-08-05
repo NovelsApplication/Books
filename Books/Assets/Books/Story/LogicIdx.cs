@@ -11,8 +11,10 @@ namespace Books.Story
         Background,
 
         Music,
+        Музыка,
 
         Sound,
+        Звук,
 
         Location,
         Локация,
