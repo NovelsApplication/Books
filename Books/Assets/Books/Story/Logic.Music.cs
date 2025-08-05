@@ -9,9 +9,9 @@ namespace Books.Story
         [Logic(LogicIdx.Music, LogicIdx.Музыка)]
         private async UniTask<bool> RunMusic(string header, string attributes, string body)
         {
-            var audioClipName = $"{_ctx.RootFolderName}/Music/{body.Replace(" ", "_")}.mp3";
+            var audioClipName = $"{_ctx.RootFolderName}/Music/{body.Replace(" ", "_")}.aac";
 
-            Debug.Log(audioClipName);
+            Debug.Log($"{audioClipName} start {audioClipName}");
 
             var audioClip = await Cacher.GetAudioClipAsync(audioClipName);
 
@@ -19,6 +19,8 @@ namespace Books.Story
             var music = musicGO.AddComponent<AudioSource>();
             music.clip = audioClip;
             music.Play();
+
+            Debug.Log($"{audioClipName} play {music.clip.name} {music.clip.length}");
 
             return true;
         }
