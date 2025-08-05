@@ -18,6 +18,7 @@ namespace Books.Story
             var musicGO = new GameObject("MusicOwner");
             var music = musicGO.AddComponent<AudioSource>();
             music.clip = audioClip;
+            music.Play();
 
             return true;
         }
