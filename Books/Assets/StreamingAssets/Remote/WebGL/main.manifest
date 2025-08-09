@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 3270225363
+CRC: 2355525340
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 941be42db01197c527dfb2101cd5f848
+    Hash: 06257c857a9892788ea5e6431176e09d
   TypeTreeHash:
     serializedVersion: 2
     Hash: 5e31a1daab56ab2b0135f383acae7fdc
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: ec51a769979f50feba0be883f13f5cbd
+    Hash: 859780ce818685d0c613467606b5b7be
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -137,7 +137,45 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
-- Assets/Remote/Main/StoryCanvas.prefab
-- Assets/Remote/Main/FaderCanvas.prefab
-- Assets/Remote/Main/MenuCanvas.prefab
+- Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/New.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
+- Assets/Remote/Main/Menu/Images/Bubble.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/InProgress.png
+- Assets/Remote/Main/Menu/Images/Menu/UserIcon.png
+- Assets/Remote/Main/Menu/Refs/PopUp.png
+- Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster.png
+- Assets/Remote/Main/Menu/Images/Menu/TagsBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/DialogsIcon.png
+- Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/ForYou.png
+- Assets/Remote/Main/Menu/Images/Menu/Background1.png
+- Assets/Remote/Main/Menu/Images/Menu/SettingsIcon.png
+- Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
+- Assets/Remote/Main/Story/StoryCanvas.prefab
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Special.png
+- Assets/Remote/Main/Menu/Images/Menu/TagsBackgroundMain.png
+- Assets/Remote/Main/Menu/Refs/Menu.png
+- Assets/Remote/Main/Menu/Images/Menu/Background3.png
+- Assets/Remote/Main/Fader/FaderCanvas.prefab
+- Assets/Remote/Main/Menu/MenuCanvas.prefab
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
+- Assets/Remote/Main/Menu/Images/PopUp/HeartDone.png
+- Assets/Remote/Main/Menu/Images/PopUp/RefreshIcon.png
+- Assets/Remote/Main/Menu/Images/Menu/Background2.png
+- Assets/Remote/Main/Menu/Images/LightBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
+- Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
+- Assets/Remote/Main/Menu/Images/Menu/Background4.png
+- Assets/Remote/Main/Menu/Images/PopUp/SuitsIcon.png
+- Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
+- Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
+- Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
+- Assets/Remote/Main/Menu/Images/Menu/Heart.png
+- Assets/Remote/Main/Menu/Images/DarkBackground.png
 Dependencies: []
