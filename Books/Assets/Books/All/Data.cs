@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Books 
+namespace Books.All
 {
     [Serializable]
     internal struct Data

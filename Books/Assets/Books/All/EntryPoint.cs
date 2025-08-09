@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.LowLevel;
 
-namespace Books
+namespace Books.All
 {
     internal sealed class EntryPoint : MonoBehaviour
     {
