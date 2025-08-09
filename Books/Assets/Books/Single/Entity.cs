@@ -1,0 +1,64 @@
+using Cysharp.Threading.Tasks;
+using Shared.Disposable;
+using Shared.LocalCache;
+using System;
+
+namespace Books.Single
+{
+    internal sealed class Entity : BaseDisposable
+    {
+        public struct Ctx
+        {
+            public Data Data;
+        }
+
+        private Loading.Entity _loading;
+        private readonly Ctx _ctx;
+
+        public Entity(Ctx ctx)
+        {
+            _ctx = ctx;
+        }
+
+        public async UniTask AsyncProcess()
+        {
+            _loading = new Loading.Entity(new Loading.Entity.Ctx
+            {
+                Data = _ctx.Data.LoadingData,
+            }).AddTo(this);
+            await _loading.Init();
+            _loading.ShowImmediate();
+
+            while (!IsDisposed)
+            {
+                var done = false;
+                using (var storyScreen = await ShowStory(_ctx.Data.StoryPath, () => { done = true; }))
+                {
+                    while (!done) await UniTask.Yield();
+                }
+            }
+        }
+
+        private async UniTask<Story.Entity> ShowStory(string storyPath, Action onDone) 
+        {
+            await _loading.Show();
+
+            var storyText = await Cacher.GetTextAsync($"{storyPath}/Story.json");
+
+            var storyScreen = new Story.Entity(new Story.Entity.Ctx
+            {
+                Data = _ctx.Data.StoriesData,
+                RootFolderName = storyPath,
+                StoryText = storyText,
+            }).AddTo(this);
+            await storyScreen.Init();
+
+            storyScreen.ShowImmediate();
+            storyScreen.ShowStoryProcess(onDone).Forget();
+
+            await _loading.Hide();
+
+            return storyScreen;
+        }
+    }
+}
