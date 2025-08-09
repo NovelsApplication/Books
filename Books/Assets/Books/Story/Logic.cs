@@ -43,6 +43,9 @@ namespace Books.Story
             {
                 _ctx.Screen.HideBubble();
 
+                if (!story.canContinue)
+                    break;
+
                 if (!story.Continue().TryProcessLine(out var header, out var attributes, out var body))
                     continue;
 
@@ -58,7 +61,9 @@ namespace Books.Story
                     if (index >= 0) story.ChooseChoiceIndex(index);
                     clicked = true;
                 }, _mainCharacter, header, body, buttons);
-                while (!clicked && !IsDisposed) await UniTask.Yield();
+
+                while (!clicked && !IsDisposed)
+                    await UniTask.Yield();
             }
         }
 

@@ -43,8 +43,11 @@ namespace Books.Story.View
 
         public void HideImmediate() 
         {
-            _canvasGroup.alpha = 0f;
-            _canvasGroup.gameObject.SetActive(false);
+            if (_canvasGroup != null) 
+            {
+                _canvasGroup.alpha = 0f;
+                _canvasGroup.gameObject.SetActive(false);
+            }
         }
 
         public async UniTask ShowBubble(Action<int> onClick, string mainCharacter, string header, string body, params (string header, int index)[] buttons) 
@@ -74,6 +77,8 @@ namespace Books.Story.View
 
         public void Release() 
         {
+            if (this == null) return;
+
             GameObject.Destroy(gameObject);
         }
     }
