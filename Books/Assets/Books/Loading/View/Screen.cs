@@ -77,6 +77,8 @@ namespace Books.Loading.View
 
         public void Release() 
         {
+            if (this == null) return;
+
             GameObject.Destroy(gameObject);
         }
     }

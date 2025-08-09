@@ -3,7 +3,7 @@ using Shared.Disposable;
 using Shared.LocalCache;
 using System;
 
-namespace Books 
+namespace Books.All
 {
     internal sealed class Entity : BaseDisposable
     {

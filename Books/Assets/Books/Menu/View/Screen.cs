@@ -52,8 +52,11 @@ namespace Books.Menu.View
 
         public void HideImmediate()
         {
-            _canvasGroup.alpha = 0f;
-            _canvasGroup.gameObject.SetActive(false);
+            if (_canvasGroup != null) 
+            {
+                _canvasGroup.alpha = 0f;
+                _canvasGroup.gameObject.SetActive(false);
+            }
         }
 
         public async UniTask AddBookAsync(Entity.StoryManifest storyManifest, Action onClick) 
@@ -156,7 +159,10 @@ namespace Books.Menu.View
                 GameObject.Destroy(_objects.Pop());
             }
 
-            GameObject.Destroy(gameObject);
+            if (this != null)
+            {
+                GameObject.Destroy(gameObject);
+            }
         }
     }
 }
