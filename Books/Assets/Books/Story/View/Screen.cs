@@ -13,7 +13,7 @@ namespace Books.Story.View
         public void HideImmediate();
 
         public UniTask ShowBubble(Action<int> onClick, string mainCharacter, string header, string body, params (string header, int index)[] buttons);
-        public void HideBubble();
+        public void HideBubbleImmediate();
 
         public UniTask ShowLocation(Texture2D image);
         public UniTask HideLocation();
@@ -28,6 +28,7 @@ namespace Books.Story.View
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Location _location;
+        [SerializeField] private Character _character;
 
         public void SetCloseAction(Action onClick) 
         {
@@ -50,13 +51,21 @@ namespace Books.Story.View
             }
         }
 
-        public async UniTask ShowBubble(Action<int> onClick, string mainCharacter, string header, string body, params (string header, int index)[] buttons) 
+        public async UniTask ShowBubble(Action<int> onClick, string mainCharacter, string header, string body, Texture2D characterImage, params (string header, int index)[] buttons) 
         {
+            await _character.Hide();
+
             await _bubble.ShowBubble(onClick, mainCharacter, header, body, buttons);
+
+            if (characterImage != null)
+            {
+                await _character.Show()
+            }
         }
 
-        public void HideBubble() 
+        public void HideBubbleImmediate() 
         {
+            _character.HideImmediate();
             _bubble.gameObject.SetActive(false);
         }
 

@@ -25,7 +25,7 @@ namespace Books.Story
         {
             _ctx = ctx;
 
-            _ctx.Screen.HideBubble();
+            _ctx.Screen.HideBubbleImmediate();
         }
 
         public async UniTask ShowStoryProcess(Action onDone)
@@ -41,7 +41,7 @@ namespace Books.Story
             _mainCharacter = string.Empty;
             while (!IsDisposed)
             {
-                _ctx.Screen.HideBubble();
+                _ctx.Screen.HideBubbleImmediate();
 
                 if (!story.canContinue)
                     break;
