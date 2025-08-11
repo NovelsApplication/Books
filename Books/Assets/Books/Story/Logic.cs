@@ -21,6 +21,7 @@ namespace Books.Story
         private readonly Ctx _ctx;
 
         private string _mainCharacter;
+        private Texture2D _characterImage;
 
         public Logic(Ctx ctx)
         {
@@ -55,11 +56,11 @@ namespace Books.Story
                     && await func.Invoke(header, attributes, body))
                     continue;
 
-                Texture2D characterImage = null;
+                _characterImage = null;
                 if (!string.IsNullOrEmpty(attributes)) 
                 {
                     var characterName = $"{_ctx.RootFolderName}/Characters/{attributes.Replace(" ", "_")}.png";
-                    characterImage = await Cacher.GetTextureAsync(characterName);
+                    _characterImage = await Cacher.GetTextureAsync(characterName);
                 }
 
                 var buttons = story.currentChoices.Select(c => (c.text, c.index)).ToArray();
@@ -68,7 +69,7 @@ namespace Books.Story
                 {
                     if (index >= 0) story.ChooseChoiceIndex(index);
                     clicked = true;
-                }, _mainCharacter, header, body, characterImage, buttons);
+                }, _mainCharacter, header, body, _characterImage, buttons);
 
                 while (!clicked && !IsDisposed)
                     await UniTask.Yield();
