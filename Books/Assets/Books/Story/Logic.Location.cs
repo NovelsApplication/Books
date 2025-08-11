@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Shared.LocalCache;
+using UnityEngine;
 
 namespace Books.Story
 {
@@ -10,8 +11,13 @@ namespace Books.Story
         {
             await _ctx.Screen.HideLocation();
 
-            var locationName = $"{_ctx.RootFolderName}/Locations/{body.Replace(" ", "_")}.png";
-            var locationImage = await Cacher.GetTextureAsync(locationName);
+            Texture2D locationImage = null;
+
+            if (!string.IsNullOrEmpty(body)) 
+            {
+                var locationName = $"{_ctx.RootFolderName}/Locations/{body.Replace(" ", "_")}.png";
+                locationImage = await Cacher.GetTextureAsync(locationName);
+            }
 
             await _ctx.Screen.ShowLocation(locationImage);
 
