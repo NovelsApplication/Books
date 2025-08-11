@@ -55,13 +55,16 @@ namespace Shared.LocalCache
         {
             DirtyHackWithPlayerPrefs();
 
-            return (IsCached(fileName) && false) ?
+            return IsCached(fileName) ?
                 AudioClipFromCache(fileName) :
                 AudioClipToCache(await new AssetRequests().GetAudio(fileName), fileName);
         }
 
         private static bool IsCached(this string fileName) 
         {
+#if UNITY_EDITOR
+            return false;
+#endif
             var file = ConvertPath(fileName);
             return File.Exists(file);
         }

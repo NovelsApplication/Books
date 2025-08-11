@@ -25,7 +25,7 @@ namespace Books.Story.View
                 _rectTransform.localScale = new Vector3(1f, 1f, 1f);
             }
 
-                _image.color = Color.clear;
+            _image.color = Color.clear;
             _image.texture = image;
 
             var delayMs = 50;
@@ -40,24 +40,6 @@ namespace Books.Story.View
             }
 
             _image.color = Color.white;
-        }
-
-        public async UniTask Hide()
-        {
-            var startColor = _image.color;
-
-            var delayMs = 50;
-            var deltaTime = delayMs / 1000f;
-
-            var timer = _showHideDuration;
-            while (timer >= 0f)
-            {
-                _image.color = Color.Lerp(Color.clear, startColor, timer / _showHideDuration);
-                timer -= deltaTime;
-                await UniTask.Delay(delayMs, true);
-            }
-
-            _image.color = Color.clear;
         }
 
         public void HideImmediate()
