@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 3837542231
+CRC: 2037890450
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: d49bf2460a565c51372f527f80fb43b2
+    Hash: a9f2a8da86e87340584d26f7f45a5955
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 5e31a1daab56ab2b0135f383acae7fdc
+    Hash: 5e2021ce380542e5073ed00ee26fd01c
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 357ca4bbaa83866aefcb842e5830e8f8
+    Hash: d341eec9fd37f93d0743366fb144fd47
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -73,6 +73,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: a003718ec2ae62241b4e88538a81fb6f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e3d116653c3349a429e2f10b4171d55c, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -137,45 +139,47 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
-- Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/New.png
-- Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
 - Assets/Remote/Main/Menu/Images/Bubble.png
-- Assets/Remote/Main/Menu/Images/Menu/Icons/InProgress.png
 - Assets/Remote/Main/Menu/Images/Menu/UserIcon.png
+- Assets/Remote/Main/Story/StoryCanvas.prefab
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
+- Assets/Remote/Main/Menu/Images/Menu/Background1.png
+- Assets/Remote/Main/Menu/Images/Menu/SettingsIcon.png
+- Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Special.png
+- Assets/Remote/Main/Menu/Images/Menu/TagsBackgroundMain.png
+- Assets/Remote/Main/Menu/Refs/Menu.png
+- Assets/Remote/Main/Fader/FaderCanvas.prefab
+- Assets/Remote/Main/Menu/MenuCanvas.prefab
+- Assets/Remote/Main/Menu/Images/PopUp/HeartDone.png
+- Assets/Remote/Main/Menu/Images/Menu/Background2.png
+- "Assets/Remote/Main/Story/Refs/\u0433\u043E\u0441\u0442\u0438\u043D\u043D\u0430\u044F_\u0434\u0435\u043D\u044C.png"
+- Assets/Remote/Main/Menu/Images/LightBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
+- Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
+- Assets/Remote/Main/Menu/Images/Menu/Background4.png
+- Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
+- Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
+- Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
+- Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/InProgress.png
 - Assets/Remote/Main/Menu/Refs/PopUp.png
 - Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/DialogsIcon.png
 - Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
-- Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/ForYou.png
-- Assets/Remote/Main/Menu/Images/Menu/Background1.png
-- Assets/Remote/Main/Menu/Images/Menu/SettingsIcon.png
-- Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
-- Assets/Remote/Main/Story/StoryCanvas.prefab
-- Assets/Remote/Main/Menu/Images/Menu/Icons/Special.png
-- Assets/Remote/Main/Menu/Images/Menu/TagsBackgroundMain.png
-- Assets/Remote/Main/Menu/Refs/Menu.png
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
-- Assets/Remote/Main/Fader/FaderCanvas.prefab
-- Assets/Remote/Main/Menu/MenuCanvas.prefab
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
-- Assets/Remote/Main/Menu/Images/PopUp/HeartDone.png
 - Assets/Remote/Main/Menu/Images/PopUp/RefreshIcon.png
-- Assets/Remote/Main/Menu/Images/Menu/Background2.png
-- Assets/Remote/Main/Menu/Images/LightBackground.png
-- Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
-- Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
-- Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
-- Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
-- Assets/Remote/Main/Menu/Images/Menu/Background4.png
+- "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Menu/Images/PopUp/SuitsIcon.png
-- Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
-- Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
-- Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
+- Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
 - Assets/Remote/Main/Menu/Images/Menu/Heart.png
 - Assets/Remote/Main/Menu/Images/DarkBackground.png
 Dependencies: []

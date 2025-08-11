@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
+using Shared.LocalCache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,13 +55,20 @@ namespace Books.Story
                     && await func.Invoke(header, attributes, body))
                     continue;
 
+                Texture2D characterImage = null;
+                if (!string.IsNullOrEmpty(attributes)) 
+                {
+                    var characterName = $"{_ctx.RootFolderName}/Characters/{attributes.Replace(" ", "_")}.png";
+                    characterImage = await Cacher.GetTextureAsync(characterName);
+                }
+
                 var buttons = story.currentChoices.Select(c => (c.text, c.index)).ToArray();
                 var clicked = false;
                 await _ctx.Screen.ShowBubble((index) => 
                 {
                     if (index >= 0) story.ChooseChoiceIndex(index);
                     clicked = true;
-                }, _mainCharacter, header, body, buttons);
+                }, _mainCharacter, header, body, characterImage, buttons);
 
                 while (!clicked && !IsDisposed)
                     await UniTask.Yield();
