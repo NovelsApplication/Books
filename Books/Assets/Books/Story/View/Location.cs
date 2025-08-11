@@ -14,6 +14,8 @@ namespace Books.Story.View
             _image.color = Color.black;
             _image.texture = image;
 
+            if (image == null) return;
+
             var delayMs = 50;
             var deltaTime = delayMs / 1000f;
 

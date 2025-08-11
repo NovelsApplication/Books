@@ -9,6 +9,7 @@ namespace Books.Story.View
         [SerializeField] private RawImage _image;
         [SerializeField] private RectTransform _rectTransform;
         [SerializeField] private float _showHideDuration;
+        [SerializeField] private AspectRatioFitter _aspectRatioFitter;
 
         public async UniTask Show(Texture2D image, bool isRight)
         {
@@ -25,6 +26,8 @@ namespace Books.Story.View
                 _rectTransform.localScale = new Vector3(1f, 1f, 1f);
             }
 
+            if (image != null)
+                _aspectRatioFitter.aspectRatio = (float)image.width / (float)image.height;
             _image.color = Color.clear;
             _image.texture = image;
 

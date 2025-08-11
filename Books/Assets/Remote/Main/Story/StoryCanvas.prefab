@@ -1108,6 +1108,7 @@ MonoBehaviour:
   _image: {fileID: 8637513162520527973}
   _rectTransform: {fileID: 4717780526031334471}
   _showHideDuration: 0.25
+  _aspectRatioFitter: {fileID: 5897940676600494766}
 --- !u!1 &5758653525724417559
 GameObject:
   m_ObjectHideFlags: 0
