@@ -25,6 +25,11 @@ namespace Books.All
         public async UniTask AsyncProcess()
         {
             var url = Application.absoluteURL;
+
+#if UNITY_EDITOR
+            url = _ctx.Data.TestURL;
+#endif
+
             var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
 
             _loading = new Loading.Entity(new Loading.Entity.Ctx
