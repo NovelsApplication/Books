@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.LocalCache;
 using System;
+using System.Linq;
+using UnityEngine;
 
 namespace Books.All
 {
@@ -22,6 +24,9 @@ namespace Books.All
 
         public async UniTask AsyncProcess()
         {
+            var url = Application.absoluteURL;
+            var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
+
             _loading = new Loading.Entity(new Loading.Entity.Ctx
             {
                 Data = _ctx.Data.LoadingData,
@@ -32,9 +37,21 @@ namespace Books.All
             while (!IsDisposed) 
             {
                 Menu.Entity.StoryManifest? storyManifest = null;
-                using (var mainScreen = await ShowMainMenu(story => { storyManifest = story; }))
+
+                if (storyPath != null) 
                 {
-                    while (!storyManifest.HasValue) await UniTask.Yield();
+                    storyManifest = new Menu.Entity.StoryManifest
+                    {
+                        StoryPath = storyPath,
+                    };
+                }
+
+                if (storyManifest == null) 
+                {
+                    using (var mainScreen = await ShowMainMenu(story => { storyManifest = story; }))
+                    {
+                        while (!storyManifest.HasValue) await UniTask.Yield();
+                    }
                 }
 
                 var done = false;
