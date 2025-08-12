@@ -42,13 +42,14 @@ namespace Shared.LocalCache
                 TextToCache(await new AssetRequests().GetText(fileName), fileName);
         }
 
-        public static async UniTask<Texture2D> GetTextureAsync(this string fileName) 
+        private static readonly AssetRequests _imageRequest = new();
+        public static async UniTask<Texture2D> GetTextureAsync(this string fileName, string key) 
         {
             DirtyHackWithPlayerPrefs();
 
             return IsCached(fileName) ?
-                TextureFromCache(fileName) :
-                TextureToCache(await new AssetRequests().GetTexture(fileName), fileName);
+                TextureFromCache(fileName, key) :
+                TextureToCache(await _imageRequest.GetTexture(fileName), fileName);
         }
 
         public static async UniTask<AudioClip> GetAudioClipAsync(this string fileName)
@@ -89,12 +90,17 @@ namespace Shared.LocalCache
             }
         }
 
-        private static Texture2D TextureFromCache(this string fileName) 
+        private static readonly Dictionary<string, Texture2D> _images = new ();
+
+        private static Texture2D TextureFromCache(this string fileName, string key) 
         {
             var rawData = FromCache(fileName);
-            Texture2D image = new(0, 0);
-            ImageConversion.LoadImage(image, rawData);
-            return image;
+
+            if (!_images.ContainsKey(key))
+                _images[key] = new(0, 0);
+
+            ImageConversion.LoadImage(_images[key], rawData);
+            return _images[key];
         }
 
         private static string TextFromCache(this string fileName) 
@@ -119,7 +125,7 @@ namespace Shared.LocalCache
         {
             var rawData = data.EncodeToPNG();
             rawData.ArrayToCache(fileName);
-            return fileName.TextureFromCache();
+            return data;
         }
 
         private static string TextToCache(this string data, string fileName) 
