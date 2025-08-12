@@ -60,6 +60,18 @@ namespace Shared.Requests
             return result;
         }
 
+        public async UniTask<byte[]> GetTextureRaw(string localPath)
+        {
+            var path = GetPath(localPath);
+            using var request = UnityWebRequest.Get(path);
+
+            SetHeaders(request);
+
+            await request.SendWebRequest();
+
+            return request.downloadHandler.data;
+        }
+
         public async UniTask<AudioClip> GetAudio(string localPath, AudioType audioType = AudioType.MPEG)
         {
             var path = GetPath(localPath);

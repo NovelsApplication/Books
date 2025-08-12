@@ -47,9 +47,15 @@ namespace Shared.LocalCache
         {
             DirtyHackWithPlayerPrefs();
 
+            /*
             return IsCached(fileName) ?
                 TextureFromCache(fileName, key) :
                 TextureToCache(await _imageRequest.GetTexture(fileName), fileName);
+            */
+
+            return IsCached(fileName) ?
+                TextureFromCache(fileName, key) :
+                TextureRawToCache(await _imageRequest.GetTextureRaw(fileName), fileName, key);
         }
 
         public static async UniTask<AudioClip> GetAudioClipAsync(this string fileName)
@@ -126,6 +132,12 @@ namespace Shared.LocalCache
             var rawData = data.EncodeToPNG();
             rawData.ArrayToCache(fileName);
             return data;
+        }
+
+        private static Texture2D TextureRawToCache(this byte[] data, string fileName, string key)
+        {
+            data.ArrayToCache(fileName);
+            return TextureFromCache(fileName, key);
         }
 
         private static string TextToCache(this string data, string fileName) 
