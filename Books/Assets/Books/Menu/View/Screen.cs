@@ -89,7 +89,7 @@ namespace Books.Menu.View
                 if (header.ToLower() == "аннотация") description = body;
             }
 
-            var posterImage = await Cacher.GetTextureAsync(posterPath);
+            var posterImage = await Cacher.GetTextureAsync(posterPath, "poster");
 
             _mainScreenBook.gameObject.SetActive(false);
             var screenBooks = await UnityEngine.Object.InstantiateAsync<ScreenBook>(_mainScreenBook, _mainScreenBook.transform.parent);
