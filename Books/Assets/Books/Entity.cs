@@ -3,9 +3,10 @@ using Shared.Disposable;
 using Shared.LocalCache;
 using System;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 
-namespace Books.All
+namespace Books
 {
     internal sealed class Entity : BaseDisposable
     {
@@ -32,11 +33,28 @@ namespace Books.All
 
             var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
 
+            var onGetBundle = new ReactiveCommand<UnityEngine.Object>().AddTo(this);
+            var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
+
+            var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
+            {
+                OnGetBundle = onGetBundle,
+                GetBundle = getBundle,
+            }).AddTo(this);
+
+            var loadingDone = false;
             _loading = new Loading.Entity(new Loading.Entity.Ctx
             {
                 Data = _ctx.Data.LoadingData,
+
+                OnGetBundle = onGetBundle,
+                GetBundle = getBundle,
+
+                InitDone = () => loadingDone = true,
             }).AddTo(this);
-            await _loading.Init();
+
+            while (!loadingDone) await UniTask.Yield();
+
             _loading.ShowImmediate();
 
             while (!IsDisposed) 
@@ -53,7 +71,7 @@ namespace Books.All
 
                 if (storyManifest == null) 
                 {
-                    using (var mainScreen = await ShowMainMenu(story => { storyManifest = story; }))
+                    using (var mainScreen = await ShowMainMenu(onGetBundle, getBundle, story => { storyManifest = story; }))
                     {
                         while (!storyManifest.HasValue) await UniTask.Yield();
                     }
@@ -67,17 +85,26 @@ namespace Books.All
             }
         }
 
-        private async UniTask<Menu.Entity> ShowMainMenu(Action<Menu.Entity.StoryManifest> onClick) 
+        private async UniTask<Menu.Entity> ShowMainMenu(ReactiveCommand<UnityEngine.Object> onGetBundle, ReactiveCommand<(string assetPath, string assetName)> getBundle, Action<Menu.Entity.StoryManifest> onClick) 
         {
             await _loading.Show();
 
+            var mainDone = false;
             var mainScreen = new Menu.Entity(new Menu.Entity.Ctx 
             {
-                IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
                 Data = _ctx.Data.MenuData,
+
                 ManifestPath = "StoryManifest.json",
-            }).AddTo(this);
-            await mainScreen.Init(onClick);
+                IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+
+                OnGetBundle = onGetBundle,
+                GetBundle = getBundle,
+
+                InitDone = () => mainDone = true,
+            }, onClick).AddTo(this);
+
+            while (!mainDone) await UniTask.Yield();
+
             await mainScreen.Show();
 
             await _loading.Hide();

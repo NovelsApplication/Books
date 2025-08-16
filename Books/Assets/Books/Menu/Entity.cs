@@ -5,6 +5,7 @@ using Shared.LocalCache;
 using Shared.Requests;
 using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Menu 
@@ -39,23 +40,31 @@ namespace Books.Menu
 
         public struct Ctx
         {
-            public bool IsLightTheme;
             public Data Data;
+
             public string ManifestPath;
+            public bool IsLightTheme;
+
+            public IObservable<UnityEngine.Object> OnGetBundle;
+            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+
+            public Action InitDone;
         }
 
         private IScreen _screen;
         private readonly Ctx _ctx;
 
-        public Entity(Ctx ctx)
+        public Entity(Ctx ctx, Action<StoryManifest> onClick)
         {
             _ctx = ctx;
+
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            _ctx.OnGetBundle.Subscribe(bundle => Init(bundle, onClick)).AddTo(this);
         }
 
-        public async UniTask Init(Action<StoryManifest> onClick)
+        private async void Init(UnityEngine.Object bundle, Action<StoryManifest> onClick)
         {
-            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
-            var go = GameObject.Instantiate(asset as GameObject);
+            var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
             _screen.SetTheme(_ctx.IsLightTheme);
@@ -65,6 +74,8 @@ namespace Books.Menu
             {
                 await _screen.AddBookAsync(storyManifest, () => onClick.Invoke(storyManifest));
             }
+
+            _ctx.InitDone.Invoke();
         }
 
         public async UniTask Show() => await _screen.Show();
