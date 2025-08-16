@@ -1,7 +1,8 @@
 using Books.Loading.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
-using Shared.LocalCache;
+using System;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Loading
@@ -11,6 +12,11 @@ namespace Books.Loading
         public struct Ctx
         {
             public Data Data;
+
+            public IObservable<UnityEngine.Object> OnGetBundle;
+            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+
+            public Action InitDone;
         }
 
         private IScreen _screen;
@@ -19,13 +25,19 @@ namespace Books.Loading
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
+
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            _ctx.OnGetBundle.Subscribe(bundle => Init(bundle)).AddTo(this);
         }
 
-        public async UniTask Init() 
+        private void Init(UnityEngine.Object bundleObject) 
         {
-            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
-            var go = GameObject.Instantiate(asset as GameObject);
+            var go = GameObject.Instantiate(bundleObject as GameObject);
             _screen = go.GetComponent<IScreen>();
+
+            Debug.Log($"screen: {_screen == null}");
+
+            _ctx.InitDone.Invoke();
         }
 
         public void ShowImmediate() => _screen.ShowImmediate();
