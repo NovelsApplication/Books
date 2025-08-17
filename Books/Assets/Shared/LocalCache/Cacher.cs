@@ -48,8 +48,8 @@ namespace Shared.LocalCache
             public int Channels;
             public int Frequency;
             public float[] Samples;
-
         }
+
         private static AudioClip AudioClipToCache(this AudioClip data, string fileName)
         {
             var samples = new float[data.samples];
