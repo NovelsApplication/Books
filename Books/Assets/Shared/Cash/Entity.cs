@@ -14,6 +14,9 @@ namespace Shared.Cash
         {
             public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
+
+            public ReactiveCommand<(string story, string storyPath)> OnGetStory;
+            public IObservable<string> GetStory;
         }
 
         private readonly Ctx _ctx;
@@ -30,7 +33,17 @@ namespace Shared.Cash
                 GetBundle = ctx.GetBundle,
 
                 IsCashed = fileName => IsCashed(fileName),
-                GetPath = fileName => ConvertPath(fileName),
+
+                FromCash = fileName => FromCash(fileName),
+                ToCash = (data, fileName) => ArrayToCash(data, fileName),
+            }).AddTo(this);
+
+            new CashTexts(new CashTexts.Ctx
+            {
+                OnGetStory = ctx.OnGetStory,
+                GetStory = ctx.GetStory,
+
+                IsCashed = fileName => IsCashed(fileName),
 
                 FromCash = fileName => FromCash(fileName),
                 ToCash = (data, fileName) => ArrayToCash(data, fileName),
@@ -81,7 +94,7 @@ namespace Shared.Cash
             }
         }
 
-        private byte[] ArrayToCash(byte[] data, string fileName)
+        private void ArrayToCash(byte[] data, string fileName)
         {
             var file = ConvertPath(fileName);
             if (File.Exists(file))
@@ -90,8 +103,6 @@ namespace Shared.Cash
             {
                 fs.Write(data, 0, data.Length);
             }
-
-            return data;
         }
     }
 }

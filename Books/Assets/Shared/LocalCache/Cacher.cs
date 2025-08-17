@@ -11,15 +11,6 @@ namespace Shared.LocalCache
 {
     public static class Cacher
     {
-        public static async UniTask<string> GetTextAsync(this string fileName) 
-        {
-            DirtyHackWithPlayerPrefs();
-
-            return IsCached(fileName) ?
-                TextFromCache(fileName) :
-                TextToCache(await new AssetRequests().GetText(fileName), fileName);
-        }
-
         private static readonly AssetRequests _imageRequest = new();
         public static async UniTask<Texture2D> GetTextureAsync(this string fileName, string key) 
         {
@@ -75,12 +66,6 @@ namespace Shared.LocalCache
             return _images[key];
         }
 
-        private static string TextFromCache(this string fileName) 
-        {
-            var rawData = FromCache(fileName);
-            return Encoding.UTF8.GetString(rawData);
-        }
-
         private static byte[] FromCache(this string fileName) 
         {
             var file = ConvertPath(fileName);
@@ -97,13 +82,6 @@ namespace Shared.LocalCache
         {
             data.ArrayToCache(fileName);
             return TextureFromCache(fileName, key);
-        }
-
-        private static string TextToCache(this string data, string fileName) 
-        {
-            var rawData = Encoding.UTF8.GetBytes(data);
-            rawData.ArrayToCache(fileName);
-            return fileName.TextFromCache();
         }
 
         [Serializable]

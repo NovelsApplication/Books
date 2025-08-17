@@ -17,7 +17,7 @@ namespace Books.Story
 
             if (!string.IsNullOrEmpty(body)) 
             {
-                var locationName = $"{_ctx.RootFolderName}/Locations/{body.Replace(" ", "_")}.png";
+                var locationName = $"{_ctx.StoryPath}/Locations/{body.Replace(" ", "_")}.png";
                 _locationImage = await Cacher.GetTextureAsync(locationName, "location");
             }
 

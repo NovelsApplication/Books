@@ -9,7 +9,9 @@ namespace Books.Story
         [Logic(LogicIdx.Music, LogicIdx.Музыка)]
         private async UniTask<bool> RunMusic(string header, string attributes, string body)
         {
-            var audioClipName = $"{_ctx.RootFolderName}/Music/{body.Replace(" ", "_")}.aac";
+            return true;
+
+            var audioClipName = $"{_ctx.StoryPath}/Music/{body.Replace(" ", "_")}.mp3";
 
             Debug.Log($"{audioClipName} start {audioClipName}");
 

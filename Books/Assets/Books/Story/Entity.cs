@@ -1,8 +1,6 @@
 using Books.Story.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
-using Shared.LocalCache;
-using Shared.Requests;
 using System;
 using UniRx;
 using UnityEngine;
@@ -14,11 +12,13 @@ namespace Books.Story
         public struct Ctx
         {
             public Data Data;
-            public string RootFolderName;
-            public string StoryText;
+            public string StoryPath;
 
             public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+
+            public IObservable<(string story, string storyPath)> OnGetStory;
+            public ReactiveCommand<string> GetStory;
 
             public Action InitDone;
         }
@@ -35,16 +35,28 @@ namespace Books.Story
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
         }
 
-        private void Init(UnityEngine.Object bundle)
+        private async void Init(UnityEngine.Object bundle)
         {
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
+            var storyDone = false;
+            var storyPath = $"{_ctx.StoryPath}/Story.json";
+            var storyText = string.Empty;
+
+            _ctx.OnGetStory.Where(data => data.storyPath == storyPath).Subscribe(data =>
+            {
+                storyText = data.story;
+                storyDone = true;
+            }).AddTo(this);
+            _ctx.GetStory.Execute(storyPath);
+            while (!storyDone) await UniTask.Yield();
+
             _logic = new Logic(new Logic.Ctx
             {
                 Screen = _screen,
-                RootFolderName = _ctx.RootFolderName,
-                StoryText = _ctx.StoryText,
+                StoryPath = _ctx.StoryPath,
+                StoryText = storyText,
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();
