@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using static Books.Menu.Entity;
 
 namespace Books.Menu 
 {
@@ -64,15 +65,21 @@ namespace Books.Menu
         {
             _ctx = ctx;
 
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data => 
-            { 
-                Init(data.bundle, onClick); 
-            }).AddTo(this);
-            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            Init(onClick);
         }
 
-        private async void Init(UnityEngine.Object bundle, Action<StoryManifest> onClick)
+        private async void Init(Action<StoryManifest> onClick)
         {
+            var bundlesDone = false;
+            UnityEngine.Object bundle = null;
+            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
+            {
+                bundle = data.bundle;
+                bundlesDone = true;
+            }).AddTo(this);
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            while (!bundlesDone) await UniTask.Yield();
+
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
