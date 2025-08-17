@@ -34,12 +34,21 @@ namespace Books.Story
         {
             _ctx = ctx;
 
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data => Init(data.bundle)).AddTo(this);
-            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            Init();
         }
 
-        private void Init(UnityEngine.Object bundle)
+        private async void Init()
         {
+            var bundlesDone = false;
+            UnityEngine.Object bundle = null;
+            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
+            {
+                bundle = data.bundle;
+                bundlesDone = true;
+            }).AddTo(this);
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            while (!bundlesDone) await UniTask.Yield();
+
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
