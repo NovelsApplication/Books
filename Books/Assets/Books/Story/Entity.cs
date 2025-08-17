@@ -4,6 +4,7 @@ using Shared.Disposable;
 using Shared.LocalCache;
 using Shared.Requests;
 using System;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Story 
@@ -15,6 +16,11 @@ namespace Books.Story
             public Data Data;
             public string RootFolderName;
             public string StoryText;
+
+            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
+            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+
+            public Action InitDone;
         }
 
         private IScreen _screen;
@@ -24,12 +30,14 @@ namespace Books.Story
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
+
+            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data => Init(data.bundle)).AddTo(this);
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
         }
 
-        public async UniTask Init()
+        private void Init(UnityEngine.Object bundle)
         {
-            var asset = await Cacher.GetBundleAsync("main", _ctx.Data.ScreenName);
-            var go = GameObject.Instantiate(asset as GameObject);
+            var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
             _logic = new Logic(new Logic.Ctx
@@ -38,6 +46,8 @@ namespace Books.Story
                 RootFolderName = _ctx.RootFolderName,
                 StoryText = _ctx.StoryText,
             }).AddTo(this);
+
+            _ctx.InitDone.Invoke();
         }
 
         public async UniTask ShowStoryProcess(Action onDone) => await _logic.ShowStoryProcess(onDone);

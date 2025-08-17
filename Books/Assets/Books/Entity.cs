@@ -33,7 +33,7 @@ namespace Books
 
             var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
 
-            var onGetBundle = new ReactiveCommand<UnityEngine.Object>().AddTo(this);
+            var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
 
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
@@ -78,14 +78,14 @@ namespace Books
                 }
 
                 var done = false;
-                using (var storyScreen = await ShowStory(storyManifest.Value.StoryPath, () => { done = true; })) 
+                using (var storyScreen = await ShowStory(onGetBundle, getBundle, storyManifest.Value.StoryPath, () => { done = true; })) 
                 {
                     while (!done) await UniTask.Yield();
                 }
             }
         }
 
-        private async UniTask<Menu.Entity> ShowMainMenu(ReactiveCommand<UnityEngine.Object> onGetBundle, ReactiveCommand<(string assetPath, string assetName)> getBundle, Action<Menu.Entity.StoryManifest> onClick) 
+        private async UniTask<Menu.Entity> ShowMainMenu(ReactiveCommand<(UnityEngine.Object bundle, string assetName)> onGetBundle, ReactiveCommand<(string assetPath, string assetName)> getBundle, Action<Menu.Entity.StoryManifest> onClick) 
         {
             await _loading.Show();
 
@@ -102,7 +102,7 @@ namespace Books
 
                 InitDone = () => mainDone = true,
             }, onClick).AddTo(this);
-
+             
             while (!mainDone) await UniTask.Yield();
 
             await mainScreen.Show();
@@ -112,19 +112,27 @@ namespace Books
             return mainScreen;
         }
 
-        private async UniTask<Story.Entity> ShowStory(string storyPath, Action onDone) 
+        private async UniTask<Story.Entity> ShowStory(ReactiveCommand<(UnityEngine.Object bundle, string assetName)> onGetBundle, ReactiveCommand<(string assetPath, string assetName)> getBundle, string storyPath, Action onDone) 
         {
             await _loading.Show();
 
             var storyText = await Cacher.GetTextAsync($"{storyPath}/Story.json");
 
+            var storyDone = false;
             var storyScreen = new Story.Entity(new Story.Entity.Ctx
             {
                 Data = _ctx.Data.StoriesData,
+
                 RootFolderName = storyPath,
                 StoryText = storyText,
+
+                OnGetBundle = onGetBundle,
+                GetBundle = getBundle,
+
+                InitDone = () => storyDone = true,
             }).AddTo(this);
-            await storyScreen.Init();
+
+            while (!storyDone) await UniTask.Yield();
 
             storyScreen.ShowImmediate();
             storyScreen.ShowStoryProcess(onDone).Forget();
