@@ -4,21 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Shared.LocalCache 
 {
     public static class Cacher
     {
-        private static readonly AssetRequests _imageRequest = new();
         public static async UniTask<Texture2D> GetTextureAsync(this string fileName, string key) 
         {
             DirtyHackWithPlayerPrefs();
 
             return IsCached(fileName) ?
                 TextureFromCache(fileName, key) :
-                TextureRawToCache(await _imageRequest.GetTextureRaw(fileName), fileName, key);
+                TextureRawToCache(await new AssetRequests().GetTextureRaw(fileName), fileName, key);
         }
 
         public static async UniTask<AudioClip> GetAudioClipAsync(this string fileName)

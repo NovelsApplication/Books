@@ -51,6 +51,9 @@ namespace Books.Menu
             public IObservable<(string story, string storyPath)> OnGetStory;
             public ReactiveCommand<string> GetStory;
 
+            public IObservable<(Texture2D texture, string key)> OnGetTexture;
+            public ReactiveCommand<(string fileName, string key)> GetTexture;
+
             public Action InitDone;
         }
 
@@ -90,8 +93,20 @@ namespace Books.Menu
                 _ctx.GetStory.Execute(storyPath);
                 while (!storyDone) await UniTask.Yield();
 
-                var posterImage = await Cacher.GetTextureAsync($"{storyManifest.StoryPath}/Poster.png", "poster");
-                await _screen.AddBookAsync(storyText, posterImage, storyManifest, () => onClick.Invoke(storyManifest));
+                var textureDone = false;
+                var texturePath = $"{storyManifest.StoryPath}/Poster.png";
+                Texture2D texture = null;
+                var textureKey = "poster";
+
+                _ctx.OnGetTexture.Where(data => data.key == textureKey).Subscribe(data =>
+                {
+                    texture = data.texture;
+                    textureDone = true;
+                }).AddTo(this);
+                _ctx.GetTexture.Execute((texturePath, textureKey));
+                while (!textureDone) await UniTask.Yield();
+
+                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest));
             }
 
             _ctx.InitDone.Invoke();

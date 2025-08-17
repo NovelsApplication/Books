@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Shared.LocalCache;
+using Shared.Disposable;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Story
@@ -15,11 +16,17 @@ namespace Books.Story
 
             _locationImage = null;
 
-            if (!string.IsNullOrEmpty(body)) 
+            var locationDone = false;
+            var locationPath = $"{_ctx.StoryPath}/Locations/{body.Replace(" ", "_")}.png";
+            var locationKey = "location";
+
+            _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
             {
-                var locationName = $"{_ctx.StoryPath}/Locations/{body.Replace(" ", "_")}.png";
-                _locationImage = await Cacher.GetTextureAsync(locationName, "location");
-            }
+                _locationImage = data.texture;
+                locationDone = true;
+            }).AddTo(this);
+            _ctx.GetTexture.Execute((locationPath, locationKey));
+            while (!locationDone) await UniTask.Yield();
 
             await _ctx.Screen.ShowLocation(_locationImage);
 

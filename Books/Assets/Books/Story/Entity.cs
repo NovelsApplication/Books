@@ -20,6 +20,9 @@ namespace Books.Story
             public IObservable<(string story, string storyPath)> OnGetStory;
             public ReactiveCommand<string> GetStory;
 
+            public IObservable<(Texture2D texture, string key)> OnGetTexture;
+            public ReactiveCommand<(string fileName, string key)> GetTexture;
+
             public Action InitDone;
         }
 
@@ -57,6 +60,9 @@ namespace Books.Story
                 Screen = _screen,
                 StoryPath = _ctx.StoryPath,
                 StoryText = storyText,
+
+                OnGetTexture = _ctx.OnGetTexture,
+                GetTexture = _ctx.GetTexture,
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();

@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
-using Shared.LocalCache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Story
@@ -16,6 +16,9 @@ namespace Books.Story
             public View.IScreen Screen;
             public string StoryPath;
             public string StoryText;
+
+            public IObservable<(Texture2D texture, string key)> OnGetTexture;
+            public ReactiveCommand<(string fileName, string key)> GetTexture;
         }
 
         private readonly Ctx _ctx;
@@ -59,8 +62,17 @@ namespace Books.Story
                 _characterImage = null;
                 if (!string.IsNullOrEmpty(attributes)) 
                 {
-                    var characterName = $"{_ctx.StoryPath}/Characters/{attributes.Replace(" ", "_")}.png";
-                    _characterImage = await Cacher.GetTextureAsync(characterName, "char");
+                    var characterDone = false;
+                    var characterPath = $"{_ctx.StoryPath}/Characters/{attributes.Replace(" ", "_")}.png";
+                    var characterKey = "char";
+
+                    _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
+                    {
+                        _characterImage = data.texture;
+                        characterDone = true;
+                    }).AddTo(this);
+                    _ctx.GetTexture.Execute((characterPath, characterKey));
+                    while (!characterDone) await UniTask.Yield();
                 }
 
                 var buttons = story.currentChoices.Select(c => (c.text, c.index)).ToArray();
