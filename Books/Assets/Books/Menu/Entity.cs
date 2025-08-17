@@ -1,13 +1,11 @@
 using Books.Menu.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
-using Shared.LocalCache;
 using Shared.Requests;
 using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
-using static Books.Menu.Entity;
 
 namespace Books.Menu 
 {

@@ -20,6 +20,9 @@ namespace Shared.Cash
 
             public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
             public IObservable<(string fileName, string key)> GetTexture;
+
+            public ReactiveCommand<(AudioClip clip, string fileName)> OnGetMusic;
+            public IObservable<string> GetMusic;
         }
 
         private readonly Ctx _ctx;
@@ -61,6 +64,19 @@ namespace Shared.Cash
 
                 FromCash = fileName => FromCash(fileName),
                 ToCash = (data, fileName) => ArrayToCash(data, fileName),
+            }).AddTo(this);
+
+            new CashMusic(new CashMusic.Ctx
+            {
+                OnGetMusic = _ctx.OnGetMusic,
+                GetMusic = _ctx.GetMusic,
+
+                IsCashed = fileName => IsCashed(fileName),
+
+                FromCash = fileName => FromCash(fileName),
+                ToCash = (data, fileName) => ArrayToCash(data, fileName),
+
+                ConvertPath = fileName => ConvertPath(fileName),
             }).AddTo(this);
         }
 
