@@ -15,7 +15,6 @@ namespace Books
             public Data Data;
         }
 
-        private Loading.Entity _loading;
         private readonly Ctx _ctx;
 
         public Entity(Ctx ctx)
@@ -25,25 +24,23 @@ namespace Books
 
         public async UniTask AsyncProcess()
         {
-            var url = Application.absoluteURL;
-
-#if UNITY_EDITOR
-            url = _ctx.Data.TestURL;
-#endif
-
-            var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
-
             var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
+
+            var onGetStory = new ReactiveCommand<(string story, string storyPath)>().AddTo(this);
+            var getStory = new ReactiveCommand<string>().AddTo(this);
 
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
                 OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
+
+                OnGetStory = onGetStory,
+                GetStory = getStory,
             }).AddTo(this);
 
             var loadingDone = false;
-            _loading = new Loading.Entity(new Loading.Entity.Ctx
+            var loading = new Loading.Entity(new Loading.Entity.Ctx
             {
                 Data = _ctx.Data.LoadingData,
 
@@ -55,64 +52,83 @@ namespace Books
 
             while (!loadingDone) await UniTask.Yield();
 
-            _loading.ShowImmediate();
+            loading.ShowImmediate();
 
-            while (!IsDisposed) 
+            Menu.Entity.StoryManifest? storyManifest = null;
+
+            while (!IsDisposed) //gameloop
             {
-                Menu.Entity.StoryManifest? storyManifest = null;
+                UpdateStoryManifest();
 
-                if (storyPath != null) 
+                if (storyManifest == null) 
+                {
+                    await ProcessMainScreen();
+                }
+
+                await ProcessStoryScreen();
+            }
+
+            void UpdateStoryManifest()
+            {
+                storyManifest = null;
+
+                var url = Application.absoluteURL;
+
+#if UNITY_EDITOR
+                url = _ctx.Data.TestURL;
+#endif
+
+                var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
+
+                if (storyPath != null)
                 {
                     storyManifest = new Menu.Entity.StoryManifest
                     {
                         StoryPath = storyPath,
                     };
                 }
+            }
 
-                if (storyManifest == null) 
+            async UniTask ProcessMainScreen()
+            {
+                await loading.Show();
+
+                var mainDone = false;
+                var mainScreen = new Menu.Entity(new Menu.Entity.Ctx
                 {
-                    await _loading.Show();
+                    Data = _ctx.Data.MenuData,
+                    ManifestPath = "StoryManifest.json",
+                    IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+                    OnGetBundle = onGetBundle,
+                    GetBundle = getBundle,
+                    OnGetStory = onGetStory,
+                    GetStory = getStory,
+                    InitDone = () => mainDone = true,
+                }, story => { storyManifest = story; }).AddTo(this);
+                while (!mainDone) await UniTask.Yield();
 
-                    var mainDone = false;
-                    var mainScreen = new Menu.Entity(new Menu.Entity.Ctx
-                    {
-                        Data = _ctx.Data.MenuData,
+                mainScreen.ShowImmediate();
 
-                        ManifestPath = "StoryManifest.json",
-                        IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+                await loading.Hide();
 
-                        OnGetBundle = onGetBundle,
-                        GetBundle = getBundle,
+                while (!storyManifest.HasValue) await UniTask.Yield();
 
-                        InitDone = () => mainDone = true,
-                    }, story => { storyManifest = story; }).AddTo(this);
+                mainScreen.Dispose();
+            }
 
-                    while (!mainDone) await UniTask.Yield();
-
-                    await mainScreen.Show();
-
-                    await _loading.Hide();
-
-                    while (!storyManifest.HasValue) await UniTask.Yield();
-
-                    mainScreen.Dispose();
-                }
-
-                await _loading.Show();
-
-                var storyText = await Cacher.GetTextAsync($"{storyManifest.Value.StoryPath}/Story.json");
+            async UniTask ProcessStoryScreen()
+            {
+                await loading.Show();
 
                 var storyDone = false;
                 var storyScreen = new Story.Entity(new Story.Entity.Ctx
                 {
                     Data = _ctx.Data.StoriesData,
-
-                    RootFolderName = storyPath,
-                    StoryText = storyText,
-
+                    StoryPath = storyManifest.Value.StoryPath,
                     OnGetBundle = onGetBundle,
                     GetBundle = getBundle,
-
+                    OnGetStory = onGetStory,
+                    GetStory = getStory,
                     InitDone = () => storyDone = true,
                 }).AddTo(this);
 
@@ -122,7 +138,7 @@ namespace Books
                 storyScreen.ShowImmediate();
                 storyScreen.ShowStoryProcess(() => { storyClosed = true; }).Forget();
 
-                await _loading.Hide();
+                await loading.Hide();
 
                 while (!storyClosed) await UniTask.Yield();
 

@@ -14,7 +14,7 @@ namespace Books.Story
         public struct Ctx
         {
             public View.IScreen Screen;
-            public string RootFolderName;
+            public string StoryPath;
             public string StoryText;
         }
 
@@ -59,7 +59,7 @@ namespace Books.Story
                 _characterImage = null;
                 if (!string.IsNullOrEmpty(attributes)) 
                 {
-                    var characterName = $"{_ctx.RootFolderName}/Characters/{attributes.Replace(" ", "_")}.png";
+                    var characterName = $"{_ctx.StoryPath}/Characters/{attributes.Replace(" ", "_")}.png";
                     _characterImage = await Cacher.GetTextureAsync(characterName, "char");
                 }
 

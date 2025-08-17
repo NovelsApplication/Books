@@ -11,9 +11,9 @@ namespace Books.Menu.View
     public interface IScreen
     {
         public void SetTheme(bool isLightTheme);
-        public UniTask Show();
+        public void ShowImmediate();
         public void HideImmediate();
-        public UniTask AddBookAsync(Entity.StoryManifest storyManifest, Action onClick);
+        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick);
         public void Release();
     }
 
@@ -37,13 +37,11 @@ namespace Books.Menu.View
             foreach (var element in _darkElements) element.SetActive(!isLightTheme);
         }
 
-        public async UniTask Show()
+        public void ShowImmediate()
         {
             _canvasGroup.alpha = 0f;
             _canvasGroup.gameObject.SetActive(true);
-            await UniTask.Delay(50);
             _canvasGroup.gameObject.SetActive(false);
-            await UniTask.Delay(50);
             _canvasGroup.gameObject.SetActive(true);
             _canvasGroup.alpha = 1f;
 
@@ -59,12 +57,10 @@ namespace Books.Menu.View
             }
         }
 
-        public async UniTask AddBookAsync(Entity.StoryManifest storyManifest, Action onClick) 
+        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick) 
         {
-            var storyText = await Cacher.GetTextAsync($"{storyManifest.StoryPath}/Story.json");
             var story = new Ink.Runtime.Story(storyText);
 
-            var posterPath = string.Empty;
             var label = Entity.Labels.Next;
             var storyHeader = string.Empty;
             var description = string.Empty;
@@ -85,11 +81,8 @@ namespace Books.Menu.View
                         .Select(b => Enum.Parse<Entity.MainTags>(b))
                         .ToArray();
                 }
-                if (header.ToLower() == "постер") posterPath = $"{storyManifest.StoryPath}/{body}";
                 if (header.ToLower() == "аннотация") description = body;
             }
-
-            var posterImage = await Cacher.GetTextureAsync(posterPath, "poster");
 
             _mainScreenBook.gameObject.SetActive(false);
             var screenBooks = await UnityEngine.Object.InstantiateAsync<ScreenBook>(_mainScreenBook, _mainScreenBook.transform.parent);
@@ -100,10 +93,10 @@ namespace Books.Menu.View
                 screenBook.SetHeader(storyHeader);
                 screenBook.SetDescription(description);
                 screenBook.SetTags(tags);
-                screenBook.SetImage(posterImage);
+                screenBook.SetImage(poster);
                 screenBook.SetButton(() => 
                 {
-                    OpenPopUp(posterImage, storyHeader, description, onClick);
+                    OpenPopUp(poster, storyHeader, description, onClick);
                 });
                 _objects.Push(screenBook.gameObject);
             }
@@ -128,10 +121,10 @@ namespace Books.Menu.View
             { 
                 screenLittleBook.gameObject.SetActive(true);
                 screenLittleBook.SetLabels(label);
-                screenLittleBook.SetImage(posterImage);
+                screenLittleBook.SetImage(poster);
                 screenLittleBook.SetButton(() =>
                 {
-                    OpenPopUp(posterImage, storyHeader, description, onClick);
+                    OpenPopUp(poster, storyHeader, description, onClick);
                 });
                 _objects.Push(screenLittleBook.gameObject);
             }

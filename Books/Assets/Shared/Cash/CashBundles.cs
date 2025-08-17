@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Shared.Cash 
 {
-    internal class CashBundles : BaseDisposable
+    internal sealed class CashBundles : BaseDisposable
     {
         public struct Ctx
         {
@@ -16,10 +16,9 @@ namespace Shared.Cash
             public IObservable<(string assetPath, string assetName)> GetBundle;
 
             public Func<string, bool> IsCashed;
-            public Func<string, string> GetPath;
 
             public Func<string, byte[]> FromCash;
-            public Func<byte[], string, byte[]> ToCash;
+            public Action<byte[], string> ToCash;
         }
 
         private readonly Ctx _ctx;
