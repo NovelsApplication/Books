@@ -12,7 +12,7 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public ReactiveCommand<UnityEngine.Object> OnGetBundle;
+            public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
         }
 
@@ -35,31 +35,6 @@ namespace Shared.Cash
                 FromCash = fileName => FromCash(fileName),
                 ToCash = (data, fileName) => ArrayToCash(data, fileName),
             }).AddTo(this);
-        }
-
-        private byte[] ArrayToCash(byte[] data, string fileName)
-        {
-            var file = ConvertPath(fileName);
-            if (File.Exists(file))
-                File.Delete(file);
-            using (var fs = File.Create(file))
-            {
-                fs.Write(data, 0, data.Length);
-            }
-
-            return data;
-        }
-
-        private byte[] FromCash(string fileName)
-        {
-            var file = ConvertPath(fileName);
-
-            using (var fs = File.OpenRead(file))
-            {
-                var buffer = new byte[(int)fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                return buffer;
-            }
         }
 
         private bool IsCashed(string fileName)
@@ -92,6 +67,31 @@ namespace Shared.Cash
             }
 
             return $"{localFilesPath}/{localExtraPath.Last()}";
+        }
+
+        private byte[] FromCash(string fileName)
+        {
+            var file = ConvertPath(fileName);
+
+            using (var fs = File.OpenRead(file))
+            {
+                var buffer = new byte[(int)fs.Length];
+                fs.Read(buffer, 0, buffer.Length);
+                return buffer;
+            }
+        }
+
+        private byte[] ArrayToCash(byte[] data, string fileName)
+        {
+            var file = ConvertPath(fileName);
+            if (File.Exists(file))
+                File.Delete(file);
+            using (var fs = File.Create(file))
+            {
+                fs.Write(data, 0, data.Length);
+            }
+
+            return data;
         }
     }
 }

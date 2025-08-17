@@ -13,7 +13,7 @@ namespace Books.Loading
         {
             public Data Data;
 
-            public IObservable<UnityEngine.Object> OnGetBundle;
+            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
             public Action InitDone;
@@ -26,8 +26,8 @@ namespace Books.Loading
         {
             _ctx = ctx;
 
+            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data => Init(data.bundle)).AddTo(this);
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
-            _ctx.OnGetBundle.Subscribe(bundle => Init(bundle)).AddTo(this);
         }
 
         private void Init(UnityEngine.Object bundleObject) 
@@ -35,7 +35,7 @@ namespace Books.Loading
             var go = GameObject.Instantiate(bundleObject as GameObject);
             _screen = go.GetComponent<IScreen>();
 
-            Debug.Log($"screen: {_screen == null}");
+            Debug.Log($"screen: {bundleObject == null} : {_screen == null}");
 
             _ctx.InitDone.Invoke();
         }
@@ -49,7 +49,7 @@ namespace Books.Loading
         protected override void OnDispose()
         {
             base.OnDispose();
-            _screen.Release();
+            _screen?.Release();
         }
     }
 }

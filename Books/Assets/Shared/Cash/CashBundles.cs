@@ -12,7 +12,7 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public ReactiveCommand<UnityEngine.Object> OnGetBundle;
+            public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
 
             public Func<string, bool> IsCashed;
@@ -33,7 +33,7 @@ namespace Shared.Cash
             _ctx.GetBundle.Subscribe(async data => await GetBundleAsync(data.assetPath, data.assetName)).AddTo(this);
         }
 
-        public async UniTask GetBundleAsync(string assetPath, string assetName)
+        private async UniTask GetBundleAsync(string assetPath, string assetName)
         {
             if (!_bundles.TryGetValue(assetPath, out var bundle))
             {
@@ -50,7 +50,7 @@ namespace Shared.Cash
                 _bundles[assetPath] = bundle;
             }
 
-            _ctx.OnGetBundle.Execute(await bundle.LoadAssetAsync(assetName));
+            _ctx.OnGetBundle.Execute((await bundle.LoadAssetAsync(assetName), assetName));
         }
 
         private async UniTask<AssetBundle> BundleFromCache(string fileName)

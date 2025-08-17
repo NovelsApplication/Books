@@ -1,7 +1,6 @@
 using Books.Menu.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
-using Shared.LocalCache;
 using Shared.Requests;
 using System;
 using System.Collections.Generic;
@@ -45,7 +44,7 @@ namespace Books.Menu
             public string ManifestPath;
             public bool IsLightTheme;
 
-            public IObservable<UnityEngine.Object> OnGetBundle;
+            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
             public Action InitDone;
@@ -58,8 +57,8 @@ namespace Books.Menu
         {
             _ctx = ctx;
 
+            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data => Init(data.bundle, onClick)).AddTo(this);
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
-            _ctx.OnGetBundle.Subscribe(bundle => Init(bundle, onClick)).AddTo(this);
         }
 
         private async void Init(UnityEngine.Object bundle, Action<StoryManifest> onClick)
