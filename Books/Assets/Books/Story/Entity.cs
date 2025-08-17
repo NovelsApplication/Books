@@ -38,28 +38,18 @@ namespace Books.Story
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
         }
 
-        private async void Init(UnityEngine.Object bundle)
+        private void Init(UnityEngine.Object bundle)
         {
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
-
-            var storyDone = false;
-            var storyPath = $"{_ctx.StoryPath}/Story.json";
-            var storyText = string.Empty;
-
-            _ctx.OnGetStory.Where(data => data.storyPath == storyPath).Subscribe(data =>
-            {
-                storyText = data.story;
-                storyDone = true;
-            }).AddTo(this);
-            _ctx.GetStory.Execute(storyPath);
-            while (!storyDone) await UniTask.Yield();
 
             _logic = new Logic(new Logic.Ctx
             {
                 Screen = _screen,
                 StoryPath = _ctx.StoryPath,
-                StoryText = storyText,
+
+                OnGetStory = _ctx.OnGetStory,
+                GetStory = _ctx.GetStory,
 
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,

@@ -15,7 +15,9 @@ namespace Books.Story
         {
             public View.IScreen Screen;
             public string StoryPath;
-            public string StoryText;
+
+            public IObservable<(string story, string storyPath)> OnGetStory;
+            public ReactiveCommand<string> GetStory;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
@@ -37,7 +39,19 @@ namespace Books.Story
         {
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
 
-            var story = new Ink.Runtime.Story(_ctx.StoryText);
+            var storyDone = false;
+            var storyPath = $"{_ctx.StoryPath}/Story.json";
+            var storyText = string.Empty;
+
+            _ctx.OnGetStory.Where(data => data.storyPath == storyPath).Subscribe(data =>
+            {
+                storyText = data.story;
+                storyDone = true;
+            }).AddTo(this);
+            _ctx.GetStory.Execute(storyPath);
+            while (!storyDone) await UniTask.Yield();
+
+            var story = new Ink.Runtime.Story(storyText);
             story.Continue();
 
             _ctx.Screen.SetCloseAction(onDone);
