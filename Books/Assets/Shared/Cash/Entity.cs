@@ -29,8 +29,8 @@ namespace Shared.Cash
 
             new CashBundles(new CashBundles.Ctx
             {
-                OnGetBundle = ctx.OnGetBundle,
-                GetBundle = ctx.GetBundle,
+                OnGetBundle = _ctx.OnGetBundle,
+                GetBundle = _ctx.GetBundle,
 
                 IsCashed = fileName => IsCashed(fileName),
 
@@ -40,8 +40,8 @@ namespace Shared.Cash
 
             new CashTexts(new CashTexts.Ctx
             {
-                OnGetStory = ctx.OnGetStory,
-                GetStory = ctx.GetStory,
+                OnGetStory = _ctx.OnGetStory,
+                GetStory = _ctx.GetStory,
 
                 IsCashed = fileName => IsCashed(fileName),
 
