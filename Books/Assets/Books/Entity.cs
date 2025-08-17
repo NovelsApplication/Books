@@ -71,75 +71,63 @@ namespace Books
 
                 if (storyManifest == null) 
                 {
-                    using (var mainScreen = await ShowMainMenu(onGetBundle, getBundle, story => { storyManifest = story; }))
+                    await _loading.Show();
+
+                    var mainDone = false;
+                    var mainScreen = new Menu.Entity(new Menu.Entity.Ctx
                     {
-                        while (!storyManifest.HasValue) await UniTask.Yield();
-                    }
+                        Data = _ctx.Data.MenuData,
+
+                        ManifestPath = "StoryManifest.json",
+                        IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+
+                        OnGetBundle = onGetBundle,
+                        GetBundle = getBundle,
+
+                        InitDone = () => mainDone = true,
+                    }, story => { storyManifest = story; }).AddTo(this);
+
+                    while (!mainDone) await UniTask.Yield();
+
+                    await mainScreen.Show();
+
+                    await _loading.Hide();
+
+                    while (!storyManifest.HasValue) await UniTask.Yield();
+
+                    mainScreen.Dispose();
                 }
 
-                var done = false;
-                using (var storyScreen = await ShowStory(onGetBundle, getBundle, storyManifest.Value.StoryPath, () => { done = true; })) 
+                await _loading.Show();
+
+                var storyText = await Cacher.GetTextAsync($"{storyManifest.Value.StoryPath}/Story.json");
+
+                var storyDone = false;
+                var storyScreen = new Story.Entity(new Story.Entity.Ctx
                 {
-                    while (!done) await UniTask.Yield();
-                }
+                    Data = _ctx.Data.StoriesData,
+
+                    RootFolderName = storyPath,
+                    StoryText = storyText,
+
+                    OnGetBundle = onGetBundle,
+                    GetBundle = getBundle,
+
+                    InitDone = () => storyDone = true,
+                }).AddTo(this);
+
+                while (!storyDone) await UniTask.Yield();
+
+                var storyClosed = false;
+                storyScreen.ShowImmediate();
+                storyScreen.ShowStoryProcess(() => { storyClosed = true; }).Forget();
+
+                await _loading.Hide();
+
+                while (!storyClosed) await UniTask.Yield();
+
+                storyScreen.Dispose();
             }
-        }
-
-        private async UniTask<Menu.Entity> ShowMainMenu(ReactiveCommand<(UnityEngine.Object bundle, string assetName)> onGetBundle, ReactiveCommand<(string assetPath, string assetName)> getBundle, Action<Menu.Entity.StoryManifest> onClick) 
-        {
-            await _loading.Show();
-
-            var mainDone = false;
-            var mainScreen = new Menu.Entity(new Menu.Entity.Ctx 
-            {
-                Data = _ctx.Data.MenuData,
-
-                ManifestPath = "StoryManifest.json",
-                IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-
-                OnGetBundle = onGetBundle,
-                GetBundle = getBundle,
-
-                InitDone = () => mainDone = true,
-            }, onClick).AddTo(this);
-             
-            while (!mainDone) await UniTask.Yield();
-
-            await mainScreen.Show();
-
-            await _loading.Hide();
-
-            return mainScreen;
-        }
-
-        private async UniTask<Story.Entity> ShowStory(ReactiveCommand<(UnityEngine.Object bundle, string assetName)> onGetBundle, ReactiveCommand<(string assetPath, string assetName)> getBundle, string storyPath, Action onDone) 
-        {
-            await _loading.Show();
-
-            var storyText = await Cacher.GetTextAsync($"{storyPath}/Story.json");
-
-            var storyDone = false;
-            var storyScreen = new Story.Entity(new Story.Entity.Ctx
-            {
-                Data = _ctx.Data.StoriesData,
-
-                RootFolderName = storyPath,
-                StoryText = storyText,
-
-                OnGetBundle = onGetBundle,
-                GetBundle = getBundle,
-
-                InitDone = () => storyDone = true,
-            }).AddTo(this);
-
-            while (!storyDone) await UniTask.Yield();
-
-            storyScreen.ShowImmediate();
-            storyScreen.ShowStoryProcess(onDone).Forget();
-
-            await _loading.Hide();
-
-            return storyScreen;
         }
     }
 }

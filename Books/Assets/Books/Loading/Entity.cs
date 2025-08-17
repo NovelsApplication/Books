@@ -35,8 +35,6 @@ namespace Books.Loading
             var go = GameObject.Instantiate(bundleObject as GameObject);
             _screen = go.GetComponent<IScreen>();
 
-            Debug.Log($"screen: {bundleObject == null} : {_screen == null}");
-
             _ctx.InitDone.Invoke();
         }
 
