@@ -30,6 +30,9 @@ namespace Books
             var onGetStory = new ReactiveCommand<(string story, string storyPath)>().AddTo(this);
             var getStory = new ReactiveCommand<string>().AddTo(this);
 
+            var onGetTexture = new ReactiveCommand<(Texture2D texture, string key)>().AddTo(this);
+            var getTexture = new ReactiveCommand<(string fileName, string key)>().AddTo(this);
+
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
                 OnGetBundle = onGetBundle,
@@ -37,6 +40,9 @@ namespace Books
 
                 OnGetStory = onGetStory,
                 GetStory = getStory,
+
+                OnGetTexture = onGetTexture,
+                GetTexture = getTexture,
             }).AddTo(this);
 
             var loadingDone = false;
@@ -103,6 +109,8 @@ namespace Books
                     GetBundle = getBundle,
                     OnGetStory = onGetStory,
                     GetStory = getStory,
+                    OnGetTexture = onGetTexture,
+                    GetTexture = getTexture,
                     InitDone = () => mainDone = true,
                 }, story => { storyManifest = story; }).AddTo(this);
                 while (!mainDone) await UniTask.Yield();
@@ -129,6 +137,8 @@ namespace Books
                     GetBundle = getBundle,
                     OnGetStory = onGetStory,
                     GetStory = getStory,
+                    OnGetTexture = onGetTexture,
+                    GetTexture = getTexture,
                     InitDone = () => storyDone = true,
                 }).AddTo(this);
 

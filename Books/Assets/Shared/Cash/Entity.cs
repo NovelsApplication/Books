@@ -17,6 +17,9 @@ namespace Shared.Cash
 
             public ReactiveCommand<(string story, string storyPath)> OnGetStory;
             public IObservable<string> GetStory;
+
+            public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
+            public IObservable<(string fileName, string key)> GetTexture;
         }
 
         private readonly Ctx _ctx;
@@ -42,6 +45,17 @@ namespace Shared.Cash
             {
                 OnGetStory = _ctx.OnGetStory,
                 GetStory = _ctx.GetStory,
+
+                IsCashed = fileName => IsCashed(fileName),
+
+                FromCash = fileName => FromCash(fileName),
+                ToCash = (data, fileName) => ArrayToCash(data, fileName),
+            }).AddTo(this);
+
+            new CashTextures(new CashTextures.Ctx
+            {
+                OnGetTexture = _ctx.OnGetTexture,
+                GetTexture = _ctx.GetTexture,
 
                 IsCashed = fileName => IsCashed(fileName),
 

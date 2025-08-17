@@ -46,20 +46,6 @@ namespace Shared.Requests
             return request.downloadHandler.text;
         }
 
-        public async UniTask<Texture2D> GetTexture(string localPath)
-        {
-            var path = GetPath(localPath);
-            using var request = UnityWebRequestTexture.GetTexture(path);
-
-            SetHeaders(request);
-
-            await request.SendWebRequest();
-
-            var result = DownloadHandlerTexture.GetContent(request);
-
-            return result;
-        }
-
         public async UniTask<byte[]> GetTextureRaw(string localPath)
         {
             var path = GetPath(localPath);
