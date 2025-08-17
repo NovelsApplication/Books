@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Shared.Requests;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -10,15 +9,6 @@ namespace Shared.LocalCache
 {
     public static class Cacher
     {
-        public static async UniTask<Texture2D> GetTextureAsync(this string fileName, string key) 
-        {
-            DirtyHackWithPlayerPrefs();
-
-            return IsCached(fileName) ?
-                TextureFromCache(fileName, key) :
-                TextureRawToCache(await new AssetRequests().GetTextureRaw(fileName), fileName, key);
-        }
-
         public static async UniTask<AudioClip> GetAudioClipAsync(this string fileName)
         {
             DirtyHackWithPlayerPrefs();
@@ -49,37 +39,6 @@ namespace Shared.LocalCache
 
                 return audioClip;
             }
-        }
-
-        private static readonly Dictionary<string, Texture2D> _images = new ();
-
-        private static Texture2D TextureFromCache(this string fileName, string key) 
-        {
-            var rawData = FromCache(fileName);
-
-            if (!_images.ContainsKey(key))
-                _images[key] = new(0, 0);
-
-            ImageConversion.LoadImage(_images[key], rawData);
-            return _images[key];
-        }
-
-        private static byte[] FromCache(this string fileName) 
-        {
-            var file = ConvertPath(fileName);
-
-            using (var fs = File.OpenRead(file)) 
-            {
-                var buffer = new byte[(int)fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                return buffer;
-            }
-        }
-
-        private static Texture2D TextureRawToCache(this byte[] data, string fileName, string key)
-        {
-            data.ArrayToCache(fileName);
-            return TextureFromCache(fileName, key);
         }
 
         [Serializable]
@@ -115,19 +74,6 @@ namespace Shared.LocalCache
             }
 
             return fileName.AudioClipFromCache();
-        }
-
-        private static byte[] ArrayToCache(this byte[] data, string fileName) 
-        {
-            var file = ConvertPath(fileName);
-            if (File.Exists(file))
-                File.Delete(file);
-            using (var fs = File.Create(file))
-            {
-                fs.Write(data, 0, data.Length);
-            }
-
-            return data;
         }
 
         private static void DirtyHackWithPlayerPrefs() 
