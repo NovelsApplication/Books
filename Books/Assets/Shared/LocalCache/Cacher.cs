@@ -11,28 +11,6 @@ namespace Shared.LocalCache
 {
     public static class Cacher
     {
-        private static readonly Dictionary<string, AssetBundle> _bundles = new();
-        public static async UniTask<UnityEngine.Object> GetBundleAsync(string assetPath, string assetName)
-        {
-            if (!_bundles.TryGetValue(assetPath, out var bundle))
-            {
-                DirtyHackWithPlayerPrefs();
-                if (IsCached(assetPath)) 
-                {
-                    bundle = await BundleFromCache(assetPath);
-                }
-                else
-                {
-                    var bundleData = await new AssetRequests().GetBundle(assetPath);
-                    bundle = await BundleToCache(bundleData, assetPath);
-                }
-
-                _bundles[assetPath] = bundle;
-            }
-
-            return await bundle.LoadAssetAsync(assetName);
-        }
-
         public static async UniTask<string> GetTextAsync(this string fileName) 
         {
             DirtyHackWithPlayerPrefs();
@@ -46,12 +24,6 @@ namespace Shared.LocalCache
         public static async UniTask<Texture2D> GetTextureAsync(this string fileName, string key) 
         {
             DirtyHackWithPlayerPrefs();
-
-            /*
-            return IsCached(fileName) ?
-                TextureFromCache(fileName, key) :
-                TextureToCache(await _imageRequest.GetTexture(fileName), fileName);
-            */
 
             return IsCached(fileName) ?
                 TextureFromCache(fileName, key) :
@@ -74,12 +46,6 @@ namespace Shared.LocalCache
 #endif
             var file = ConvertPath(fileName);
             return File.Exists(file);
-        }
-
-        private static async UniTask<AssetBundle> BundleFromCache(this string fileName)
-        {
-            var rawData = FromCache(fileName);
-            return await AssetBundle.LoadFromMemoryAsync(rawData);
         }
 
         private static AudioClip AudioClipFromCache(this string fileName)
@@ -127,13 +93,6 @@ namespace Shared.LocalCache
             }
         }
 
-        private static Texture2D TextureToCache(this Texture2D data, string fileName) 
-        {
-            var rawData = data.EncodeToPNG();
-            rawData.ArrayToCache(fileName);
-            return data;
-        }
-
         private static Texture2D TextureRawToCache(this byte[] data, string fileName, string key)
         {
             data.ArrayToCache(fileName);
@@ -145,12 +104,6 @@ namespace Shared.LocalCache
             var rawData = Encoding.UTF8.GetBytes(data);
             rawData.ArrayToCache(fileName);
             return fileName.TextFromCache();
-        }
-
-        private static async UniTask<AssetBundle> BundleToCache(this byte[] data, string fileName)
-        {
-            data.ArrayToCache(fileName);
-            return await fileName.BundleFromCache();
         }
 
         [Serializable]
