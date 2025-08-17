@@ -32,6 +32,9 @@ namespace Books
             var onGetTexture = new ReactiveCommand<(Texture2D texture, string key)>().AddTo(this);
             var getTexture = new ReactiveCommand<(string fileName, string key)>().AddTo(this);
 
+            var onGetMusic = new ReactiveCommand<(AudioClip clip, string fileName)>().AddTo(this);
+            var getMusic = new ReactiveCommand<string>().AddTo(this);
+
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
                 OnGetBundle = onGetBundle,
@@ -42,6 +45,9 @@ namespace Books
 
                 OnGetTexture = onGetTexture,
                 GetTexture = getTexture,
+
+                OnGetMusic = onGetMusic,
+                GetMusic = getMusic,
             }).AddTo(this);
 
             var loadingDone = false;
@@ -138,6 +144,8 @@ namespace Books
                     GetStory = getStory,
                     OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
+                    OnGetMusic = onGetMusic,
+                    GetMusic = getMusic,
                     InitDone = () => storyDone = true,
                 }).AddTo(this);
 

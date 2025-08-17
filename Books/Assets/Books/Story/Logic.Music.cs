@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Shared.LocalCache;
+using Shared.Disposable;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Story
@@ -9,20 +10,22 @@ namespace Books.Story
         [Logic(LogicIdx.Music, LogicIdx.Музыка)]
         private async UniTask<bool> RunMusic(string header, string attributes, string body)
         {
-            return true;
+            AudioClip audioClip = null;
+            var audioClipDone = false;
+            var audioClipPath = $"{_ctx.StoryPath}/Music/{body.Replace(" ", "_")}.mp3";
 
-            var audioClipName = $"{_ctx.StoryPath}/Music/{body.Replace(" ", "_")}.mp3";
-
-            Debug.Log($"{audioClipName} start {audioClipName}");
-
-            var audioClip = await Cacher.GetAudioClipAsync(audioClipName);
+            _ctx.OnGetMusic.Where(data => data.fileName == audioClipPath).Subscribe(data =>
+            {
+                audioClip = data.clip;
+                audioClipDone = true;
+            }).AddTo(this);
+            _ctx.GetMusic.Execute(audioClipPath);
+            while (!audioClipDone) await UniTask.Yield();
 
             var musicGO = new GameObject("MusicOwner");
             var music = musicGO.AddComponent<AudioSource>();
             music.clip = audioClip;
             music.Play();
-
-            Debug.Log($"{audioClipName} play {music.clip.name} {music.clip.length}");
 
             return true;
         }

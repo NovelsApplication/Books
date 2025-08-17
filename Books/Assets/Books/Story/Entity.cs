@@ -23,6 +23,9 @@ namespace Books.Story
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
 
+            public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
+            public ReactiveCommand<string> GetMusic;
+
             public Action InitDone;
         }
 
@@ -62,6 +65,9 @@ namespace Books.Story
 
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
+
+                OnGetMusic = _ctx.OnGetMusic,
+                GetMusic = _ctx.GetMusic,
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();

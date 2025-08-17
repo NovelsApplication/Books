@@ -21,6 +21,9 @@ namespace Books.Story
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
+
+            public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
+            public ReactiveCommand<string> GetMusic;
         }
 
         private readonly Ctx _ctx;
