@@ -24,6 +24,8 @@ namespace Books.Story
 
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
+
+            public Func<string, (string header, string attributes, string body)?> ProcessLine;
         }
 
         private readonly Ctx _ctx;
@@ -68,19 +70,19 @@ namespace Books.Story
                 if (!story.canContinue)
                     break;
 
-                if (!story.Continue().TryProcessLine(out var header, out var attributes, out var body))
-                    continue;
+                var lineData = _ctx.ProcessLine.Invoke(story.Continue());
+                if (!lineData.HasValue) continue;
 
-                if (Enum.TryParse<LogicIdx>(header, true, out var logicId)
+                if (Enum.TryParse<LogicIdx>(lineData.Value.header, true, out var logicId)
                     && logics.TryGetValue(logicId, out var func)
-                    && await func.Invoke(header, attributes, body))
+                    && await func.Invoke(lineData.Value.header, lineData.Value.attributes, lineData.Value.body))
                     continue;
 
                 _characterImage = null;
-                if (!string.IsNullOrEmpty(attributes)) 
+                if (!string.IsNullOrEmpty(lineData.Value.attributes)) 
                 {
                     var characterDone = false;
-                    var characterPath = $"{_ctx.StoryPath}/Characters/{attributes.Replace(" ", "_")}.png";
+                    var characterPath = $"{_ctx.StoryPath}/Characters/{lineData.Value.attributes.Replace(" ", "_")}.png";
                     var characterKey = "char";
 
                     _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
@@ -98,7 +100,7 @@ namespace Books.Story
                 {
                     if (index >= 0) story.ChooseChoiceIndex(index);
                     clicked = true;
-                }, _mainCharacter, header, body, _characterImage, buttons);
+                }, _mainCharacter, lineData.Value.header, lineData.Value.body, _characterImage, buttons);
 
                 while (!clicked && !IsDisposed)
                     await UniTask.Yield();
