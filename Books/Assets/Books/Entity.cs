@@ -69,28 +69,13 @@ namespace Books
 
             while (!IsDisposed) //gameloop
             {
-                UpdateStoryManifest();
-
-                if (storyManifest == null) 
-                {
-                    await ProcessMainScreen();
-                }
-
-                await ProcessStoryScreen();
-            }
-
-            void UpdateStoryManifest()
-            {
                 storyManifest = null;
-
                 var url = Application.absoluteURL;
-
 #if UNITY_EDITOR
                 url = _ctx.Data.TestURL;
 #endif
 
                 var storyPath = url.Contains("?") ? url.Split("?").Last() : null;
-
                 if (storyPath != null)
                 {
                     storyManifest = new Menu.Entity.StoryManifest
@@ -98,39 +83,37 @@ namespace Books
                         StoryPath = storyPath,
                     };
                 }
-            }
 
-            async UniTask ProcessMainScreen()
-            {
-                await loading.Show();
-
-                var mainDone = false;
-                var mainScreen = new Menu.Entity(new Menu.Entity.Ctx
+                if (storyManifest == null) 
                 {
-                    Data = _ctx.Data.MenuData,
-                    ManifestPath = "StoryManifest.json",
-                    IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-                    OnGetBundle = onGetBundle,
-                    GetBundle = getBundle,
-                    OnGetStory = onGetStory,
-                    GetStory = getStory,
-                    OnGetTexture = onGetTexture,
-                    GetTexture = getTexture,
-                    InitDone = () => mainDone = true,
-                }, story => { storyManifest = story; }).AddTo(this);
-                while (!mainDone) await UniTask.Yield();
+                    await loading.Show();
 
-                mainScreen.ShowImmediate();
+                    var mainDone = false;
+                    var mainScreen = new Menu.Entity(new Menu.Entity.Ctx
+                    {
+                        Data = _ctx.Data.MenuData,
+                        ManifestPath = "StoryManifest.json",
+                        IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+                        OnGetBundle = onGetBundle,
+                        GetBundle = getBundle,
+                        OnGetStory = onGetStory,
+                        GetStory = getStory,
+                        OnGetTexture = onGetTexture,
+                        GetTexture = getTexture,
+                        InitDone = () => mainDone = true,
+                        ProcessLine = ProcessLine,
+                    }, story => { storyManifest = story; }).AddTo(this);
+                    while (!mainDone) await UniTask.Yield();
 
-                await loading.Hide();
+                    mainScreen.ShowImmediate();
 
-                while (!storyManifest.HasValue) await UniTask.Yield();
+                    await loading.Hide();
 
-                mainScreen.Dispose();
-            }
+                    while (!storyManifest.HasValue) await UniTask.Yield();
 
-            async UniTask ProcessStoryScreen()
-            {
+                    mainScreen.Dispose();
+                }
+
                 await loading.Show();
 
                 var storyDone = false;
@@ -147,8 +130,8 @@ namespace Books
                     OnGetMusic = onGetMusic,
                     GetMusic = getMusic,
                     InitDone = () => storyDone = true,
+                    ProcessLine = ProcessLine,
                 }).AddTo(this);
-
                 while (!storyDone) await UniTask.Yield();
 
                 var storyClosed = false;
@@ -161,6 +144,26 @@ namespace Books
 
                 storyScreen.Dispose();
             }
+        }
+
+        public (string header, string attributes, string body)? ProcessLine(string line)
+        {
+            line = line.Trim();
+
+            if (string.IsNullOrEmpty(line)) return null;
+
+            var rawTexts = line.Split(":");
+            var header = rawTexts.Length > 1 ?
+                rawTexts[0].Split("(").FirstOrDefault().Trim() :
+                string.Empty;
+            var attributes = rawTexts[0].Contains("(") ?
+                rawTexts[0].Split("(").LastOrDefault().Split(")").FirstOrDefault().Trim() :
+                string.Empty;
+            var body = rawTexts.Length > 1 ?
+                rawTexts[1].Trim() :
+                line;
+
+            return (header, attributes, body);
         }
     }
 }
