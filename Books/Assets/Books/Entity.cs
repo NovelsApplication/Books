@@ -92,7 +92,7 @@ namespace Books
                     var mainScreen = new Menu.Entity(new Menu.Entity.Ctx
                     {
                         Data = _ctx.Data.MenuData,
-                        ManifestPath = "StoryManifest.json",
+                        ManifestPath = "Configs/StoryManifest.json",
                         IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
                         OnGetBundle = onGetBundle,
                         GetBundle = getBundle,
