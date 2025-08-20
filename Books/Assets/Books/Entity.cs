@@ -35,7 +35,10 @@ namespace Books
             var onGetMusic = new ReactiveCommand<(AudioClip clip, string fileName)>().AddTo(this);
             var getMusic = new ReactiveCommand<string>().AddTo(this);
 
-            var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
+            var onGetData = new ReactiveCommand<(Menu.Entity.StoryManifest? data, string dataName)>().AddTo(this);
+            var getData = new ReactiveCommand<string>().AddTo(this);
+
+            var cash = new Shared.Cash.Entity<Menu.Entity.StoryManifest?>(new Shared.Cash.Entity<Menu.Entity.StoryManifest?>.Ctx 
             {
                 OnGetBundle = onGetBundle,
                 GetBundle = getBundle,

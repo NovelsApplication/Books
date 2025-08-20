@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Shared.Cash
 {
-    public sealed class Entity : BaseDisposable
+    public sealed class Entity<T> : BaseDisposable
     {
         public struct Ctx
         {
@@ -40,6 +40,9 @@ namespace Shared.Cash
             var onGetTextRequest = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
             var getTextRequest = new ReactiveCommand<string>().AddTo(this);
 
+            var onGetAudioRequest = new ReactiveCommand<(AudioClip clip, string audioPath)>().AddTo(this);
+            var getAudioRequest = new ReactiveCommand<string>().AddTo(this);
+
             new Requests.Entity(new Requests.Entity.Ctx
             {
                 OnGetBundle = onGetBundleRequest,
@@ -50,6 +53,9 @@ namespace Shared.Cash
 
                 OnGetText = onGetTextRequest,
                 GetText = getTextRequest,
+
+                OnGetAudio = onGetAudioRequest,
+                GetAudio = getAudioRequest,
             }).AddTo(this);
 
             PlayerPrefs.SetString("Cash", DateTime.UtcNow.ToString());
@@ -98,6 +104,9 @@ namespace Shared.Cash
 
             new CashMusic(new CashMusic.Ctx
             {
+                OnGetMusicRequest = onGetAudioRequest,
+                GetMusicRequest = getAudioRequest,
+
                 OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
 

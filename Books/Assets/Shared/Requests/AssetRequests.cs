@@ -20,6 +20,9 @@ namespace Shared.Requests
 
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
+
+            public ReactiveCommand<(AudioClip clip, string clipPath)> OnGetAudio;
+            public IObservable<string> GetAudio;
         }
 
         private readonly Ctx _ctx;
@@ -51,11 +54,28 @@ namespace Shared.Requests
 
                 GetRequest = GetRequest,
             }).AddTo(this);
+
+            new AudioRequest(new AudioRequest.Ctx
+            { 
+                OnGetAudio = _ctx.OnGetAudio,
+                GetAudio = _ctx.GetAudio,
+
+                GetRequest = GetRequestMultimedia,
+            }).AddTo(this);
         }
 
         private UnityWebRequest GetRequest(string path)
         {
             var request = UnityWebRequest.Get(GetPath(path));
+
+            SetHeaders(request);
+
+            return request;
+        }
+
+        private UnityWebRequest GetRequestMultimedia(string path)
+        {
+            var request = UnityWebRequestMultimedia.GetAudioClip(GetPath(path), AudioType.MPEG);
 
             SetHeaders(request);
 
@@ -168,6 +188,41 @@ namespace Shared.Requests
         }
     }
 
+    public class AudioRequest : BaseDisposable
+    {
+        public struct Ctx
+        {
+            public ReactiveCommand<(AudioClip audio, string audioPath)> OnGetAudio;
+            public IObservable<string> GetAudio;
+
+            public Func<string, UnityWebRequest> GetRequest;
+        }
+
+        private readonly Ctx _ctx;
+
+        public AudioRequest(Ctx ctx)
+        {
+            _ctx = ctx;
+
+            _ctx.GetAudio.Subscribe(path => GetAudio(path)).AddTo(this);
+        }
+
+        private async void GetAudio(string localPath)
+        {
+            using var request = _ctx.GetRequest.Invoke(localPath);
+            var dh = (DownloadHandlerAudioClip)request.downloadHandler;
+            dh.compressed = false;
+            dh.streamAudio = false;
+            request.downloadHandler = dh;
+            await request.SendWebRequest();
+
+            dh.audioClip.LoadAudioData();
+            while (dh.audioClip.loadState != AudioDataLoadState.Loaded) await UniTask.Yield();
+
+            _ctx.OnGetAudio.Execute((dh.audioClip, localPath));
+        }
+    }
+
     public class AssetRequests
     {
         public async UniTask<T> GetData<T>(string localPath)
@@ -180,26 +235,6 @@ namespace Shared.Requests
             await request.SendWebRequest();
 
             return JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
-        }
-
-        public async UniTask<AudioClip> GetAudio(string localPath, AudioType audioType = AudioType.MPEG)
-        {
-            var path = GetPath(localPath);
-            using var request = UnityWebRequestMultimedia.GetAudioClip(path, audioType);
-
-            var dh = (DownloadHandlerAudioClip)request.downloadHandler;
-            dh.compressed = false;
-            dh.streamAudio = false;
-            request.downloadHandler = dh;
-
-            SetHeaders(request);
-
-            await request.SendWebRequest();
-
-            dh.audioClip.LoadAudioData();
-            while (dh.audioClip.loadState != AudioDataLoadState.Loaded) await UniTask.Yield();
-
-            return dh.audioClip;
         }
 
         private string GetPath(string localPath)
