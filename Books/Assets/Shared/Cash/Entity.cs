@@ -8,15 +8,15 @@ using UnityEngine;
 
 namespace Shared.Cash
 {
-    public sealed class Entity<T> : BaseDisposable
+    public sealed class Entity : BaseDisposable
     {
         public struct Ctx
         {
             public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
 
-            public ReactiveCommand<(string story, string storyPath)> OnGetStory;
-            public IObservable<string> GetStory;
+            public ReactiveCommand<(string text, string textPath)> OnGetText;
+            public IObservable<string> GetText;
 
             public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
             public IObservable<(string fileName, string key)> GetTexture;
@@ -79,8 +79,8 @@ namespace Shared.Cash
                 OnGetTextRequest = onGetTextRequest,
                 GetTextRequest = getTextRequest,
 
-                OnGetStory = _ctx.OnGetStory,
-                GetStory = _ctx.GetStory,
+                OnGetText = _ctx.OnGetText,
+                GetText = _ctx.GetText,
 
                 IsCashed = fileName => IsCashed(fileName),
 

@@ -26,8 +26,8 @@ namespace Books
             var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
 
-            var onGetStory = new ReactiveCommand<(string story, string storyPath)>().AddTo(this);
-            var getStory = new ReactiveCommand<string>().AddTo(this);
+            var onGetText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
+            var getText = new ReactiveCommand<string>().AddTo(this);
 
             var onGetTexture = new ReactiveCommand<(Texture2D texture, string key)>().AddTo(this);
             var getTexture = new ReactiveCommand<(string fileName, string key)>().AddTo(this);
@@ -35,16 +35,13 @@ namespace Books
             var onGetMusic = new ReactiveCommand<(AudioClip clip, string fileName)>().AddTo(this);
             var getMusic = new ReactiveCommand<string>().AddTo(this);
 
-            var onGetData = new ReactiveCommand<(Menu.Entity.StoryManifest? data, string dataName)>().AddTo(this);
-            var getData = new ReactiveCommand<string>().AddTo(this);
-
-            var cash = new Shared.Cash.Entity<Menu.Entity.StoryManifest?>(new Shared.Cash.Entity<Menu.Entity.StoryManifest?>.Ctx 
+            var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
                 OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
 
-                OnGetStory = onGetStory,
-                GetStory = getStory,
+                OnGetText = onGetText,
+                GetText = getText,
 
                 OnGetTexture = onGetTexture,
                 GetTexture = getTexture,
@@ -99,8 +96,8 @@ namespace Books
                         IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
                         OnGetBundle = onGetBundle,
                         GetBundle = getBundle,
-                        OnGetStory = onGetStory,
-                        GetStory = getStory,
+                        OnGetText = onGetText,
+                        GetText = getText,
                         OnGetTexture = onGetTexture,
                         GetTexture = getTexture,
                         InitDone = () => mainDone = true,
@@ -126,8 +123,8 @@ namespace Books
                     StoryPath = storyManifest.Value.StoryPath,
                     OnGetBundle = onGetBundle,
                     GetBundle = getBundle,
-                    OnGetStory = onGetStory,
-                    GetStory = getStory,
+                    OnGetText = onGetText,
+                    GetText = getText,
                     OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
                     OnGetMusic = onGetMusic,

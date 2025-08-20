@@ -17,8 +17,8 @@ namespace Books.Story
             public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
-            public IObservable<(string story, string storyPath)> OnGetStory;
-            public ReactiveCommand<string> GetStory;
+            public IObservable<(string text, string textPath)> OnGetText;
+            public ReactiveCommand<string> GetText;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
@@ -62,8 +62,8 @@ namespace Books.Story
                 Screen = _screen,
                 StoryPath = _ctx.StoryPath,
 
-                OnGetStory = _ctx.OnGetStory,
-                GetStory = _ctx.GetStory,
+                OnGetText = _ctx.OnGetText,
+                GetText = _ctx.GetText,
 
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
