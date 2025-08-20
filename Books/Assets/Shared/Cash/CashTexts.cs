@@ -14,8 +14,8 @@ namespace Shared.Cash
             public IObservable<(string text, string textPath)> OnGetTextRequest;
             public ReactiveCommand<string> GetTextRequest;
 
-            public ReactiveCommand<(string story, string storyPath)> OnGetStory;
-            public IObservable<string> GetStory;
+            public ReactiveCommand<(string text, string textPath)> OnGetText;
+            public IObservable<string> GetText;
 
             public Func<string, bool> IsCashed;
 
@@ -29,14 +29,14 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            _ctx.GetStory.Subscribe(async fileName => await GetTextAsync(fileName)).AddTo(this);
+            _ctx.GetText.Subscribe(async fileName => await GetTextAsync(fileName)).AddTo(this);
         }
 
         private async UniTask GetTextAsync(string fileName)
         {
             if (_ctx.IsCashed.Invoke(fileName))
             { 
-                _ctx.OnGetStory.Execute((TextFromCache(fileName), fileName)); 
+                _ctx.OnGetText.Execute((TextFromCache(fileName), fileName)); 
             }
             else
             {
@@ -51,7 +51,7 @@ namespace Shared.Cash
                 while (!textRequestDone) await UniTask.Yield();
                 disposable.Dispose();
 
-                _ctx.OnGetStory.Execute((TextToCache(text, fileName), fileName)); 
+                _ctx.OnGetText.Execute((TextToCache(text, fileName), fileName)); 
             }
         }
 

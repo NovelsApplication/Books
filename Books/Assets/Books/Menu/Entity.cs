@@ -47,8 +47,8 @@ namespace Books.Menu
             public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
-            public IObservable<(string story, string storyPath)> OnGetStory;
-            public ReactiveCommand<string> GetStory;
+            public IObservable<(string text, string textPath)> OnGetText;
+            public ReactiveCommand<string> GetText;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
@@ -92,12 +92,12 @@ namespace Books.Menu
                 var storyPath = $"{storyManifest.StoryPath}/Story.json";
                 var storyText = string.Empty;
 
-                _ctx.OnGetStory.Where(data => data.storyPath == storyPath).Subscribe(data => 
+                _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data => 
                 {
-                    storyText = data.story;
+                    storyText = data.text;
                     storyDone = true;
                 }).AddTo(this);
-                _ctx.GetStory.Execute(storyPath);
+                _ctx.GetText.Execute(storyPath);
                 while (!storyDone) await UniTask.Yield();
 
                 var textureDone = false;
