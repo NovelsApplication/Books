@@ -17,6 +17,9 @@ namespace Shared.Requests
 
             public ReactiveCommand<(byte[] data, string texturePath)> OnGetTextureRaw;
             public IObservable<string> GetTextureRaw;
+
+            public ReactiveCommand<(string text, string textPath)> OnGetText;
+            public IObservable<string> GetText;
         }
 
         private readonly Ctx _ctx;
@@ -37,6 +40,14 @@ namespace Shared.Requests
             {
                 OnGetTextureRaw = _ctx.OnGetTextureRaw,
                 GetTextureRaw = _ctx.GetTextureRaw,
+
+                GetRequest = GetRequest,
+            }).AddTo(this);
+
+            new TextRequest(new TextRequest.Ctx 
+            {
+                OnGetText = _ctx.OnGetText,
+                GetText = _ctx.GetText,
 
                 GetRequest = GetRequest,
             }).AddTo(this);
@@ -129,6 +140,34 @@ namespace Shared.Requests
         }
     }
 
+    public class TextRequest : BaseDisposable
+    {
+        public struct Ctx
+        {
+            public ReactiveCommand<(string text, string textPath)> OnGetText;
+            public IObservable<string> GetText;
+
+            public Func<string, UnityWebRequest> GetRequest;
+        }
+
+        private readonly Ctx _ctx;
+
+        public TextRequest(Ctx ctx)
+        {
+            _ctx = ctx;
+
+            _ctx.GetText.Subscribe(path => GetText(path)).AddTo(this);
+        }
+
+        private async void GetText(string localPath)
+        {
+            using var request = _ctx.GetRequest.Invoke(localPath);
+            await request.SendWebRequest();
+
+            _ctx.OnGetText.Execute((request.downloadHandler.text, localPath));
+        }
+    }
+
     public class AssetRequests
     {
         public async UniTask<T> GetData<T>(string localPath)
@@ -141,18 +180,6 @@ namespace Shared.Requests
             await request.SendWebRequest();
 
             return JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
-        }
-
-        public async UniTask<string> GetText(string localPath)
-        {
-            var path = GetPath(localPath);
-            using var request = UnityWebRequest.Get(path);
-
-            SetHeaders(request);
-
-            await request.SendWebRequest();
-
-            return request.downloadHandler.text;
         }
 
         public async UniTask<AudioClip> GetAudio(string localPath, AudioType audioType = AudioType.MPEG)

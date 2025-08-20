@@ -37,6 +37,9 @@ namespace Shared.Cash
             var onGetTextureRawRequest = new ReactiveCommand<(byte[] data, string texturePath)>().AddTo(this);
             var getTextureRawRequest = new ReactiveCommand<string>().AddTo(this);
 
+            var onGetTextRequest = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
+            var getTextRequest = new ReactiveCommand<string>().AddTo(this);
+
             new Requests.Entity(new Requests.Entity.Ctx
             {
                 OnGetBundle = onGetBundleRequest,
@@ -44,6 +47,9 @@ namespace Shared.Cash
 
                 OnGetTextureRaw = onGetTextureRawRequest,
                 GetTextureRaw = getTextureRawRequest,
+
+                OnGetText = onGetTextRequest,
+                GetText = getTextRequest,
             }).AddTo(this);
 
             PlayerPrefs.SetString("Cash", DateTime.UtcNow.ToString());
@@ -64,6 +70,9 @@ namespace Shared.Cash
 
             new CashTexts(new CashTexts.Ctx
             {
+                OnGetTextRequest = onGetTextRequest,
+                GetTextRequest = getTextRequest,
+
                 OnGetStory = _ctx.OnGetStory,
                 GetStory = _ctx.GetStory,
 
