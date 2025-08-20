@@ -53,6 +53,8 @@ namespace Books.Menu
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
 
+            public Func<string, (string header, string attributes, string body)?> ProcessLine;
+
             public Action InitDone;
         }
 
@@ -111,7 +113,7 @@ namespace Books.Menu
                 _ctx.GetTexture.Execute((texturePath, textureKey));
                 while (!textureDone) await UniTask.Yield();
 
-                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest));
+                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }
 
             _ctx.InitDone.Invoke();

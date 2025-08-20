@@ -27,6 +27,8 @@ namespace Books.Story
             public ReactiveCommand<string> GetMusic;
 
             public Action InitDone;
+
+            public Func<string, (string header, string attributes, string body)?> ProcessLine;
         }
 
         private IScreen _screen;
@@ -68,6 +70,8 @@ namespace Books.Story
 
                 OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
+
+                ProcessLine = _ctx.ProcessLine,
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();

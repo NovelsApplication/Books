@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Shared.Disposable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Books.Menu.View
         public void SetTheme(bool isLightTheme);
         public void ShowImmediate();
         public void HideImmediate();
-        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick);
+        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
         public void Release();
     }
 
@@ -56,7 +55,7 @@ namespace Books.Menu.View
             }
         }
 
-        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick) 
+        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine) 
         {
             var story = new Ink.Runtime.Story(storyText);
 
@@ -67,20 +66,20 @@ namespace Books.Menu.View
             var mainTags = new Entity.MainTags[0];
             while (story.canContinue) 
             {
-                if (!story.Continue().TryProcessLine(out var header, out var attributes, out var body))
-                    continue;
+                var lineData = processLine.Invoke(story.Continue());
+                if (!lineData.HasValue) continue;
 
-                if (header.ToLower() == "название") storyHeader = body;
-                if (header.ToLower() == "жанры") tags = body.Split(",", StringSplitOptions.RemoveEmptyEntries);
-                if (header.ToLower() == "бирка" && Enum.TryParse<Entity.Labels>(body, out var l)) label = l;
-                if (header.ToLower() == "раздел") 
+                if (lineData.Value.header.ToLower() == "название") storyHeader = lineData.Value.body;
+                if (lineData.Value.header.ToLower() == "жанры") tags = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                if (lineData.Value.header.ToLower() == "бирка" && Enum.TryParse<Entity.Labels>(lineData.Value.body, out var l)) label = l;
+                if (lineData.Value.header.ToLower() == "раздел") 
                 {
-                    mainTags = body.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                    mainTags = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries)
                         .Where(b => Enum.TryParse<Entity.MainTags>(b, out _))
                         .Select(b => Enum.Parse<Entity.MainTags>(b))
                         .ToArray();
                 }
-                if (header.ToLower() == "аннотация") description = body;
+                if (lineData.Value.header.ToLower() == "аннотация") description = lineData.Value.body;
             }
 
             _mainScreenBook.gameObject.SetActive(false);
