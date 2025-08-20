@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
-using Shared.Requests;
 using System;
 using System.Collections.Generic;
 using UniRx;
@@ -12,6 +11,9 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
+            public IObservable<(byte[] data, string assetPath)> OnGetBundleRequest;
+            public ReactiveCommand<string> GetBundleRequest;
+
             public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
 
@@ -42,7 +44,17 @@ namespace Shared.Cash
                 }
                 else
                 {
-                    var bundleData = await new AssetRequests().GetBundle(assetPath);
+                    var bundleRequestDone = false;
+                    byte[] bundleData = null;
+                    var disposable = _ctx.OnGetBundleRequest.Where(data => assetPath == data.assetPath).Subscribe(data => 
+                    {
+                        bundleData = data.data;
+                        bundleRequestDone = true;
+                    });
+                    _ctx.GetBundleRequest.Execute(assetPath);
+                    while (!bundleRequestDone) await UniTask.Yield();
+                    disposable.Dispose();
+
                     bundle = await BundleToCache(bundleData, assetPath);
                 }
 

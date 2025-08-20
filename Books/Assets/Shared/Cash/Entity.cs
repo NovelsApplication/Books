@@ -31,10 +31,28 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
+            var onGetBundleRequest = new ReactiveCommand<(byte[] data, string assetPath)>().AddTo(this);
+            var getBundleRequest = new ReactiveCommand<string>().AddTo(this);
+
+            var onGetTextureRawRequest = new ReactiveCommand<(byte[] data, string texturePath)>().AddTo(this);
+            var getTextureRawRequest = new ReactiveCommand<string>().AddTo(this);
+
+            new Requests.Entity(new Requests.Entity.Ctx
+            {
+                OnGetBundle = onGetBundleRequest,
+                GetBundle = getBundleRequest,
+
+                OnGetTextureRaw = onGetTextureRawRequest,
+                GetTextureRaw = getTextureRawRequest,
+            }).AddTo(this);
+
             PlayerPrefs.SetString("Cash", DateTime.UtcNow.ToString());
 
             new CashBundles(new CashBundles.Ctx
             {
+                OnGetBundleRequest = onGetBundleRequest,
+                GetBundleRequest = getBundleRequest,
+
                 OnGetBundle = _ctx.OnGetBundle,
                 GetBundle = _ctx.GetBundle,
 
@@ -57,6 +75,9 @@ namespace Shared.Cash
 
             new CashTextures(new CashTextures.Ctx
             {
+                OnGetTextureRawRequest = onGetTextureRawRequest,
+                GetTextureRawRequest = getTextureRawRequest,
+
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
 
