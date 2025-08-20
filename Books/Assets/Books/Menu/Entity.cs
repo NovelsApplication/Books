@@ -1,11 +1,12 @@
 using Books.Menu.View;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Shared.Disposable;
-using Shared.Requests;
 using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using static Books.Menu.Entity;
 
 namespace Books.Menu 
 {
@@ -85,7 +86,22 @@ namespace Books.Menu
 
             _screen.SetTheme(_ctx.IsLightTheme);
 
-            var manifests = await new AssetRequests().GetData<List<StoryManifest>>(_ctx.ManifestPath);
+            var manifests = new List<StoryManifest>();
+            var manifestsDone = false;
+            var manifestPath = _ctx.ManifestPath;
+            var manifestText = string.Empty;
+
+            var manifestProcess = _ctx.OnGetText.Where(data => data.textPath == manifestPath).Subscribe(data =>
+            {
+                manifestText = data.text;
+                manifestsDone = true;
+            });
+            _ctx.GetText.Execute(manifestPath);
+            while (!manifestsDone) await UniTask.Yield();
+            manifestProcess.Dispose();
+
+            manifests = JsonConvert.DeserializeObject<List<StoryManifest>>(manifestText);
+
             foreach (var storyManifest in manifests) 
             {
                 var storyDone = false;
