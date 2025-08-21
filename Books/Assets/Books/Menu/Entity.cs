@@ -119,7 +119,7 @@ namespace Books.Menu
                 var textureDone = false;
                 var texturePath = $"{storyManifest.StoryPath}/Poster.png";
                 Texture2D texture = null;
-                var textureKey = "poster";
+                var textureKey = texturePath;
 
                 _ctx.OnGetTexture.Where(data => data.key == textureKey).Subscribe(data =>
                 {
@@ -131,6 +131,8 @@ namespace Books.Menu
 
                 await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }
+            
+            _screen.OnAllBooksAdded();
 
             _ctx.InitDone.Invoke();
         }
