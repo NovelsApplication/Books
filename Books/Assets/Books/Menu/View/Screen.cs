@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Books.Menu.View 
 {
@@ -12,6 +14,7 @@ namespace Books.Menu.View
         public void ShowImmediate();
         public void HideImmediate();
         public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
+        public void OnAllBooksAdded();
         public void Release();
     }
 
@@ -19,6 +22,7 @@ namespace Books.Menu.View
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private ScreenBook _mainScreenBook;
+        [SerializeField] private SnapController _snapController;
         [SerializeField] private Dot _mainScreenDot;
         [SerializeField] private MainTag[] _mainTags;
         [SerializeField] private ScreenBook _mainScreenLittleBook;
@@ -83,30 +87,24 @@ namespace Books.Menu.View
             }
 
             _mainScreenBook.gameObject.SetActive(false);
-            var screenBooks = await UnityEngine.Object.InstantiateAsync<ScreenBook>(_mainScreenBook, _mainScreenBook.transform.parent);
-            foreach (var screenBook in screenBooks) 
-            { 
-                screenBook.gameObject.SetActive(true);
-                screenBook.SetLabels(label);
-                screenBook.SetHeader(storyHeader);
-                screenBook.SetDescription(description);
-                screenBook.SetTags(tags);
-                screenBook.SetImage(poster);
-                screenBook.SetButton(() => 
-                {
-                    OpenPopUp(poster, storyHeader, description, onClick);
-                });
-                _objects.Push(screenBook.gameObject);
-            }
+            var screenBook = UnityEngine.Object.Instantiate<ScreenBook>(_mainScreenBook, _mainScreenBook.transform.parent);
+            screenBook.gameObject.SetActive(true);
+            screenBook.SetLabels(label);
+            screenBook.SetHeader(storyHeader);
+            screenBook.SetDescription(description);
+            screenBook.SetTags(tags);
+            screenBook.SetImage(poster);
+            screenBook.SetButton(() => 
+            {
+                OpenPopUp(poster, storyHeader, description, onClick);
+            });
+            _objects.Push(screenBook.gameObject);
 
             _mainScreenDot.gameObject.SetActive(false);
-            var dots = await UnityEngine.Object.InstantiateAsync<Dot>(_mainScreenDot, _mainScreenDot.transform.parent);
-            foreach (var dot in dots)
-            {
-                dot.gameObject.SetActive(true);
-                dot.SetSelected(false);
-                _objects.Push(dot.gameObject);
-            }
+            var dot = UnityEngine.Object.Instantiate<Dot>(_mainScreenDot, _mainScreenDot.transform.parent);
+            dot.gameObject.SetActive(true);
+            dot.SetSelected(false);
+            _objects.Push(dot.gameObject);
 
             foreach (var mainTag in _mainTags) 
             {
@@ -114,18 +112,37 @@ namespace Books.Menu.View
             }
 
             _mainScreenLittleBook.gameObject.SetActive(false);
-            var screenLittleBooks = await UnityEngine.Object.InstantiateAsync<ScreenBook>(_mainScreenLittleBook, _mainScreenLittleBook.transform.parent);
-            foreach (var screenLittleBook in screenLittleBooks) 
-            { 
-                screenLittleBook.gameObject.SetActive(true);
-                screenLittleBook.SetLabels(label);
-                screenLittleBook.SetImage(poster);
-                screenLittleBook.SetButton(() =>
-                {
-                    OpenPopUp(poster, storyHeader, description, onClick);
-                });
-                _objects.Push(screenLittleBook.gameObject);
-            }
+            var screenLittleBook = UnityEngine.Object.Instantiate<ScreenBook>(_mainScreenLittleBook, _mainScreenLittleBook.transform.parent);
+            screenLittleBook.gameObject.SetActive(true);
+            screenLittleBook.SetLabels(label);
+            screenLittleBook.SetImage(poster);
+            screenLittleBook.SetButton(() =>
+            {
+                OpenPopUp(poster, storyHeader, description, onClick);
+            });
+            _objects.Push(screenLittleBook.gameObject);
+
+
+        }
+
+        public void OnAllBooksAdded()
+        {
+            Vector2 targetSize = _mainScreenBook.GetComponent<RectTransform>().sizeDelta;
+            Transform parent = _mainScreenBook.transform.parent;
+
+            GameObject firstBorderObject = new GameObject("EmptyBorder_Start");
+            RectTransform firstBorderRect = firstBorderObject.AddComponent<RectTransform>();
+            firstBorderRect.sizeDelta = targetSize;
+            firstBorderRect.SetParent(parent, false);
+            firstBorderRect.SetSiblingIndex(1); // 1 потому что там первый объект пустышка стоит 
+
+            GameObject secondBorderObject = new GameObject("EmptyBorder_End");
+            RectTransform secondBorderRect = secondBorderObject.AddComponent<RectTransform>();
+            secondBorderRect.sizeDelta = targetSize;
+            secondBorderRect.SetParent(parent, false);
+            secondBorderRect.SetSiblingIndex(parent.childCount - 1);
+            
+            _snapController.Initialize();
         }
 
         private void OpenPopUp(Texture2D texture, string header, string description, Action onClick)
