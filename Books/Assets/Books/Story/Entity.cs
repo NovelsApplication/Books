@@ -20,6 +20,11 @@ namespace Books.Story
             public IObservable<(string text, string textPath)> OnGetText;
             public ReactiveCommand<string> GetText;
 
+            public IObservable<(string text, string textPath)> OnLoadText;
+            public ReactiveCommand<string> LoadText;
+
+            public ReactiveCommand<(string text, string textPath)> SaveText;
+
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
 
@@ -57,6 +62,11 @@ namespace Books.Story
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
+            var save = new Save.Entity(new Save.Entity.Ctx
+            {
+
+            }).AddTo(this);
+
             var logic = new Logic(new Logic.Ctx
             {
                 Screen = _screen,
@@ -64,6 +74,11 @@ namespace Books.Story
 
                 OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
+
+                OnLoadText = _ctx.OnLoadText,
+                LoadText = _ctx.LoadText,
+
+                SaveText = _ctx.SaveText,
 
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
