@@ -73,17 +73,17 @@ namespace Books.Menu.View
                 var lineData = processLine.Invoke(story.Continue());
                 if (!lineData.HasValue) continue;
 
-                if (lineData.Value.header.ToLower() == "название") storyHeader = lineData.Value.body;
-                if (lineData.Value.header.ToLower() == "жанры") tags = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries);
-                if (lineData.Value.header.ToLower() == "бирка" && Enum.TryParse<Entity.Labels>(lineData.Value.body, out var l)) label = l;
-                if (lineData.Value.header.ToLower() == "раздел") 
+                if (lineData.Value.header.ToLower() == "РЅР°Р·РІР°РЅРёРµ") storyHeader = lineData.Value.body;
+                if (lineData.Value.header.ToLower() == "Р¶Р°РЅСЂС‹") tags = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                if (lineData.Value.header.ToLower() == "Р±РёСЂРєР°" && Enum.TryParse<Entity.Labels>(lineData.Value.body, out var l)) label = l;
+                if (lineData.Value.header.ToLower() == "СЂР°Р·РґРµР»") 
                 {
                     mainTags = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries)
                         .Where(b => Enum.TryParse<Entity.MainTags>(b, out _))
                         .Select(b => Enum.Parse<Entity.MainTags>(b))
                         .ToArray();
                 }
-                if (lineData.Value.header.ToLower() == "аннотация") description = lineData.Value.body;
+                if (lineData.Value.header.ToLower() == "Р°РЅРЅРѕС‚Р°С†РёСЏ") description = lineData.Value.body;
             }
 
             _mainScreenBook.gameObject.SetActive(false);
@@ -134,7 +134,7 @@ namespace Books.Menu.View
             RectTransform firstBorderRect = firstBorderObject.AddComponent<RectTransform>();
             firstBorderRect.sizeDelta = targetSize;
             firstBorderRect.SetParent(parent, false);
-            firstBorderRect.SetSiblingIndex(1); // 1 потому что там первый объект пустышка стоит 
+            firstBorderRect.SetSiblingIndex(1); // 1 РїРѕС‚РѕРјСѓ С‡С‚Рѕ С‚Р°Рј РїРµСЂРІС‹Р№ РѕР±СЉРµРєС‚ РїСѓСЃС‚С‹С€РєР° СЃС‚РѕРёС‚ 
 
             GameObject secondBorderObject = new GameObject("EmptyBorder_End");
             RectTransform secondBorderRect = secondBorderObject.AddComponent<RectTransform>();
