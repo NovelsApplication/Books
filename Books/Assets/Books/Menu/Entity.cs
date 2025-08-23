@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
-using static Books.Menu.Entity;
 
 namespace Books.Menu 
 {
@@ -96,6 +95,7 @@ namespace Books.Menu
                 manifestText = data.text;
                 manifestsDone = true;
             });
+
             _ctx.GetText.Execute(manifestPath);
             while (!manifestsDone) await UniTask.Yield();
             manifestProcess.Dispose();
