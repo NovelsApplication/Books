@@ -25,6 +25,8 @@ namespace Books.Story
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
 
+            public Action StoryDone;
+
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
         }
 
@@ -38,9 +40,11 @@ namespace Books.Story
             _ctx = ctx;
 
             _ctx.Screen.HideBubbleImmediate();
+
+            ShowStoryProcess(_ctx.StoryDone).Forget();
         }
 
-        public async UniTask ShowStoryProcess(Action onDone)
+        private async UniTask ShowStoryProcess(Action onDone)
         {
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
 

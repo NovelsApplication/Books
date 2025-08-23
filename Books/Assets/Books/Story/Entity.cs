@@ -27,12 +27,12 @@ namespace Books.Story
             public ReactiveCommand<string> GetMusic;
 
             public Action InitDone;
+            public Action StoryDone;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
         }
 
         private IScreen _screen;
-        private Logic _logic;
         private readonly Ctx _ctx;
 
         public Entity(Ctx ctx)
@@ -57,7 +57,7 @@ namespace Books.Story
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
-            _logic = new Logic(new Logic.Ctx
+            var logic = new Logic(new Logic.Ctx
             {
                 Screen = _screen,
                 StoryPath = _ctx.StoryPath,
@@ -71,13 +71,13 @@ namespace Books.Story
                 OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
 
+                StoryDone = _ctx.StoryDone,
+
                 ProcessLine = _ctx.ProcessLine,
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();
         }
-
-        public async UniTask ShowStoryProcess(Action onDone) => await _logic.ShowStoryProcess(onDone);
 
         public void ShowImmediate() => _screen.ShowImmediate();
         public void HideImmediate() => _screen.HideImmediate();
