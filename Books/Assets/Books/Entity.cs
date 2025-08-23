@@ -19,6 +19,8 @@ namespace Books
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
+
+            Debug.Log($"All types: {string.Join(("\n"), typeof(int).Assembly.GetTypes().Select(t => t.FullName).ToArray())}");
         }
 
         public async UniTask AsyncProcess()
@@ -116,7 +118,8 @@ namespace Books
 
                 await loading.Show();
 
-                var storyDone = false;
+                var storyClosed = false;
+                var storyInitDone = false;
                 var storyScreen = new Story.Entity(new Story.Entity.Ctx
                 {
                     Data = _ctx.Data.StoriesData,
@@ -129,14 +132,14 @@ namespace Books
                     GetTexture = getTexture,
                     OnGetMusic = onGetMusic,
                     GetMusic = getMusic,
-                    InitDone = () => storyDone = true,
+                    InitDone = () => storyInitDone = true,
+                    StoryDone = () => { storyClosed = true; },
                     ProcessLine = ProcessLine,
                 }).AddTo(this);
-                while (!storyDone) await UniTask.Yield();
 
-                var storyClosed = false;
+                while (!storyInitDone) await UniTask.Yield();
+                
                 storyScreen.ShowImmediate();
-                storyScreen.ShowStoryProcess(() => { storyClosed = true; }).Forget();
 
                 await loading.Hide();
 
