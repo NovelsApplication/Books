@@ -17,6 +17,11 @@ namespace Shared.Cash
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
 
+            public ReactiveCommand<(string text, string textPath)> OnLoadText;
+            public IObservable<string> LoadText;
+
+            public IObservable<(string text, string textPath)> SaveText;
+
             public Func<string, bool> IsCashed;
 
             public Func<string, byte[]> FromCash;
@@ -30,6 +35,20 @@ namespace Shared.Cash
             _ctx = ctx;
 
             _ctx.GetText.Subscribe(async fileName => await GetTextAsync(fileName)).AddTo(this);
+            _ctx.LoadText.Subscribe(fileName => LoadText(fileName)).AddTo(this);
+            _ctx.SaveText.Subscribe(data => TextToCache(data.text, data.textPath)).AddTo(this);
+        }
+
+        private void LoadText(string fileName) 
+        {
+            if (_ctx.IsCashed.Invoke(fileName))
+            {
+                _ctx.OnLoadText.Execute((TextFromCache(fileName), fileName));
+            }
+            else 
+            {
+                _ctx.OnLoadText.Execute((string.Empty, fileName));
+            }
         }
 
         private async UniTask GetTextAsync(string fileName)

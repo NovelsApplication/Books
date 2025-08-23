@@ -18,6 +18,11 @@ namespace Shared.Cash
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
 
+            public ReactiveCommand<(string text, string textPath)> OnLoadText;
+            public IObservable<string> LoadText;
+
+            public IObservable<(string text, string textPath)> SaveText;
+
             public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
             public IObservable<(string fileName, string key)> GetTexture;
 
@@ -82,6 +87,11 @@ namespace Shared.Cash
                 OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
+                OnLoadText = _ctx.OnLoadText,
+                LoadText = _ctx.LoadText,
+
+                SaveText = _ctx.SaveText,
+
                 IsCashed = fileName => IsCashed(fileName),
 
                 FromCash = fileName => FromCash(fileName),
@@ -124,7 +134,7 @@ namespace Shared.Cash
             var result = File.Exists(ConvertPath(fileName));
 
 #if UNITY_EDITOR
-            result = false;
+            //result = false;
 #endif
 
             return result;
