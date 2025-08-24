@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Books.Menu.View.ParticlesView;
 using UnityEngine;
@@ -7,60 +8,106 @@ namespace Books.Menu.View
 {
     public class BackgroundAnimation : MonoBehaviour
     {
-        [SerializeField]
-        private List<PoolObject> _particles;
+        [SerializeField] private Canvas _canvas;
+        [SerializeField] private List<PoolObject> _particles;
+        
+        [Header("Настройка появления партиклов")]
+        [SerializeField] private int _particlesPerCycle = 3;
+        [SerializeField] private float _spawnInterval = 1f;
 
         private Queue<ParticleBehavior> _pool = new ();
+        private bool _isRunning;
+        private Coroutine _animationCoroutine;
 
         public void InitializeParticles()
         {
             foreach (var particle in _particles)
             {
-                if (particle.InstanceCount <= 0)
+                if (particle.InstanceCount <= 0 || particle.Object == null)
                 {
-                    Debug.Log("!!!");
+                    Debug.LogWarning("Invalid particle configuration");
                     continue;
                 }
 
                 for (int i = 0; i < particle.InstanceCount; i++)
                 {
                     var instance = Instantiate(particle.Object, transform);
-                    instance.Init();
+                    instance.Init(_canvas);
                     instance.gameObject.SetActive(false);
                     _pool.Enqueue(instance);
                 }
             }
-            
-            StartContinuousAnimation();
         }
         
-        private void StartContinuousAnimation()
+        private void OnEnable()
         {
-            for (int i = 0; i < _pool.Count / 2; i++)
+            if (!_isRunning && _pool.Count > 0)
             {
-                ShowParticle();
+                StartContinuousAnimation();
             }
         }
 
-        private void ShowParticle()
+        private void StartContinuousAnimation()
+        {
+            if (_isRunning) return;
+        
+            _isRunning = true;
+            _animationCoroutine = StartCoroutine(AnimationLoop());
+        }
+
+        private IEnumerator AnimationLoop()
+        {
+            while (_isRunning)
+            {
+                for (int i = 0; i < Mathf.Min(_particlesPerCycle, _pool.Count); i++)
+                {
+                    ShowNextParticle();
+                }
+
+                yield return new WaitForSeconds(_spawnInterval);
+            }
+        }
+
+        private void ShowNextParticle()
         {
             if (_pool.Count == 0) return;
 
             ParticleBehavior particle = _pool.Dequeue();
             particle.gameObject.SetActive(true);
-        
-            particle.ActivateAnimation(() => ReturnParticleToPool(particle));;
+
+            particle.ActivateAnimation(() => ReturnParticleToPool(particle));
         }
 
         private void ReturnParticleToPool(ParticleBehavior particle)
         {
-            particle.gameObject.SetActive(false);
-            _pool.Enqueue(particle);
-            
-            ShowParticle();
+            if (particle != null && particle.gameObject != null)
+            {
+                particle.gameObject.SetActive(false);
+                _pool.Enqueue(particle);
+            }
         }
-        
-        [Serializable] private class PoolObject
+
+        private void OnDisable()
+        {
+            _isRunning = false;
+            if (_animationCoroutine != null)
+            {
+                StopCoroutine(_animationCoroutine);
+                _animationCoroutine = null;
+            }
+        }
+    
+        private void OnDestroy()
+        {
+            _isRunning = false;
+            if (_animationCoroutine != null)
+            {
+                StopCoroutine(_animationCoroutine);
+            }
+        }
+
+        [Serializable]
+        private class PoolObject
         {
             public int InstanceCount;
             public ParticleBehavior Object;

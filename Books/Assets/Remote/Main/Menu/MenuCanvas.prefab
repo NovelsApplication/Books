@@ -3367,7 +3367,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3ab2cfaef6ea3e042a17dd742d62add7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1a6aa7145b52ada4b9e8f5fbcf3a1233, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3389,12 +3389,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 4
+  _duration: 8
   _scaleChangeBorder: 0
   _scaleEase: 0
-  _distance: 41
+  _distance: 900
   _moveEase: 1
-  _curveStength: 10
+  _curveStrength: 5
 --- !u!1 &1522839503738187624
 GameObject:
   m_ObjectHideFlags: 0
@@ -4876,7 +4876,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3ab2cfaef6ea3e042a17dd742d62add7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d2865d8f9360b944ea718b975349c1ef, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4901,9 +4901,9 @@ MonoBehaviour:
   _duration: 5
   _scaleChangeBorder: 0
   _scaleEase: 2
-  _distance: 60
+  _distance: 700
   _moveEase: 1
-  _curveStength: 2
+  _curveStrength: 5
 --- !u!1 &2213684909184249994
 GameObject:
   m_ObjectHideFlags: 0
@@ -7540,7 +7540,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3ab2cfaef6ea3e042a17dd742d62add7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: be35530937f95bf4fa8185209d278be9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7562,12 +7562,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 3
+  _duration: 5
   _scaleChangeBorder: 0
   _scaleEase: 0
-  _distance: 41
+  _distance: 497.8
   _moveEase: 1
-  _curveStength: 3
+  _curveStrength: 5
 --- !u!1 &4055573641627832824
 GameObject:
   m_ObjectHideFlags: 0
@@ -8784,7 +8784,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3ab2cfaef6ea3e042a17dd742d62add7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 04e7d9a0c59746f4a84adb8a1a612413, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8809,9 +8809,9 @@ MonoBehaviour:
   _duration: 3
   _scaleChangeBorder: 0
   _scaleEase: 0
-  _distance: 41
+  _distance: 451.1
   _moveEase: 1
-  _curveStength: 5
+  _curveStrength: 5
 --- !u!1 &4814733151935886603
 GameObject:
   m_ObjectHideFlags: 0
@@ -8864,15 +8864,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d121d134a84acc90689926d6f885de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvas: {fileID: 3959531229831942455}
   _particles:
   - InstanceCount: 5
     Object: {fileID: 7091374436781175995}
-  - InstanceCount: 9
+  - InstanceCount: 5
     Object: {fileID: 5709228662767443953}
-  - InstanceCount: 7
+  - InstanceCount: 5
     Object: {fileID: 4456249733167519605}
-  - InstanceCount: 10
+  - InstanceCount: 5
     Object: {fileID: 2796268854445068626}
+  _particlesPerCycle: 5
+  _spawnInterval: 2
 --- !u!1 &4891711995991198466
 GameObject:
   m_ObjectHideFlags: 0

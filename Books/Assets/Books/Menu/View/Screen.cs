@@ -122,8 +122,6 @@ namespace Books.Menu.View
                 OpenPopUp(poster, storyHeader, description, onClick);
             });
             _objects.Push(screenLittleBook.gameObject);
-
-            _backgroundAnimation.InitializeParticles();
         }
 
         public void OnAllBooksAdded()
@@ -144,6 +142,7 @@ namespace Books.Menu.View
             secondBorderRect.SetSiblingIndex(parent.childCount - 1);
             
             _snapController.Initialize();
+            _backgroundAnimation.InitializeParticles();
         }
 
         private void OpenPopUp(Texture2D texture, string header, string description, Action onClick)

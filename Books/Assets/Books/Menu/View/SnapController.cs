@@ -36,8 +36,6 @@ namespace Books.Menu.View
             
             _scrollRectNested.OnEndDragEvent += OnEndDrag;
             _isInitialized = true;
-            
-            Debug.Log("Инициализация прошла");
         }
 
         private void OnEnable()
