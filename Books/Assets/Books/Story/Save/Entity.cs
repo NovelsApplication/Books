@@ -9,6 +9,15 @@ namespace Books.Story.Save
 {
     public sealed class Entity : BaseDisposable
     {
+        [Serializable]
+        private struct SaveData
+        {
+            public string MainCharacterName;
+            public string CharacterImagePath;
+            public string LocationImagePath;
+            public List<int> StoryProcess;
+        }
+
         public struct Ctx 
         {
             public string StoryPath;
@@ -22,6 +31,7 @@ namespace Books.Story.Save
             public ReactiveCommand<string> LoadText;
 
             public IObservable<Unit> SaveProgress;
+            public IObservable<Unit> ClearProgress;
             public ReactiveCommand<(string text, string textPath)> SaveText;
 
             public Action OnInitDone;
@@ -35,7 +45,19 @@ namespace Books.Story.Save
 
             _ctx.SaveProgress.Subscribe(_ =>
             {
-                _ctx.SaveText.Execute((JsonConvert.SerializeObject(_ctx.StoryProcess.Value), GetStoryLoadPath()));
+                var saveData = new SaveData
+                {
+                    MainCharacterName = _ctx.MainCharacterName.Value,
+                    CharacterImagePath = _ctx.CharacterImagePath.Value,
+                    LocationImagePath = _ctx.LocationImagePath.Value,
+                    StoryProcess = _ctx.StoryProcess.Value,
+                };
+                _ctx.SaveText.Execute((JsonConvert.SerializeObject(saveData), GetStoryLoadPath()));
+            }).AddTo(this);
+
+            _ctx.ClearProgress.Subscribe(_ =>
+            {
+                _ctx.SaveText.Execute((string.Empty, GetStoryLoadPath()));
             }).AddTo(this);
 
             Init();
@@ -51,6 +73,8 @@ namespace Books.Story.Save
             _ctx.MainCharacterName.Value = string.Empty;
             _ctx.CharacterImagePath.Value = string.Empty;
             _ctx.LocationImagePath.Value = string.Empty;
+            _ctx.StoryProcess.Value = new List<int> { 0 };
+
             var storyLoadText = string.Empty;
 
             var storyLoadDone = false;
@@ -62,7 +86,16 @@ namespace Books.Story.Save
             }).AddTo(this);
             _ctx.LoadText.Execute(storyLoadPath);
             while (!storyLoadDone) await UniTask.Yield();
-            _ctx.StoryProcess.Value = !string.IsNullOrEmpty(storyLoadText) ? JsonConvert.DeserializeObject<List<int>>(storyLoadText) : new List<int> { 0 };
+
+            if (!string.IsNullOrEmpty(storyLoadText)) 
+            {
+                var saveData = JsonConvert.DeserializeObject<SaveData>(storyLoadText);
+
+                _ctx.MainCharacterName.Value = saveData.MainCharacterName;
+                _ctx.CharacterImagePath.Value = saveData.CharacterImagePath;
+                _ctx.LocationImagePath.Value = saveData.LocationImagePath;
+                _ctx.StoryProcess.Value = saveData.StoryProcess;
+            }
 
             _ctx.OnInitDone.Invoke();
         }

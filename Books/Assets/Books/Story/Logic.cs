@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Books.Story
 {
@@ -83,6 +84,39 @@ namespace Books.Story
                     for (var i = 0; i < index; i++)
                         story.Continue();
                 } 
+            }
+
+            _locationImage = null;
+            if (!string.IsNullOrEmpty(_ctx.LocationImagePath.Value)) 
+            {
+                var locationDone = false;
+                var locationKey = "location";
+
+                _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
+                {
+                    _locationImage = data.texture;
+                    locationDone = true;
+                }).AddTo(this);
+                _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey));
+
+                while (!locationDone) await UniTask.Yield();
+
+                await _ctx.Screen.ShowLocation(_locationImage);
+            }
+
+            _characterImage = null;
+            if (!string.IsNullOrEmpty(_ctx.CharacterImagePath.Value))
+            {
+                var characterDone = false;
+                var characterKey = "char";
+
+                _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
+                {
+                    _characterImage = data.texture;
+                    characterDone = true;
+                }).AddTo(this);
+                _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
+                while (!characterDone) await UniTask.Yield();
             }
 
             while (!IsDisposed)

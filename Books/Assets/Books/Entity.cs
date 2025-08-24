@@ -131,6 +131,8 @@ namespace Books
 
                 await loading.Show();
 
+                var clearStoryProgress = new ReactiveCommand().AddTo(this);
+
                 var storyClosed = false;
                 var storyInitDone = false;
                 var storyScreen = new Story.Entity(new Story.Entity.Ctx
@@ -144,6 +146,7 @@ namespace Books
                     OnLoadText = onLoadText,
                     LoadText = loadText,
                     SaveText = saveText,
+                    ClearProgress = clearStoryProgress,
                     OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
                     OnGetMusic = onGetMusic,
@@ -152,10 +155,7 @@ namespace Books
                     StoryDone = isClearSave => 
                     { 
                         storyClosed = true;
-                        if (isClearSave) 
-                        {
-                            saveText.Execute((string.Empty, $"{storyManifest.Value.StoryPath}/SaveStory.json"));
-                        }
+                        if (isClearSave) clearStoryProgress.Execute();
                     },
                     ProcessLine = ProcessLine,
                 }).AddTo(this);
