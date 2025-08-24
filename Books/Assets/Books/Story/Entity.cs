@@ -24,6 +24,7 @@ namespace Books.Story
             public IObservable<(string text, string textPath)> OnLoadText;
             public ReactiveCommand<string> LoadText;
 
+            public ReactiveCommand ClearProgress;
             public ReactiveCommand<(string text, string textPath)> SaveText;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
@@ -84,6 +85,7 @@ namespace Books.Story
                 LoadText = _ctx.LoadText,
 
                 SaveProgress = saveProgress,
+                ClearProgress = _ctx.ClearProgress,
                 SaveText = _ctx.SaveText,
 
                 OnInitDone = () => saveDone = true,
