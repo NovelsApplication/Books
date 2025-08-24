@@ -12,6 +12,25 @@ namespace Books
         private ReactiveCommand _clearCash;
         private Entity _entity;
 
+#if UNITY_EDITOR
+        private bool _showCheats;
+        private void OnGUI()
+        {
+            if (GUI.Button(new Rect(10, 10, 15, 15), _showCheats ? ">" : "<")) 
+            {
+                _showCheats = !_showCheats;
+            }
+
+            if (!_showCheats) return;
+
+            if (GUI.Button(new Rect(10, 25, 150, 100), "Clear cash"))
+            {
+                _clearCash.Execute();
+                Debug.Log("Clear cash done!");
+            }
+        }
+#endif
+
         private void OnEnable()
         {
             var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
@@ -25,17 +44,6 @@ namespace Books
                 Data = _data,
             });
         }
-
-#if UNITY_EDITOR
-        private void OnGUI()
-        {
-            if (GUI.Button(new Rect(10, 10, 150, 100), "Clear cash"))
-            {
-                _clearCash.Execute();
-                Debug.Log("Clear cash done!");
-            }
-        }
-#endif
 
         private void OnDisable()
         {
