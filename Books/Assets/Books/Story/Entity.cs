@@ -2,6 +2,7 @@ using Books.Story.View;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using System;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
@@ -62,10 +63,33 @@ namespace Books.Story
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
 
+            var mainCharacterName = new ReactiveProperty<string>().AddTo(this);
+            var characterImagePath = new ReactiveProperty<string>().AddTo(this);
+            var locationImagePath = new ReactiveProperty<string>().AddTo(this);
+            var storyProcess = new ReactiveProperty<List<int>>().AddTo(this);
+
+            var saveProgress = new ReactiveCommand().AddTo(this);
+
+            var saveDone = false;
             var save = new Save.Entity(new Save.Entity.Ctx
             {
+                StoryPath = _ctx.StoryPath,
 
+                MainCharacterName = mainCharacterName,
+                CharacterImagePath = characterImagePath,
+                LocationImagePath = locationImagePath,
+                StoryProcess = storyProcess,
+
+                OnLoadText = _ctx.OnLoadText,
+                LoadText = _ctx.LoadText,
+
+                SaveProgress = saveProgress,
+                SaveText = _ctx.SaveText,
+
+                OnInitDone = () => saveDone = true,
             }).AddTo(this);
+
+            while (!saveDone) await UniTask.Yield();
 
             var logic = new Logic(new Logic.Ctx
             {
@@ -75,10 +99,7 @@ namespace Books.Story
                 OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
-                OnLoadText = _ctx.OnLoadText,
-                LoadText = _ctx.LoadText,
-
-                SaveText = _ctx.SaveText,
+                SaveProgress = saveProgress,
 
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
@@ -89,6 +110,11 @@ namespace Books.Story
                 StoryDone = _ctx.StoryDone,
 
                 ProcessLine = _ctx.ProcessLine,
+
+                MainCharacterName = mainCharacterName,
+                CharacterImagePath = characterImagePath,
+                LocationImagePath = locationImagePath,
+                StoryProcess = storyProcess,
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();

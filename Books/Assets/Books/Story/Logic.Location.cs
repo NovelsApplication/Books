@@ -17,7 +17,7 @@ namespace Books.Story
             _locationImage = null;
 
             var locationDone = false;
-            _locationImagePath.Value = $"{_ctx.StoryPath}/Locations/{body.Replace(" ", "_")}.png";
+            _ctx.LocationImagePath.Value = $"{_ctx.StoryPath}/Locations/{body.Replace(" ", "_")}.png";
             var locationKey = "location";
 
             _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
@@ -25,7 +25,7 @@ namespace Books.Story
                 _locationImage = data.texture;
                 locationDone = true;
             }).AddTo(this);
-            _ctx.GetTexture.Execute((_locationImagePath.Value, locationKey));
+            _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey));
 
             while (!locationDone) await UniTask.Yield();
 

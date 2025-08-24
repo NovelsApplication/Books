@@ -7,7 +7,7 @@ namespace Books.Story
         [Logic(LogicIdx.Hero, LogicIdx.Клавиатура)]
         private async UniTask<bool> RunHero(string header, string attributes, string body)
         {
-            _mainCharacterName.Value = body.Trim();
+            _ctx.MainCharacterName.Value = body.Trim();
 
             await UniTask.NextFrame();
             return true;
