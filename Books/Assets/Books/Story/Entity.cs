@@ -32,7 +32,7 @@ namespace Books.Story
             public ReactiveCommand<string> GetMusic;
 
             public Action InitDone;
-            public Action StoryDone;
+            public Action<bool> StoryDone;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
         }

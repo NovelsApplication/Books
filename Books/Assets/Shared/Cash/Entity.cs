@@ -28,6 +28,8 @@ namespace Shared.Cash
 
             public ReactiveCommand<(AudioClip clip, string fileName)> OnGetMusic;
             public IObservable<string> GetMusic;
+
+            public IObservable<Unit> ClearCash;
         }
 
         private readonly Ctx _ctx;
@@ -127,6 +129,8 @@ namespace Shared.Cash
 
                 ConvertPath = fileName => ConvertPath(fileName),
             }).AddTo(this);
+
+            _ctx.ClearCash.Subscribe(_ => ClearCash()).AddTo(this);
         }
 
         private bool IsCashed(string fileName)
@@ -140,12 +144,18 @@ namespace Shared.Cash
             return result;
         }
 
-        private string ConvertPath(string fileName)
+        private string GetLocalPath() 
         {
             var localFilesPath = $"{Application.persistentDataPath}/CachedFiles";
 #if !UNITY_EDITOR && UNITY_WEBGL
             localFilesPath = "idbfs/CachedFiles";
 #endif
+            return localFilesPath;
+        }
+
+        private string ConvertPath(string fileName)
+        {
+            var localFilesPath = GetLocalPath();
 
             if (!Directory.Exists(localFilesPath))
                 Directory.CreateDirectory(localFilesPath);
@@ -159,6 +169,14 @@ namespace Shared.Cash
             }
 
             return $"{localFilesPath}/{localExtraPath.Last()}";
+        }
+
+        private void ClearCash() 
+        {
+            var localFilesPath = GetLocalPath();
+
+            if (Directory.Exists(localFilesPath))
+                Directory.Delete(localFilesPath, true);
         }
 
         private byte[] FromCash(string fileName)
