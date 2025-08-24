@@ -16,8 +16,8 @@ namespace Books.Menu.View
         [SerializeField] private float _spawnInterval = 1f;
 
         private Queue<ParticleBehavior> _pool = new ();
-        private bool _isRunning;
         private Coroutine _animationCoroutine;
+        private bool _isRunning;
 
         public void InitializeParticles()
         {
@@ -70,11 +70,9 @@ namespace Books.Menu.View
 
         private void ShowNextParticle()
         {
-            if (_pool.Count == 0) return;
-
             ParticleBehavior particle = _pool.Dequeue();
+            
             particle.gameObject.SetActive(true);
-
             particle.ActivateAnimation(() => ReturnParticleToPool(particle));
         }
 
@@ -106,8 +104,7 @@ namespace Books.Menu.View
             }
         }
 
-        [Serializable]
-        private class PoolObject
+        [Serializable] private class PoolObject
         {
             public int InstanceCount;
             public ParticleBehavior Object;

@@ -70,14 +70,11 @@ namespace Books.Menu.View.ParticlesView
 
             _rectTransform.anchoredPosition = startPos;
             
-            if (_image != null)
-            {
-                _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, 0f);
+            _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, 0f);
                 
-                _sequence.Append(_image.DOFade(1f, _duration * 0.2f).SetEase(Ease.OutQuad));
-                _sequence.AppendInterval(_duration * 0.6f);
-                _sequence.Append(_image.DOFade(0f, _duration * 0.2f).SetEase(Ease.InQuad));
-            }
+            _sequence.Append(_image.DOFade(1f, 1).SetEase(Ease.OutQuad));
+            //_sequence.AppendInterval(_duration * 0.6f);
+            _sequence.Append(_image.DOFade(0f, 1).SetEase(Ease.InQuad));
 
             DoMoveAnimate(startPos, finishPos);
 
