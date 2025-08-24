@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -25,17 +26,15 @@ namespace Books.Menu.View.ParticlesView
         private RectTransform _rectTransform;
         private Graphic _image;
 
-        private void Start()
+        public void Init()
         {
             _sequence = DOTween.Sequence();
             _rectTransform = GetComponent<RectTransform>();
             _image = GetComponent<Image>();
             _curveStength *= 10;
-
-            gameObject.SetActive(false);
         }
 
-        private void OnEnable()
+        public void ActivateAnimation(Action callback)
         {
             Vector2 startPos = GetRandomStartPosition();
             Vector2 direction = GetRandomDirection();
@@ -43,11 +42,14 @@ namespace Books.Menu.View.ParticlesView
             Vector2 finishPos = startPos + direction * _distance;
 
             _rectTransform.anchoredPosition = startPos;
+
+            _sequence.Join(_image.DOFade(1f, 0.5f))
+                .Append(_image.DOFade(0f, 0.5f))
+                .AppendCallback(() => callback?.Invoke());
             
-            //_sequence.Join(_image.DoF)
             DoMoveAnimate(startPos, finishPos);
         }
-        
+
         private void DoMoveAnimate(Vector2 startPos, Vector2 finishPos)
         {
             if (_curveStength == 0)

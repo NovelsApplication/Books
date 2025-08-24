@@ -3319,7 +3319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7739207701224114228
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3389,11 +3389,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _duration: 4
   _scaleChangeBorder: 0
   _scaleEase: 0
   _distance: 41
+  _moveEase: 1
   _curveStength: 10
-  _curveType: 0
 --- !u!1 &1522839503738187624
 GameObject:
   m_ObjectHideFlags: 0
@@ -4827,7 +4828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3744742923191269258
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4897,11 +4898,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _duration: 5
   _scaleChangeBorder: 0
-  _scaleEase: 0
-  _distance: 41
-  _curveStength: 10
-  _curveType: 0
+  _scaleEase: 2
+  _distance: 60
+  _moveEase: 1
+  _curveStength: 2
 --- !u!1 &2213684909184249994
 GameObject:
   m_ObjectHideFlags: 0
@@ -5260,6 +5262,7 @@ MonoBehaviour:
   _canvasGroup: {fileID: 8617670886366628570}
   _mainScreenBook: {fileID: 5108046092835288838}
   _snapController: {fileID: 3670741412095197553}
+  _backgroundAnimation: {fileID: 4217672874173556464}
   _mainScreenDot: {fileID: 2924553815461570467}
   _mainTags:
   - {fileID: 5789419680428064396}
@@ -7489,7 +7492,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1750508802699927393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7559,11 +7562,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _duration: 3
   _scaleChangeBorder: 0
   _scaleEase: 0
   _distance: 41
-  _curveStength: 10
-  _curveType: 0
+  _moveEase: 1
+  _curveStength: 3
 --- !u!1 &4055573641627832824
 GameObject:
   m_ObjectHideFlags: 0
@@ -8732,7 +8736,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8114209214993412411
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8802,11 +8806,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _duration: 3
   _scaleChangeBorder: 0
   _scaleEase: 0
   _distance: 41
-  _curveStength: 10
-  _curveType: 0
+  _moveEase: 1
+  _curveStength: 5
 --- !u!1 &4814733151935886603
 GameObject:
   m_ObjectHideFlags: 0
@@ -8816,6 +8821,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3934702333389330869}
+  - component: {fileID: 4217672874173556464}
   m_Layer: 5
   m_Name: BackgroundAnimation
   m_TagString: Untagged
@@ -8846,6 +8852,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4217672874173556464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4814733151935886603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68d121d134a84acc90689926d6f885de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _particles:
+  - InstanceCount: 5
+    Object: {fileID: 7091374436781175995}
+  - InstanceCount: 9
+    Object: {fileID: 5709228662767443953}
+  - InstanceCount: 7
+    Object: {fileID: 4456249733167519605}
+  - InstanceCount: 10
+    Object: {fileID: 2796268854445068626}
 --- !u!1 &4891711995991198466
 GameObject:
   m_ObjectHideFlags: 0
