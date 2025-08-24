@@ -31,7 +31,7 @@ namespace Books.Story
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
 
-            public Action StoryDone;
+            public Action<bool> StoryDone;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
         }
@@ -58,7 +58,7 @@ namespace Books.Story
             ShowStoryProcess(_ctx.StoryDone).Forget();
         }
 
-        private async UniTask ShowStoryProcess(Action onDone)
+        private async UniTask ShowStoryProcess(Action<bool> onDone)
         {
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
 
@@ -97,8 +97,6 @@ namespace Books.Story
             while (!storyLoadDone) await UniTask.Yield();
             _storyPath = !string.IsNullOrEmpty(storyLoadText) ? JsonConvert.DeserializeObject<List<int>>(storyLoadText) : new List<int> { 0 };
             //asdasdas
-
-            Debug.Log(storyLoadText);
 
             foreach (var index in _storyPath) 
             {

@@ -11,6 +11,7 @@ namespace Books
     {
         public struct Ctx
         {
+            public IObservable<Unit> ClearCash;
             public Data Data;
         }
 
@@ -19,9 +20,11 @@ namespace Books
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
+
+            AsyncProcess().Forget();
         }
 
-        public async UniTask AsyncProcess()
+        private async UniTask AsyncProcess()
         {
             var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
@@ -58,6 +61,8 @@ namespace Books
 
                 OnGetMusic = onGetMusic,
                 GetMusic = getMusic,
+
+                ClearCash = _ctx.ClearCash,
             }).AddTo(this);
 
             var loadingDone = false;
@@ -144,7 +149,14 @@ namespace Books
                     OnGetMusic = onGetMusic,
                     GetMusic = getMusic,
                     InitDone = () => storyInitDone = true,
-                    StoryDone = () => { storyClosed = true; },
+                    StoryDone = isClearSave => 
+                    { 
+                        storyClosed = true;
+                        if (isClearSave) 
+                        {
+                            saveText.Execute((string.Empty, $"{storyManifest.Value.StoryPath}/SaveStory.json"));
+                        }
+                    },
                     ProcessLine = ProcessLine,
                 }).AddTo(this);
 
