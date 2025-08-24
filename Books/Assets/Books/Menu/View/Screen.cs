@@ -23,6 +23,7 @@ namespace Books.Menu.View
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private ScreenBook _mainScreenBook;
         [SerializeField] private SnapController _snapController;
+        [SerializeField] private BackgroundAnimation _backgroundAnimation;
         [SerializeField] private Dot _mainScreenDot;
         [SerializeField] private MainTag[] _mainTags;
         [SerializeField] private ScreenBook _mainScreenLittleBook;
@@ -122,7 +123,7 @@ namespace Books.Menu.View
             });
             _objects.Push(screenLittleBook.gameObject);
 
-
+            _backgroundAnimation.InitializeParticles();
         }
 
         public void OnAllBooksAdded()

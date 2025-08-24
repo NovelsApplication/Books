@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 2178152869
+CRC: 3302978615
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 9bca15ca474272149f5602f571e245f9
+    Hash: 3805c993650ca3f2d26fe88f7bd625c0
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 76cadd1d2d098c6a51a5f0b5c9ed5777
+    Hash: 0ddfc7b9c5505350d911cb0e5bbea011
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 8eba12b6fa3a12d3c9e93fd9f0c591e0
+    Hash: bcb4095978936899075d29524af231c0
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -21,8 +21,6 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 48
   Script: {instanceID: 0}
-- Class: 114
-  Script: {fileID: 11500000, guid: c6f4a95d8b2d0254d94071748e686053, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
 - Class: 114
@@ -43,6 +41,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: ddd4f923d03699c45958a071233d95ef, type: 3}
 - Class: 114
@@ -70,6 +70,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: c6f4a95d8b2d0254d94071748e686053, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
@@ -78,7 +80,7 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: a003718ec2ae62241b4e88538a81fb6f, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
+  Script: {fileID: 11500000, guid: 68d121d134a84acc90689926d6f885de, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -94,6 +96,8 @@ ClassTypes:
 - Class: 225
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
+- AssemblyName: Books.Menu
+  ClassName: Books.Menu.View.BackgroundAnimation/PoolObject
 - AssemblyName: Books.Menu
   ClassName: Books.Menu.View.ScreenBook/Label
 - AssemblyName: Unity.TextMeshPro
