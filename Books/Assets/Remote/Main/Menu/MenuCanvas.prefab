@@ -8773,20 +8773,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvas: {fileID: 3959531229831942455}
   _particles:
-  - InstanceCount: 3
+  - InstanceCount: 1
     Object: {fileID: 7091374436781175995}
-  - InstanceCount: 3
+  - InstanceCount: 1
     Object: {fileID: 5709228662767443953}
-  - InstanceCount: 5
-    Object: {fileID: 5709228662767443953}
-  - InstanceCount: 3
-    Object: {fileID: 3739983309527625091}
-  - InstanceCount: 3
-    Object: {fileID: 4704966216620569017}
-  - InstanceCount: 3
-    Object: {fileID: 6496244589212866157}
-  _particlesPerCycle: 2
-  _spawnInterval: 2
+  _particlesPerCycle: 1
+  _spawnInterval: 0.5
 --- !u!1 &4891711995991198466
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,11 +43,21 @@ namespace Books.Menu.View
         {
             if (!_isRunning && _pool.Count > 0)
             {
-                StartContinuousAnimation();
+                StartAnimation();
             }
         }
 
-        private void StartContinuousAnimation()
+        private void OnDisable()
+        {
+            _isRunning = false;
+            if (_animationCoroutine != null)
+            {
+                StopCoroutine(_animationCoroutine);
+                _animationCoroutine = null;
+            }
+        }
+
+        private void StartAnimation()
         {
             if (_isRunning) return;
         
@@ -59,11 +69,22 @@ namespace Books.Menu.View
         {
             while (_isRunning)
             {
+                if (_pool.Count == 0)
+                {
+                    Debug.Log("Пул пустой! Ожидание возвращения объектов");
+                    yield return new WaitWhile(() => _pool.Count == 0);
+                    Debug.Log("Объекты вернулись в пул");
+                }
+                
+                Debug.Log($"Объектов в пуле до показа = {_pool.Count}");
+                
                 for (int i = 0; i < Mathf.Min(_particlesPerCycle, _pool.Count); i++)
                 {
                     ShowNextParticle();
                 }
-
+                
+                Debug.Log($"Объектов в пуле после показа = {_pool.Count}");
+                
                 yield return new WaitForSeconds(_spawnInterval);
             }
         }
@@ -78,29 +99,10 @@ namespace Books.Menu.View
 
         private void ReturnParticleToPool(ParticleBehavior particle)
         {
-            if (particle != null && particle.gameObject != null)
+            if (particle != null)
             {
                 particle.gameObject.SetActive(false);
                 _pool.Enqueue(particle);
-            }
-        }
-
-        private void OnDisable()
-        {
-            _isRunning = false;
-            if (_animationCoroutine != null)
-            {
-                StopCoroutine(_animationCoroutine);
-                _animationCoroutine = null;
-            }
-        }
-    
-        private void OnDestroy()
-        {
-            _isRunning = false;
-            if (_animationCoroutine != null)
-            {
-                StopCoroutine(_animationCoroutine);
             }
         }
 
