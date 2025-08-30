@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Books.Menu.View.Dots;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Menu.View 
@@ -22,6 +24,7 @@ namespace Books.Menu.View
         [SerializeField] private ScreenBook _mainScreenBook;
         [SerializeField] private SnapController _snapController;
         [SerializeField] private BackgroundAnimation _backgroundAnimation;
+        [SerializeField] private DotsContainer _dotsContainer;
         [SerializeField] private Dot _mainScreenDot;
         [SerializeField] private MainTag[] _mainTags;
         [SerializeField] private ScreenBook _mainScreenLittleBook;
@@ -100,9 +103,8 @@ namespace Books.Menu.View
             _objects.Push(screenBook.gameObject);
 
             _mainScreenDot.gameObject.SetActive(false);
-            var dot = UnityEngine.Object.Instantiate<Dot>(_mainScreenDot, _mainScreenDot.transform.parent);
-            dot.gameObject.SetActive(true);
-            dot.SetSelected(false);
+            var dot = UnityEngine.Object.Instantiate<Dot>(_mainScreenDot, _dotsContainer.transform);
+            _dotsContainer.InitializeDot(dot);
             _objects.Push(dot.gameObject);
 
             foreach (var mainTag in _mainTags) 
@@ -140,6 +142,8 @@ namespace Books.Menu.View
             secondBorderRect.SetSiblingIndex(parent.childCount - 1);
             
             _snapController.Initialize();
+            _snapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
+            
             _backgroundAnimation.InitializeParticles();
         }
 

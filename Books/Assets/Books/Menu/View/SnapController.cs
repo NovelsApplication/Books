@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -19,8 +20,10 @@ namespace Books.Menu.View
         [SerializeField] private float _scrollSensitivity = 0.3f;
         [SerializeField] private float _snapSpeed = 10f;
 
+        public IReadOnlyReactiveProperty<int> TargetElementIndexRP => _targetElementIndex;
+        private ReactiveProperty<int> _targetElementIndex = new(1);
+
         private List<RectTransform> _scrollElements = new ();
-        private int _targetElementIndex = 1;
         private bool _isInitialized = false;
 
         public void Initialize()
@@ -50,13 +53,13 @@ namespace Books.Menu.View
             LayoutRebuilder.ForceRebuildLayoutImmediate(_contentContainer);
             yield return null;
 
-            if (_scrollElements.Count <= _targetElementIndex)
+            if (_scrollElements.Count <= _targetElementIndex.Value)
             {
                 Debug.LogWarning("Not enough children in content container");
                 yield break;
             }
 
-            RectTransform targetElement = _scrollElements[_targetElementIndex];
+            RectTransform targetElement = _scrollElements[_targetElementIndex.Value];
 
             Vector3 elementWorldCenter =
                 targetElement.TransformPoint(new Vector3(targetElement.rect.center.x, targetElement.rect.center.y, 0));
@@ -76,7 +79,7 @@ namespace Books.Menu.View
         {
             float dragDistance = eventData.position.x - eventData.pressPosition.x;
 
-            int targetIndex = _targetElementIndex;
+            int targetIndex = _targetElementIndex.Value;
 
             if (Mathf.Abs(dragDistance) / UnityEngine.Screen.width < _scrollSensitivity)
             {
@@ -101,11 +104,9 @@ namespace Books.Menu.View
             if (targetElementIndex < 0 || targetElementIndex >= _scrollElements.Count)
                 yield break;
 
-            RectTransform targetElement = _scrollElements[targetElementIndex] as RectTransform;
+            RectTransform targetElement = _scrollElements[targetElementIndex];
             if (targetElement == null) yield break;
-
-            //int currentCenterElement = FindClosestElementToCenter();
-
+            
             Vector3 elementWorldCenter =
                 targetElement.TransformPoint(new Vector3(targetElement.rect.center.x, targetElement.rect.center.y, 0));
             Vector3 viewportWorldCenter =
@@ -128,36 +129,9 @@ namespace Books.Menu.View
             }
 
             _contentContainer.anchoredPosition = targetPosition;
-            _targetElementIndex = targetElementIndex;
+            _targetElementIndex.Value = targetElementIndex;
         }
-
-        private int FindClosestElementToCenter()
-        {
-            float closestDistance = float.MaxValue;
-            int closestIndex = 0;
-
-            for (int i = 0; i < _scrollElements.Count; i++)
-            {
-                RectTransform element = _scrollElements[i];
-                if (element == null) continue;
-
-                Vector3 elementWorldCenter =
-                    element.TransformPoint(new Vector3(element.rect.center.x, element.rect.center.y, 0));
-                Vector3 viewportWorldCenter =
-                    _viewPort.TransformPoint(new Vector3(_viewPort.rect.center.x, _viewPort.rect.center.y, 0));
-
-                float distance = Vector3.Distance(elementWorldCenter, viewportWorldCenter);
-
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestIndex = i;
-                }
-            }
-
-            return closestIndex;
-        }
-
+        
         private void OnDestroy()
         {
             _scrollRectNested.OnEndDragEvent -= OnEndDrag;
