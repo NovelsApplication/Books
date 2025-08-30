@@ -42,10 +42,11 @@ namespace Books.Story
 
         public Logic(Ctx ctx)
         {
+            Debug.Log("Logic -2");
             _ctx = ctx;
-
+            Debug.Log("Logic -1");
             _ctx.Screen.HideBubbleImmediate();
-
+            Debug.Log("Logic 0");
             ShowStoryProcess(_ctx.StoryDone).Forget();
         }
 
