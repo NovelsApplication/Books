@@ -18,7 +18,7 @@ namespace Books.Menu.View.ParticlesView
         [SerializeField] private Ease _moveEase = Ease.Linear;
         
         [Header("Скорость вращения")]
-        [Range(0, 10)] [SerializeField] private int _rotationStrength = 3;
+        [Range(0, 5)] [SerializeField] private int _rotationStrength = 3;
 
         [Header("Величина и тип искривление траектории")]
         [Range(0, 10)] [SerializeField] private int _curveStrength = 5;
@@ -34,12 +34,6 @@ namespace Books.Menu.View.ParticlesView
             _canvas = canvas;
             _rectTransform = GetComponent<RectTransform>();
             _image = GetComponent<Image>();
-            
-            if (_sequence == null)
-            {
-                _sequence = DOTween.Sequence();
-                _sequence.Pause();
-            }
         }
 
         private void OnEnable()
@@ -54,11 +48,12 @@ namespace Books.Menu.View.ParticlesView
         {
             if (_sequence != null)
             {
-                _sequence.Pause();
+                _sequence.Kill();
+                _sequence = null;
             }
         }
 
-        public virtual void ActivateAnimation(Action callback)
+        public virtual void ActivateAnimation(Action callback = null)
         {
             _sequence.Rewind();
             _sequence.Kill();
@@ -72,17 +67,13 @@ namespace Books.Menu.View.ParticlesView
             _rectTransform.anchoredPosition = startPos;
             
             _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, 0f);
-            
+
             float visibleTimePart = 0.75f;
-            float onsetTime = 2f;
-            
-            float rotations = _rotationStrength * 2f;
-            float totalRotation = rotations * 360f;
-            _sequence.Join(_rectTransform.DORotate(new Vector3(0, 0, totalRotation), _duration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
-            
-            _sequence.Append(_image.DOFade(1f, onsetTime).SetEase(Ease.OutQuad));
-            _sequence.Insert(onsetTime * 0.7f,
-                _rectTransform.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration)).SetEase(_moveEase);
+
+            _sequence.Append(_rectTransform.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration)).SetEase(_moveEase);
+            _sequence.Join(_image.DOFade(1f, _duration * (1 - visibleTimePart)).SetEase(Ease.OutQuad));
+            _sequence.Join(_rectTransform.DORotate(new Vector3(0, 0, _rotationStrength * 90f), _duration, RotateMode.FastBeyond360)
+                .SetEase(Ease.Linear));
             _sequence.Insert(_duration * visibleTimePart, 
                 _image.DOFade(0f, _duration - _duration * visibleTimePart).SetEase(Ease.InQuad));
 
