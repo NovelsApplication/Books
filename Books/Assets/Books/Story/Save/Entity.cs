@@ -1,15 +1,104 @@
-using Books.Story.View;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Shared.Disposable;
 using System;
+using System.Collections.Generic;
 using UniRx;
-using UnityEngine;
 
 namespace Books.Story.Save 
 {
-    public class Entity : BaseDisposable
+    public sealed class Entity : BaseDisposable
     {
+        [Serializable]
+        private struct SaveData
+        {
+            public string MainCharacterName;
+            public string CharacterImagePath;
+            public string LocationImagePath;
+            public List<int> StoryProcess;
+        }
 
+        public struct Ctx 
+        {
+            public string StoryPath;
+
+            public ReactiveProperty<string> MainCharacterName;
+            public ReactiveProperty<string> CharacterImagePath;
+            public ReactiveProperty<string> LocationImagePath;
+            public ReactiveProperty<List<int>> StoryProcess;
+
+            public IObservable<(string text, string textPath)> OnLoadText;
+            public ReactiveCommand<string> LoadText;
+
+            public IObservable<Unit> SaveProgress;
+            public IObservable<Unit> ClearProgress;
+            public ReactiveCommand<(string text, string textPath)> SaveText;
+
+            public Action OnInitDone;
+        }
+
+        private readonly Ctx _ctx;
+
+        public Entity(Ctx ctx) 
+        {
+            _ctx = ctx;
+
+            _ctx.SaveProgress.Subscribe(_ =>
+            {
+                var saveData = new SaveData
+                {
+                    MainCharacterName = _ctx.MainCharacterName.Value,
+                    CharacterImagePath = _ctx.CharacterImagePath.Value,
+                    LocationImagePath = _ctx.LocationImagePath.Value,
+                    StoryProcess = _ctx.StoryProcess.Value,
+                };
+                _ctx.SaveText.Execute((JsonConvert.SerializeObject(saveData), GetStoryLoadPath()));
+            }).AddTo(this);
+
+            _ctx.ClearProgress.Subscribe(_ =>
+            {
+                _ctx.SaveText.Execute((string.Empty, GetStoryLoadPath()));
+            }).AddTo(this);
+
+            Init();
+        }
+
+        private string GetStoryLoadPath() 
+        {
+            return $"{_ctx.StoryPath}/SaveStory.json";
+        }
+
+        public async void Init()
+        {
+            _ctx.MainCharacterName.Value = string.Empty;
+            _ctx.CharacterImagePath.Value = string.Empty;
+            _ctx.LocationImagePath.Value = string.Empty;
+            _ctx.StoryProcess.Value = new List<int> { 0 };
+
+            var storyLoadText = string.Empty;
+
+            var storyLoadDone = false;
+            var storyLoadPath = GetStoryLoadPath();
+            _ctx.OnLoadText.Where(data => data.textPath == storyLoadPath).Subscribe(data =>
+            {
+                storyLoadText = data.text;
+                storyLoadDone = true;
+            }).AddTo(this);
+            _ctx.LoadText.Execute(storyLoadPath);
+            while (!storyLoadDone) await UniTask.Yield();
+
+            if (!string.IsNullOrEmpty(storyLoadText)) 
+            {
+                var saveData = JsonConvert.DeserializeObject<SaveData>(storyLoadText);
+
+                _ctx.MainCharacterName.Value = saveData.MainCharacterName;
+                _ctx.CharacterImagePath.Value = saveData.CharacterImagePath;
+                _ctx.LocationImagePath.Value = saveData.LocationImagePath;
+                _ctx.StoryProcess.Value = saveData.StoryProcess;
+            }
+
+            _ctx.OnInitDone.Invoke();
+        }
     }
 }
 

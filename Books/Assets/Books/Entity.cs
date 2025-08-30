@@ -11,6 +11,7 @@ namespace Books
     {
         public struct Ctx
         {
+            public IObservable<Unit> ClearCash;
             public Data Data;
         }
 
@@ -20,16 +21,21 @@ namespace Books
         {
             _ctx = ctx;
 
-            Debug.Log($"All types: {string.Join(("\n"), typeof(int).Assembly.GetTypes().Select(t => t.FullName).ToArray())}");
+            AsyncProcess().Forget();
         }
 
-        public async UniTask AsyncProcess()
+        private async UniTask AsyncProcess()
         {
             var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
 
             var onGetText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
             var getText = new ReactiveCommand<string>().AddTo(this);
+
+            var onLoadText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
+            var loadText = new ReactiveCommand<string>().AddTo(this);
+
+            var saveText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
 
             var onGetTexture = new ReactiveCommand<(Texture2D texture, string key)>().AddTo(this);
             var getTexture = new ReactiveCommand<(string fileName, string key)>().AddTo(this);
@@ -45,11 +51,18 @@ namespace Books
                 OnGetText = onGetText,
                 GetText = getText,
 
+                OnLoadText = onLoadText,
+                LoadText = loadText,
+
+                SaveText = saveText,
+
                 OnGetTexture = onGetTexture,
                 GetTexture = getTexture,
 
                 OnGetMusic = onGetMusic,
                 GetMusic = getMusic,
+
+                ClearCash = _ctx.ClearCash,
             }).AddTo(this);
 
             var loadingDone = false;
@@ -118,6 +131,8 @@ namespace Books
 
                 await loading.Show();
 
+                var clearStoryProgress = new ReactiveCommand().AddTo(this);
+
                 var storyClosed = false;
                 var storyInitDone = false;
                 var storyScreen = new Story.Entity(new Story.Entity.Ctx
@@ -128,12 +143,20 @@ namespace Books
                     GetBundle = getBundle,
                     OnGetText = onGetText,
                     GetText = getText,
+                    OnLoadText = onLoadText,
+                    LoadText = loadText,
+                    SaveText = saveText,
+                    ClearProgress = clearStoryProgress,
                     OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
                     OnGetMusic = onGetMusic,
                     GetMusic = getMusic,
                     InitDone = () => storyInitDone = true,
-                    StoryDone = () => { storyClosed = true; },
+                    StoryDone = isClearSave => 
+                    { 
+                        storyClosed = true;
+                        if (isClearSave) clearStoryProgress.Execute();
+                    },
                     ProcessLine = ProcessLine,
                 }).AddTo(this);
 

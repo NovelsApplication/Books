@@ -7,7 +7,7 @@ namespace Books.Story.View
 {
     public interface IScreen
     {
-        public void SetCloseAction(Action onClick);
+        public void SetCloseAction(Action<bool> onClick);
 
         public void ShowImmediate();
         public void HideImmediate();
@@ -27,13 +27,17 @@ namespace Books.Story.View
         [SerializeField] private Bubble _bubble;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _closeButtonWithClearSave;
         [SerializeField] private Location _location;
         [SerializeField] private Character _character;
 
-        public void SetCloseAction(Action onClick) 
+        public void SetCloseAction(Action<bool> onClick) 
         {
             _closeButton.onClick.RemoveAllListeners();
-            _closeButton.onClick.AddListener(() => onClick.Invoke());
+            _closeButton.onClick.AddListener(() => onClick.Invoke(false));
+
+            _closeButtonWithClearSave.onClick.RemoveAllListeners();
+            _closeButtonWithClearSave.onClick.AddListener(() => onClick.Invoke(true));
         }
 
         public void ShowImmediate()

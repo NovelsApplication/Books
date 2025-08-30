@@ -40,7 +40,7 @@ namespace Shared.Cash
         {
             if (_ctx.IsCashed.Invoke(fileName))
             {
-                _ctx.OnGetTexture.Execute((TextureFromCache(fileName, key), fileName));
+                _ctx.OnGetTexture.Execute((TextureFromCache(fileName, key), key));
             }
             else
             {
@@ -62,10 +62,8 @@ namespace Shared.Cash
         private Texture2D TextureFromCache(string fileName, string key)
         {
             var rawData = _ctx.FromCash.Invoke(fileName);
-
             if (!_images.ContainsKey(key))
                 _images[key] = new(0, 0);
-
             ImageConversion.LoadImage(_images[key], rawData);
             return _images[key];
         }
