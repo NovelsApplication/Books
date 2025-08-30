@@ -37,6 +37,8 @@ namespace Books.Menu.View
                     _pool.Enqueue(instance);
                 }
             }
+
+            ShufflePool();
         }
         
         private void OnEnable()
@@ -102,6 +104,23 @@ namespace Books.Menu.View
             if (particle != null)
             {
                 particle.gameObject.SetActive(false);
+                _pool.Enqueue(particle);
+            }
+        }
+        
+        private void ShufflePool()
+        {
+            var tempList = new List<ParticleBehavior>(_pool);
+            
+            for (int i = tempList.Count - 1; i > 0; i--)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, i + 1);
+                (tempList[i], tempList[randomIndex]) = (tempList[randomIndex], tempList[i]);
+            }
+            
+            _pool.Clear();
+            foreach (var particle in tempList)
+            {
                 _pool.Enqueue(particle);
             }
         }

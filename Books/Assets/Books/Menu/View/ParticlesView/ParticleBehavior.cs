@@ -1,5 +1,7 @@
 ﻿using System;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -57,7 +59,7 @@ namespace Books.Menu.View.ParticlesView
             }
         }
 
-        public void ActivateAnimation(Action callback)
+        public virtual void ActivateAnimation(Action callback)
         {
             _sequence.Rewind();
             _sequence.Kill();
@@ -71,39 +73,18 @@ namespace Books.Menu.View.ParticlesView
             _rectTransform.anchoredPosition = startPos;
             
             _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, 0f);
-                
-            _sequence.Append(_image.DOFade(1f, 1).SetEase(Ease.OutQuad));
-            //_sequence.AppendInterval(_duration * 0.6f);
-            _sequence.Append(_image.DOFade(0f, 1).SetEase(Ease.InQuad));
 
-            DoMoveAnimate(startPos, finishPos);
+
+            float visibleTimePart = 0.85f;
+
+            _sequence.Append(_rectTransform.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration)).SetEase(_moveEase);
+            _sequence.Join(_image.DOFade(1f, 3f).SetEase(Ease.OutQuad));
+            _sequence.Insert(_duration * visibleTimePart, 
+                _image.DOFade(0f, _duration - _duration * visibleTimePart).SetEase(Ease.InQuad));
 
             _sequence.OnComplete(() => callback?.Invoke());
             
             _sequence.Play();
-        }
-
-        private void DoMoveAnimate(Vector2 startPos, Vector2 finishPos)
-        {
-            if (_curveStrength == 0)
-            {
-                _sequence.Join(_rectTransform.DOAnchorPos(finishPos, _duration).SetEase(_moveEase));
-            }
-            else
-            {
-                Vector2 midPoint = (startPos + finishPos) * 0.5f;
-                Vector2 direction = (finishPos - startPos).normalized;
-                Vector2 perpendicular = new Vector2(-direction.y, direction.x);
-                Vector2 controlPoint = midPoint + perpendicular * _curveStrength * 10f;
-
-                _sequence.Join(DOVirtual.Float(0, 1, _duration, (t) =>
-                {
-                    Vector2 curvedPosition = Mathf.Pow(1 - t, 2) * startPos + 
-                                             2 * (1 - t) * t * controlPoint + 
-                                             Mathf.Pow(t, 2) * finishPos;
-                    _rectTransform.anchoredPosition = curvedPosition;
-                }).SetEase(_moveEase));
-            }
         }
 
         private Vector2 GetRandomStartPosition()
@@ -124,6 +105,50 @@ namespace Books.Menu.View.ParticlesView
         {
             float angle = Random.Range(0f, 2f * Mathf.PI);
             return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        }
+    }
+
+    public static class RectTransformParticleExtension
+    {
+        public static Tweener DoCurveAnchorPos(this RectTransform target, Vector2 startPos, Vector2 finishPos, 
+            float curveStrength, float duration)
+        {
+            Tweener tween;
+            
+            if (curveStrength == 0)
+            {
+                tween = target.DOAnchorPos(finishPos, duration);
+                return tween;
+            }
+            
+            Vector2 midPoint = (startPos + finishPos) * 0.5f;
+            Vector2 direction = (finishPos - startPos).normalized;
+            Vector2 perpendicular = new Vector2(-direction.y, direction.x);
+            Vector2 controlPoint = midPoint + perpendicular * curveStrength * 10f;
+
+            Func<float, Vector2> getCurvedPosition = (t) =>
+            {
+                Vector2 curvedPosition = Mathf.Pow(1 - t, 2) * startPos +
+                                         2 * (1 - t) * t * controlPoint +
+                                         Mathf.Pow(t, 2) * finishPos;
+                
+                return curvedPosition;
+            };
+            
+            Vector2 pathDirection = finishPos - startPos;
+            Vector2 toCurrentPosDir = target.anchoredPosition - startPos;
+            float projectionLength = Vector2.Dot(toCurrentPosDir, pathDirection);
+            float progress = Mathf.Clamp01(projectionLength / pathDirection.magnitude);
+
+            float t = progress;
+            
+            tween = DOTween.To(() => t,
+                t => target.anchoredPosition = getCurvedPosition(t),
+                1, duration);
+
+            tween.SetTarget(target);
+
+            return tween;
         }
     }
 }
