@@ -51,12 +51,13 @@ namespace Books.Story
 
         private async UniTask ShowStoryProcess(Action<bool> onDone)
         {
+            Debug.Log("Logic 1");
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
-
+            Debug.Log("Logic 2");
             var storyDone = false;
             var storyPath = $"{_ctx.StoryPath}/Story.json";
             var storyText = string.Empty;
-
+            Debug.Log("Logic 3");
             _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data =>
             {
                 storyText = data.text;
@@ -64,6 +65,8 @@ namespace Books.Story
             }).AddTo(this);
             _ctx.GetText.Execute(storyPath);
             while (!storyDone) await UniTask.Yield();
+
+            Debug.Log("Logic 4");
 
             var story = new Ink.Runtime.Story(storyText);
             story.Continue();
