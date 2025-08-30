@@ -151,7 +151,6 @@ namespace Shared.Cash
             localFilesPath = "idbfs/CachedFiles";
 #endif
 
-            Debug.Log($"Localpath - {localFilesPath}");
             return localFilesPath;
         }
 
@@ -170,7 +169,11 @@ namespace Shared.Cash
                     Directory.CreateDirectory(localFilesPath);
             }
 
-            return $"{localFilesPath}/{localExtraPath.Last()}";
+            var result = $"{localFilesPath}/{localExtraPath.Last()}";
+
+            Debug.Log($"Localpath - {result}");
+
+            return result;
         }
 
         private void ClearCash() 
