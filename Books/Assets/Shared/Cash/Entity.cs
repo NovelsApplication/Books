@@ -18,11 +18,18 @@ namespace Shared.Cash
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
 
+            public ReactiveCommand<(string text, string textPath)> OnLoadText;
+            public IObservable<string> LoadText;
+
+            public IObservable<(string text, string textPath)> SaveText;
+
             public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
             public IObservable<(string fileName, string key)> GetTexture;
 
             public ReactiveCommand<(AudioClip clip, string fileName)> OnGetMusic;
             public IObservable<string> GetMusic;
+
+            public IObservable<Unit> ClearCash;
         }
 
         private readonly Ctx _ctx;
@@ -82,6 +89,11 @@ namespace Shared.Cash
                 OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
+                OnLoadText = _ctx.OnLoadText,
+                LoadText = _ctx.LoadText,
+
+                SaveText = _ctx.SaveText,
+
                 IsCashed = fileName => IsCashed(fileName),
 
                 FromCash = fileName => FromCash(fileName),
@@ -117,6 +129,8 @@ namespace Shared.Cash
 
                 ConvertPath = fileName => ConvertPath(fileName),
             }).AddTo(this);
+
+            _ctx.ClearCash.Subscribe(_ => ClearCash()).AddTo(this);
         }
 
         private bool IsCashed(string fileName)
@@ -124,18 +138,24 @@ namespace Shared.Cash
             var result = File.Exists(ConvertPath(fileName));
 
 #if UNITY_EDITOR
-            result = false;
+            //result = false;
 #endif
 
             return result;
         }
 
-        private string ConvertPath(string fileName)
+        private string GetLocalPath() 
         {
             var localFilesPath = $"{Application.persistentDataPath}/CachedFiles";
 #if !UNITY_EDITOR && UNITY_WEBGL
             localFilesPath = "idbfs/CachedFiles";
 #endif
+            return localFilesPath;
+        }
+
+        private string ConvertPath(string fileName)
+        {
+            var localFilesPath = GetLocalPath();
 
             if (!Directory.Exists(localFilesPath))
                 Directory.CreateDirectory(localFilesPath);
@@ -149,6 +169,14 @@ namespace Shared.Cash
             }
 
             return $"{localFilesPath}/{localExtraPath.Last()}";
+        }
+
+        private void ClearCash() 
+        {
+            var localFilesPath = GetLocalPath();
+
+            if (Directory.Exists(localFilesPath))
+                Directory.Delete(localFilesPath, true);
         }
 
         private byte[] FromCash(string fileName)

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Shared.Disposable;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Books.Story
 {
@@ -19,20 +21,25 @@ namespace Books.Story
             public IObservable<(string text, string textPath)> OnGetText;
             public ReactiveCommand<string> GetText;
 
+            public ReactiveCommand SaveProgress;
+
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
 
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
 
-            public Action StoryDone;
+            public Action<bool> StoryDone;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
+
+            public ReactiveProperty<string> MainCharacterName;
+            public ReactiveProperty<string> CharacterImagePath;
+            public ReactiveProperty<string> LocationImagePath;
+            public ReactiveProperty<List<int>> StoryProcess;
         }
 
         private readonly Ctx _ctx;
-
-        private string _mainCharacter;
         private Texture2D _characterImage;
 
         public Logic(Ctx ctx)
@@ -44,7 +51,7 @@ namespace Books.Story
             ShowStoryProcess(_ctx.StoryDone).Forget();
         }
 
-        private async UniTask ShowStoryProcess(Action onDone)
+        private async UniTask ShowStoryProcess(Action<bool> onDone)
         {
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
 
@@ -66,7 +73,52 @@ namespace Books.Story
             _ctx.Screen.SetCloseAction(onDone);
             _ctx.Screen.HideLocationImmediate();
 
-            _mainCharacter = string.Empty;
+            foreach (var index in _ctx.StoryProcess.Value) 
+            {
+                if (story.currentChoices.Count > 0) 
+                {
+                    story.ChooseChoiceIndex(index);
+                }
+                else 
+                {
+                    for (var i = 0; i < index; i++)
+                        story.Continue();
+                } 
+            }
+
+            _locationImage = null;
+            if (!string.IsNullOrEmpty(_ctx.LocationImagePath.Value)) 
+            {
+                var locationDone = false;
+                var locationKey = "location";
+
+                _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
+                {
+                    _locationImage = data.texture;
+                    locationDone = true;
+                }).AddTo(this);
+                _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey));
+
+                while (!locationDone) await UniTask.Yield();
+
+                await _ctx.Screen.ShowLocation(_locationImage);
+            }
+
+            _characterImage = null;
+            if (!string.IsNullOrEmpty(_ctx.CharacterImagePath.Value))
+            {
+                var characterDone = false;
+                var characterKey = "char";
+
+                _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
+                {
+                    _characterImage = data.texture;
+                    characterDone = true;
+                }).AddTo(this);
+                _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
+                while (!characterDone) await UniTask.Yield();
+            }
+
             while (!IsDisposed)
             {
                 _ctx.Screen.HideBubbleImmediate();
@@ -75,6 +127,8 @@ namespace Books.Story
                     break;
 
                 var lineData = _ctx.ProcessLine.Invoke(story.Continue());
+                _ctx.StoryProcess.Value[^1]++;
+
                 if (!lineData.HasValue) continue;
 
                 if (Enum.TryParse<LogicIdx>(lineData.Value.header, true, out var logicId)
@@ -86,7 +140,7 @@ namespace Books.Story
                 if (!string.IsNullOrEmpty(lineData.Value.attributes)) 
                 {
                     var characterDone = false;
-                    var characterPath = $"{_ctx.StoryPath}/Characters/{lineData.Value.attributes.Replace(" ", "_")}.png";
+                    _ctx.CharacterImagePath.Value = $"{_ctx.StoryPath}/Characters/{lineData.Value.attributes.Replace(" ", "_")}.png";
                     var characterKey = "char";
 
                     _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
@@ -94,17 +148,23 @@ namespace Books.Story
                         _characterImage = data.texture;
                         characterDone = true;
                     }).AddTo(this);
-                    _ctx.GetTexture.Execute((characterPath, characterKey));
+                    _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
                     while (!characterDone) await UniTask.Yield();
                 }
 
                 var buttons = story.currentChoices.Select(c => (c.text, c.index)).ToArray();
                 var clicked = false;
-                await _ctx.Screen.ShowBubble((index) => 
+                await _ctx.Screen.ShowBubble((index) =>
                 {
-                    if (index >= 0) story.ChooseChoiceIndex(index);
+                    if (index >= 0)
+                    {
+                        story.ChooseChoiceIndex(index);
+                        _ctx.StoryProcess.Value.Add(index);
+                        _ctx.StoryProcess.Value.Add(0);
+                    }
+                    _ctx.SaveProgress.Execute();
                     clicked = true;
-                }, _mainCharacter, lineData.Value.header, lineData.Value.body, _characterImage, buttons);
+                }, _ctx.MainCharacterName.Value, lineData.Value.header, lineData.Value.body, _characterImage, buttons);
 
                 while (!clicked && !IsDisposed)
                     await UniTask.Yield();
