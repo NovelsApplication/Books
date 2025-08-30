@@ -12,14 +12,13 @@ namespace Books.Menu.View.ParticlesView
     {
         [Header("Продолжительность")] 
         [SerializeField] private float _duration = 5f;
-        
-        [Header("Изменение размера от текущего")]
-        [Range(-1.5f, 1.5f)] [SerializeField] private float _scaleChangeBorder;
-        [SerializeField] private Ease _scaleEase = Ease.Linear;
 
         [Header("Дистанция передвижения")] 
         [SerializeField] private float _distance = 50f;
         [SerializeField] private Ease _moveEase = Ease.Linear;
+        
+        [Header("Скорость вращения")]
+        [Range(0, 10)] [SerializeField] private int _rotationStrength = 3;
 
         [Header("Величина и тип искривление траектории")]
         [Range(0, 10)] [SerializeField] private int _curveStrength = 5;
@@ -69,16 +68,21 @@ namespace Books.Menu.View.ParticlesView
             Vector2 startPos = GetRandomStartPosition();
             Vector2 direction = GetRandomDirection().normalized;
             Vector2 finishPos = startPos + direction * _distance;
-
+            
             _rectTransform.anchoredPosition = startPos;
             
             _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, 0f);
-
-
-            float visibleTimePart = 0.85f;
-
-            _sequence.Append(_rectTransform.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration)).SetEase(_moveEase);
-            _sequence.Join(_image.DOFade(1f, 3f).SetEase(Ease.OutQuad));
+            
+            float visibleTimePart = 0.75f;
+            float onsetTime = 2f;
+            
+            float rotations = _rotationStrength * 2f;
+            float totalRotation = rotations * 360f;
+            _sequence.Join(_rectTransform.DORotate(new Vector3(0, 0, totalRotation), _duration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+            
+            _sequence.Append(_image.DOFade(1f, onsetTime).SetEase(Ease.OutQuad));
+            _sequence.Insert(onsetTime * 0.7f,
+                _rectTransform.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration)).SetEase(_moveEase);
             _sequence.Insert(_duration * visibleTimePart, 
                 _image.DOFade(0f, _duration - _duration * visibleTimePart).SetEase(Ease.InQuad));
 
@@ -124,7 +128,7 @@ namespace Books.Menu.View.ParticlesView
             Vector2 midPoint = (startPos + finishPos) * 0.5f;
             Vector2 direction = (finishPos - startPos).normalized;
             Vector2 perpendicular = new Vector2(-direction.y, direction.x);
-            Vector2 controlPoint = midPoint + perpendicular * curveStrength * 10f;
+            Vector2 controlPoint = midPoint + perpendicular * curveStrength * 20f;
 
             Func<float, Vector2> getCurvedPosition = (t) =>
             {

@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 3198774443
+CRC: 2864095002
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 494332e9d494c7ee6a9dbe903eb26012
+    Hash: 88a34169b4eeac2bb51bec5855c02d41
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 817938833bb3a8103b69bb215ad5e7f2
+    Hash: d1dd7a6ae2b4b2b17f54ef3bfff11035
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 5eeba7e3c131c305801631fd3ebb0a72
+    Hash: 3402d3e3d66eeb0f2d667949c0233d54
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -22,11 +22,15 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 68d121d134a84acc90689926d6f885de, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: e3d116653c3349a429e2f10b4171d55c, type: 3}
 - Class: 114
@@ -51,6 +55,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 2c2c64149859d8e45b6bab5c4eb99cfa, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 89c5594910c81d549b0b1dfdabe1de41, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 51efa18c66d84de1ab193396f91e6e6f, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
 - Class: 114
@@ -90,6 +96,8 @@ ClassTypes:
 - Class: 225
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
+- AssemblyName: Books.Menu
+  ClassName: Books.Menu.View.BackgroundAnimation/PoolObject
 - AssemblyName: Books.Menu
   ClassName: Books.Menu.View.ScreenBook/Label
 - AssemblyName: Unity.TextMeshPro
@@ -139,20 +147,36 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
+- Assets/Remote/Main/Menu/Images/Particles/3.png
+- Assets/Remote/Main/Menu/Images/Particles/8.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/New.png
+- Assets/Remote/Main/Menu/Images/Particles/9.png
 - Assets/Remote/Main/Menu/Images/Bubble.png
 - Assets/Remote/Main/Menu/Images/Menu/UserIcon.png
+- Assets/Remote/Main/Menu/Images/DarkBackground.png
+- "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (1).png"
+- "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F.png"
+- Assets/Remote/Main/Menu/Images/Particles/6.png
 - Assets/Remote/Main/Story/StoryCanvas.prefab
+- Assets/Remote/Main/Menu/Images/Particles/14.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
 - Assets/Remote/Main/Menu/Images/Menu/Background1.png
 - Assets/Remote/Main/Menu/Images/Menu/SettingsIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Special.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackgroundMain.png
+- Assets/Remote/Main/Menu/Images/Particles/1.png
 - Assets/Remote/Main/Menu/Refs/Menu.png
 - Assets/Remote/Main/Fader/FaderCanvas.prefab
 - Assets/Remote/Main/Menu/MenuCanvas.prefab
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDone.png
+- Assets/Remote/Main/Menu/Images/Particles/15.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F
+  (780 x 200 \u043F\u0438\u043A\u0441.).png"
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (3).png"
 - Assets/Remote/Main/Menu/Images/Menu/Background2.png
 - "Assets/Remote/Main/Story/Refs/\u0433\u043E\u0441\u0442\u0438\u043D\u043D\u0430\u044F_\u0434\u0435\u043D\u044C.png"
 - Assets/Remote/Main/Menu/Images/LightBackground.png
@@ -160,14 +184,21 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
 - Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/Background4.png
+- Assets/Remote/Main/Menu/Images/Particles/12.png
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
 - Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/1 (2).png
 - Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
+- Assets/Remote/Main/Menu/Images/PopUp/1 (1).png
+- Assets/Remote/Main/Menu/Images/Particles/10.png
+- "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (4).png"
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/InProgress.png
 - Assets/Remote/Main/Menu/Refs/PopUp.png
 - Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
+- Assets/Remote/Main/Menu/Images/Particles/7.png
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/DialogsIcon.png
@@ -175,11 +206,15 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Menu/Icons/ForYou.png
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
+- Assets/Remote/Main/Menu/Images/Particles/11.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
+- Assets/Remote/Main/Menu/Images/Particles/2.png
 - Assets/Remote/Main/Menu/Images/PopUp/RefreshIcon.png
 - "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Menu/Images/PopUp/SuitsIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
+- Assets/Remote/Main/Menu/Images/Particles/5.png
+- Assets/Remote/Main/Menu/Images/Particles/13.png
 - Assets/Remote/Main/Menu/Images/Menu/Heart.png
-- Assets/Remote/Main/Menu/Images/DarkBackground.png
+- Assets/Remote/Main/Menu/Images/Particles/4.png
 Dependencies: []

@@ -6734,12 +6734,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 3.5
-  _scaleChangeBorder: 0
-  _scaleEase: 1
-  _distance: 200
-  _moveEase: 2
-  _curveStrength: 4
+  _duration: 4
+  _distance: 300
+  _moveEase: 4
+  _rotationStrength: 3
+  _curveStrength: 2
 --- !u!1 &3594627005636047377
 GameObject:
   m_ObjectHideFlags: 0
@@ -7468,11 +7467,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 5
-  _scaleChangeBorder: 0
-  _scaleEase: 1
-  _distance: 500
-  _moveEase: 2
+  _duration: 6
+  _distance: 200
+  _moveEase: 4
+  _rotationStrength: 3
   _curveStrength: 10
 --- !u!1 &4055573641627832824
 GameObject:
@@ -8680,8 +8678,8 @@ MonoBehaviour:
     Object: {fileID: 7091374436781175995}
   - InstanceCount: 6
     Object: {fileID: 7354779968806907096}
-  _particlesPerCycle: 5
-  _spawnInterval: 2
+  _particlesPerCycle: 4
+  _spawnInterval: 3
 --- !u!1 &4891711995991198466
 GameObject:
   m_ObjectHideFlags: 0
