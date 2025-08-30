@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _testURL: http://localhost.TheMagicComb
+    _testURL: 
     _loadingData:
       _screenName: FaderCanvas
     _menuData:
