@@ -150,6 +150,8 @@ namespace Shared.Cash
 #if !UNITY_EDITOR && UNITY_WEBGL
             localFilesPath = "idbfs/CachedFiles";
 #endif
+
+            Debug.Log($"Localpath - {localFilesPath}");
             return localFilesPath;
         }
 
