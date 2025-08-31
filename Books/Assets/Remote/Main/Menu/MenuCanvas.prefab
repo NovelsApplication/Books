@@ -1665,14 +1665,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
+  duration: 4
   _distance: 800
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 1
-  startFade: 0.7
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  startFade: 0.409
+  fadeInPercentage: 0.293
+  fadeOutPercentage: 0.287
 --- !u!1 &711968474781618960
 GameObject:
   m_ObjectHideFlags: 0
@@ -6768,7 +6768,7 @@ GameObject:
   - component: {fileID: 4291601105740997814}
   - component: {fileID: 4681187708209239623}
   m_Layer: 5
-  m_Name: particle_butterfly
+  m_Name: particle_butterfly140
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6791,7 +6791,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 781, y: -270}
-  m_SizeDelta: {x: 210, y: 210}
+  m_SizeDelta: {x: 140, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &94491588879162019
 CanvasRenderer:
@@ -6843,18 +6843,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 12
+  duration: 15
   _distance: 500
   _moveEase: 1
-  _rotationStrength: 3
+  _rotationStrength: 1
   _curveStrength: 5
-  startFade: 0.585
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  startFade: 0.25
+  fadeInPercentage: 0.31
+  fadeOutPercentage: 0.31
   _useStartFadeAsMax: 1
-  _maxFadeValue: 0.521
-  _minFadeValue: 0.124
-  _flashCycleDuration: 2.5
+  _maxFadeValue: 0.332
+  _minFadeValue: 0.074
+  _flashCycleDuration: 2.94
 --- !u!1 &3594627005636047377
 GameObject:
   m_ObjectHideFlags: 0
@@ -7583,14 +7583,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
+  duration: 10
   _distance: 80
   _moveEase: 4
   _rotationStrength: 0
-  _curveStrength: 5
-  startFade: 0.7
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  _curveStrength: 2
+  startFade: 0.062
+  fadeInPercentage: 0.387
+  fadeOutPercentage: 0.387
 --- !u!1 &4055573641627832824
 GameObject:
   m_ObjectHideFlags: 0
@@ -8545,6 +8545,106 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4661507999120044276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7881514711461810115}
+  - component: {fileID: 8416496659993157603}
+  - component: {fileID: 4877977855944858849}
+  - component: {fileID: 8267170560848458273}
+  m_Layer: 5
+  m_Name: particle_butterfly90
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &7881514711461810115
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661507999120044276}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3934702333389330869}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 781, y: -270}
+  m_SizeDelta: {x: 90, y: 90}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8416496659993157603
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661507999120044276}
+  m_CullTransparentMesh: 1
+--- !u!114 &4877977855944858849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661507999120044276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: d5de5afe45c714d4f811603d57b23475, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8267170560848458273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661507999120044276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 12
+  _distance: 500
+  _moveEase: 1
+  _rotationStrength: 3
+  _curveStrength: 5
+  startFade: 0.185
+  fadeInPercentage: 0.269
+  fadeOutPercentage: 0.278
+  _useStartFadeAsMax: 1
+  _maxFadeValue: 0.332
+  _minFadeValue: 0.068
+  _flashCycleDuration: 1.93
 --- !u!1 &4757142644807938996
 GameObject:
   m_ObjectHideFlags: 0
@@ -8777,6 +8877,8 @@ RectTransform:
   - {fileID: 8623408193356179460}
   - {fileID: 6261175257172905546}
   - {fileID: 1610916059666067182}
+  - {fileID: 7881514711461810115}
+  - {fileID: 3053864000958808506}
   m_Father: {fileID: 4066645525518783961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8798,22 +8900,126 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvas: {fileID: 3959531229831942455}
   _particles:
-  - InstanceCount: 9
+  - InstanceCount: 12
     Object: {fileID: 7091374436781175995}
-  - InstanceCount: 7
+  - InstanceCount: 12
     Object: {fileID: 125173730594743074}
-  - InstanceCount: 10
+  - InstanceCount: 6
     Object: {fileID: 7824364968694856586}
-  - InstanceCount: 10
+  - InstanceCount: 6
     Object: {fileID: 241417817161189125}
-  - InstanceCount: 10
+  - InstanceCount: 6
     Object: {fileID: 3250696633165905789}
-  - InstanceCount: 8
+  - InstanceCount: 7
     Object: {fileID: 8371111587009557295}
-  - InstanceCount: 10
+  - InstanceCount: 7
     Object: {fileID: 4681187708209239623}
-  _particlesPerCycle: 7
-  _spawnInterval: 3
+  - InstanceCount: 7
+    Object: {fileID: 8267170560848458273}
+  - InstanceCount: 15
+    Object: {fileID: 7885567034225433508}
+  _particlesPerCycle: 23
+  _spawnInterval: 8
+--- !u!1 &4875282314037314345
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3053864000958808506}
+  - component: {fileID: 8787559602149610490}
+  - component: {fileID: 8574203112650121785}
+  - component: {fileID: 7885567034225433508}
+  m_Layer: 5
+  m_Name: particle_flash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &3053864000958808506
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4875282314037314345}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3934702333389330869}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 781, y: -270}
+  m_SizeDelta: {x: 70, y: 70}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8787559602149610490
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4875282314037314345}
+  m_CullTransparentMesh: 1
+--- !u!114 &8574203112650121785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4875282314037314345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 04e7d9a0c59746f4a84adb8a1a612413, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7885567034225433508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4875282314037314345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 20
+  _distance: 0
+  _moveEase: 1
+  _rotationStrength: 1
+  _curveStrength: 0
+  startFade: 0.844
+  fadeInPercentage: 0.319
+  fadeOutPercentage: 0.143
+  _useStartFadeAsMax: 1
+  _maxFadeValue: 1
+  _minFadeValue: 0.091
+  _flashCycleDuration: 2.26
 --- !u!1 &4891711995991198466
 GameObject:
   m_ObjectHideFlags: 0
@@ -8974,14 +9180,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
+  duration: 11
   _distance: 60
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 0.7
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  startFade: 0.05
+  fadeInPercentage: 0.443
+  fadeOutPercentage: 0.454
 --- !u!1 &5007460875665328864
 GameObject:
   m_ObjectHideFlags: 0
@@ -9458,14 +9664,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
-  _distance: 200
+  duration: 9
+  _distance: 148.9
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 1
-  startFade: 0.7
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  startFade: 0.185
+  fadeInPercentage: 0.343
+  fadeOutPercentage: 0.343
 --- !u!1 &5277487255570426128
 GameObject:
   m_ObjectHideFlags: 0
@@ -14107,14 +14313,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
-  _distance: 400
+  duration: 6
+  _distance: 347.2
   _moveEase: 4
   _rotationStrength: 0
-  _curveStrength: 2
-  startFade: 0.7
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  _curveStrength: 3
+  startFade: 0.232
+  fadeInPercentage: 0.36
+  fadeOutPercentage: 0.363
 --- !u!1 &7556516837252515082
 GameObject:
   m_ObjectHideFlags: 0
@@ -14833,14 +15039,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
-  _distance: 200
+  duration: 8
+  _distance: 155.5
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 6
-  startFade: 0.7
-  fadeInPercentage: 0.2
-  fadeOutPercentage: 0.2
+  startFade: 0.25
+  fadeInPercentage: 0.407
+  fadeOutPercentage: 0.393
 --- !u!1 &8060022622365698459
 GameObject:
   m_ObjectHideFlags: 0
