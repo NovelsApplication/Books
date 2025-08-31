@@ -11,7 +11,7 @@ namespace Books.Menu.View
         [SerializeField] private Canvas _canvas;
         [SerializeField] private List<PoolObject> _particles;
         
-        [Header("Настройка появления партиклов")]
+        [Header("Настройка плотности появления партиклов")]
         [SerializeField] private int _particlesPerCycle = 3;
         [SerializeField] private float _spawnInterval = 1f;
 
@@ -85,17 +85,12 @@ namespace Books.Menu.View
                 {
                     Debug.Log("Пул пустой! Ожидание возвращения объектов");
                     yield return new WaitWhile(() => _pool.Count == 0);
-                    Debug.Log("Объекты вернулись в пул");
                 }
-                
-                Debug.Log($"Объектов в пуле до показа = {_pool.Count}");
                 
                 for (int i = 0; i < Mathf.Min(_particlesPerCycle, _pool.Count); i++)
                 {
                     ShowNextParticle();
                 }
-                
-                Debug.Log($"Объектов в пуле после показа = {_pool.Count}");
                 
                 yield return new WaitForSeconds(_spawnInterval);
             }
