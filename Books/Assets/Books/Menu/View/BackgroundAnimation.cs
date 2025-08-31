@@ -15,8 +15,8 @@ namespace Books.Menu.View
         [SerializeField] private int _particlesPerCycle = 3;
         [SerializeField] private float _spawnInterval = 1f;
 
-        private Queue<ParticleBehavior> _pool = new ();
-        private List<ParticleBehavior> _activeParticles = new ();
+        private readonly Queue<ParticleBehavior> _pool = new();
+        private readonly List<ParticleBehavior> _activeParticles = new();
         
         private Coroutine _animationCoroutine;
         private bool _isRunning;
@@ -41,32 +41,6 @@ namespace Books.Menu.View
             }
 
             ShufflePool();
-        }
-        
-        private void OnEnable()
-        {
-            if (!_isRunning && _pool.Count > 0)
-            {
-                StartAnimation();
-            }
-        }
-
-        private void OnDisable()
-        {
-            _isRunning = false;
-            if (_animationCoroutine != null)
-            {
-                StopCoroutine(_animationCoroutine);
-                _animationCoroutine = null;
-
-                foreach (var activeParticle in _activeParticles)
-                {
-                    activeParticle.gameObject.SetActive(false);
-                    _pool.Enqueue(activeParticle);
-                }
-                
-                _activeParticles.Clear();
-            }
         }
 
         private void StartAnimation()
@@ -108,15 +82,16 @@ namespace Books.Menu.View
 
         private void ReturnParticleToPool(ParticleBehavior particle)
         {
-            if (particle != null)
+            if (particle == null) return;
+            
+            particle.gameObject.SetActive(false);
+            
+            if (_activeParticles.Remove(particle))
             {
-                particle.gameObject.SetActive(false);
-                
                 _pool.Enqueue(particle);
-                _activeParticles.Remove(particle);
             }
         }
-        
+
         private void ShufflePool()
         {
             var tempList = new List<ParticleBehavior>(_pool);
@@ -132,6 +107,46 @@ namespace Books.Menu.View
             {
                 _pool.Enqueue(particle);
             }
+        }
+
+        private void StopAnimation()
+        {
+            _isRunning = false;
+            
+            if (_animationCoroutine != null)
+            {
+                StopCoroutine(_animationCoroutine);
+                _animationCoroutine = null;
+            }
+
+            foreach (var activeParticle in _activeParticles)
+            {
+                if (activeParticle != null)
+                {
+                    activeParticle.gameObject.SetActive(false);
+                    _pool.Enqueue(activeParticle);
+                }
+            }
+            
+            _activeParticles.Clear();
+        }
+
+        private void OnEnable()
+        {
+            if (!_isRunning && _pool.Count > 0)
+            {
+                StartAnimation();
+            }
+        }
+
+        private void OnDisable()
+        {
+            StopAnimation();
+        }
+
+        private void OnDestroy()
+        {
+            StopAnimation();
         }
 
         [Serializable] private class PoolObject

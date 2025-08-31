@@ -1,7 +1,6 @@
 ﻿using System;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -31,11 +30,10 @@ namespace Books.Menu.View.ParticlesView
         [Header("Время УГАСАНИЯ в процентах от общего")] 
         [Range(0, 0.5f)] [SerializeField] protected float fadeOutPercentage = 0.2f;
 
-        protected Sequence Sequence;
-        
-        protected RectTransform Target;
-        protected Image Image;
-        protected Canvas Canvas;
+        protected Sequence MainSequence { get; private set; }
+        protected RectTransform Target { get; private set; }
+        protected Image Image { get; private set; }
+        protected Canvas Canvas { get; private set; }
 
         public void Init(Canvas canvas)
         {
@@ -46,44 +44,49 @@ namespace Books.Menu.View.ParticlesView
 
         public virtual void ActivateAnimation(Action callback = null)
         {
-            Sequence.Rewind();
-            Sequence.Kill();
-            Sequence = DOTween.Sequence();
-            Sequence.Pause();
+            CleanupSequence();
+            MainSequence = DOTween.Sequence();
+            MainSequence.Pause();
             
             Vector2 startPos = GetRandomStartPosition();
             Vector2 direction = GetRandomDirection().normalized;
             Vector2 finishPos = startPos + direction * _distance;
 
             Target.anchoredPosition = startPos;
-            
             Image.color = new Color(Image.color.r, Image.color.g, Image.color.b, 0f);
             
-            Sequence.Append(Target.DoCurveAnchorPos(startPos, finishPos, _curveStrength, duration)).SetEase(_moveEase);
-            Sequence.Join(Image.DOFade(startFade, duration * fadeInPercentage).SetEase(Ease.OutQuad));
-            Sequence.Join(Target.DORotate(new Vector3(0, 0, _rotationStrength * 90f),
+            MainSequence.Append(Target.DoCurveAnchorPos(startPos, finishPos, _curveStrength, duration).SetEase(_moveEase));
+            MainSequence.Join(Image.DOFade(startFade, duration * fadeInPercentage).SetEase(Ease.OutQuad));
+            MainSequence.Join(Target.DORotate(new Vector3(0, 0, _rotationStrength * 90f),
                 duration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
-            Sequence.Insert(duration * (1 - fadeOutPercentage), 
+            MainSequence.Insert(duration * (1 - fadeOutPercentage), 
                 Image.DOFade(0f, duration * fadeOutPercentage).SetEase(Ease.InQuad));
             
-            Sequence.OnComplete(() => callback?.Invoke());
-            Sequence.Play();
+            MainSequence.OnComplete(() => callback?.Invoke());
+            MainSequence.Play();
         }
 
         private void OnEnable()
         {
-            if (Sequence != null)
-            {
-                Sequence.Play();
-            }
+            MainSequence?.Play();
         }
 
         private void OnDisable()
         {
-            if (Sequence != null)
+            CleanupSequence();
+        }
+
+        private void OnDestroy()
+        {
+            CleanupSequence();
+        }
+
+        protected void CleanupSequence()
+        {
+            if (MainSequence != null)
             {
-                Sequence.Kill();
-                Sequence = null;
+                MainSequence.Kill();
+                MainSequence = null;
             }
         }
 
@@ -95,10 +98,10 @@ namespace Books.Menu.View.ParticlesView
             float width = canvasRect.rect.width;
             float height = canvasRect.rect.height;
 
-            float x = Random.Range(-width/2, width/2);
-            float y = Random.Range(-height/2, height/2);
-
-            return new Vector2(x, y);
+            return new Vector2(
+                Random.Range(-width/2, width/2),
+                Random.Range(-height/2, height/2)
+            );
         }
 
         private Vector2 GetRandomDirection()
