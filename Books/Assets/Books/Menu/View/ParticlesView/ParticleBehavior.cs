@@ -1,8 +1,7 @@
 ﻿using System;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -11,7 +10,7 @@ namespace Books.Menu.View.ParticlesView
     public class ParticleBehavior : MonoBehaviour
     {
         [Header("Продолжительность")] 
-        [SerializeField] private float _duration = 5f;
+        [SerializeField] protected float duration = 5f;
 
         [Header("Дистанция передвижения")] 
         [SerializeField] private float _distance = 50f;
@@ -23,70 +22,76 @@ namespace Books.Menu.View.ParticlesView
         [Header("Величина и тип искривление траектории")]
         [Range(0, 10)] [SerializeField] private int _curveStrength = 5;
 
-        private Sequence _sequence;
+        [Header("Начальная прозрачность")] 
+        [Range(0, 1)] [SerializeField] protected float startFade = 0.7f;
+
+        [Header("Время ПОЯВЛЕНИЯ в процентах от общего")] 
+        [Range(0, 0.5f)] [SerializeField] protected float fadeInPercentage = 0.2f;
         
-        private RectTransform _rectTransform;
-        private Image _image;
-        private Canvas _canvas;
+        [Header("Время УГАСАНИЯ в процентах от общего")] 
+        [Range(0, 0.5f)] [SerializeField] protected float fadeOutPercentage = 0.2f;
+
+        protected Sequence Sequence;
+        
+        protected RectTransform Target;
+        protected Image Image;
+        protected Canvas Canvas;
 
         public void Init(Canvas canvas)
         {
-            _canvas = canvas;
-            _rectTransform = GetComponent<RectTransform>();
-            _image = GetComponent<Image>();
+            Canvas = canvas;
+            Target = GetComponent<RectTransform>();
+            Image = GetComponent<Image>();
+        }
+
+        public virtual void ActivateAnimation(Action callback = null)
+        {
+            Sequence.Rewind();
+            Sequence.Kill();
+            Sequence = DOTween.Sequence();
+            Sequence.Pause();
+            
+            Vector2 startPos = GetRandomStartPosition();
+            Vector2 direction = GetRandomDirection().normalized;
+            Vector2 finishPos = startPos + direction * _distance;
+
+            Target.anchoredPosition = startPos;
+            
+            Image.color = new Color(Image.color.r, Image.color.g, Image.color.b, 0f);
+            
+            Sequence.Append(Target.DoCurveAnchorPos(startPos, finishPos, _curveStrength, duration)).SetEase(_moveEase);
+            Sequence.Join(Image.DOFade(startFade, duration * fadeInPercentage).SetEase(Ease.OutQuad));
+            Sequence.Join(Target.DORotate(new Vector3(0, 0, _rotationStrength * 90f),
+                duration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+            Sequence.Insert(duration * (1 - fadeOutPercentage), 
+                Image.DOFade(0f, duration * fadeOutPercentage).SetEase(Ease.InQuad));
+            
+            Sequence.OnComplete(() => callback?.Invoke());
+            Sequence.Play();
         }
 
         private void OnEnable()
         {
-            if (_sequence != null)
+            if (Sequence != null)
             {
-                _sequence.Play();
+                Sequence.Play();
             }
         }
 
         private void OnDisable()
         {
-            if (_sequence != null)
+            if (Sequence != null)
             {
-                _sequence.Kill();
-                _sequence = null;
+                Sequence.Kill();
+                Sequence = null;
             }
-        }
-
-        public virtual void ActivateAnimation(Action callback = null)
-        {
-            _sequence.Rewind();
-            _sequence.Kill();
-            _sequence = DOTween.Sequence();
-            _sequence.Pause();
-
-            Vector2 startPos = GetRandomStartPosition();
-            Vector2 direction = GetRandomDirection().normalized;
-            Vector2 finishPos = startPos + direction * _distance;
-            
-            _rectTransform.anchoredPosition = startPos;
-            
-            _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, 0f);
-
-            float visibleTimePart = 0.75f;
-
-            _sequence.Append(_rectTransform.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration)).SetEase(_moveEase);
-            _sequence.Join(_image.DOFade(1f, _duration * (1 - visibleTimePart)).SetEase(Ease.OutQuad));
-            _sequence.Join(_rectTransform.DORotate(new Vector3(0, 0, _rotationStrength * 90f), _duration, RotateMode.FastBeyond360)
-                .SetEase(Ease.Linear));
-            _sequence.Insert(_duration * visibleTimePart, 
-                _image.DOFade(0f, _duration - _duration * visibleTimePart).SetEase(Ease.InQuad));
-
-            _sequence.OnComplete(() => callback?.Invoke());
-            
-            _sequence.Play();
         }
 
         private Vector2 GetRandomStartPosition()
         {
-            if (_canvas == null) return Vector2.zero;
+            if (Canvas == null) return Vector2.zero;
             
-            RectTransform canvasRect = _canvas.GetComponent<RectTransform>();
+            RectTransform canvasRect = Canvas.GetComponent<RectTransform>();
             float width = canvasRect.rect.width;
             float height = canvasRect.rect.height;
 
