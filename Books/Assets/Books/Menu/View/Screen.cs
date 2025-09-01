@@ -26,7 +26,8 @@ namespace Books.Menu.View
         [SerializeField] private ScreenBook _mainScreenBook;
         [SerializeField] private ScrollSnapController _screenBookSnapController;
         [SerializeField] private ClickSnapController _tagsSnapController;
-        [SerializeField] private BackgroundAnimation _backgroundAnimation;
+        [SerializeField] private BackgroundAnimation _lightBackgroundAnimation;
+        [SerializeField] private BackgroundAnimation _darkBackgroundAnimation;
         [SerializeField] private DotsContainer _dotsContainer;
         [SerializeField] private TagsContainer _tagsContainer;
         [SerializeField] private Dot _mainScreenDot;
@@ -38,10 +39,15 @@ namespace Books.Menu.View
 
         private readonly Stack<GameObject> _objects = new ();
 
+        private BackgroundAnimation _backgroundAnimation;
+
         public void SetTheme(bool isLightTheme) 
         {
             foreach (var element in _lightElements) element.SetActive(isLightTheme);
             foreach (var element in _darkElements) element.SetActive(!isLightTheme);
+
+            if (isLightTheme) _backgroundAnimation = _lightBackgroundAnimation;
+            else _backgroundAnimation = _darkBackgroundAnimation;
         }
 
         public void ShowImmediate()
@@ -153,7 +159,7 @@ namespace Books.Menu.View
             }
             
             _tagsSnapController.InstantlyCenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
-            _screenBookSnapController.InstantlyCenteringOnElement(6);
+            _screenBookSnapController.InstantlyCenteringOnElement(2);
             
             _tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index));
             _screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
