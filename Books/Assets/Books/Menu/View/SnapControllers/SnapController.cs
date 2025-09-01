@@ -11,9 +11,6 @@ namespace Books.Menu.View.SnapControllers
     {
         [Header("Настройки магнита")]
         [SerializeField] protected float snapSpeed = 6f;
-        
-        [Header("Уже созданный контент для работы магнита")]
-        [SerializeField] protected List<RectTransform> followedContent;
 
         [Header("Зависимости")]
         [SerializeField] protected RectTransform contentContainer;
@@ -26,17 +23,6 @@ namespace Books.Menu.View.SnapControllers
 
         protected List<RectTransform> scrollElements = new ();
         protected bool isInitialized;
-
-        private void Start()
-        {
-            if (followedContent == null || followedContent.Count == 0)
-                return;
-            
-            foreach (var element in followedContent)
-            {
-                FollowElement(element);
-            }
-        }
 
         public virtual void FollowElement(RectTransform element)
         {

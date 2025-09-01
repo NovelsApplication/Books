@@ -24,6 +24,7 @@ namespace Books.Menu.View
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private ScreenBook _mainScreenBook;
         [SerializeField] private ScrollSnapController _screenBookSnapController;
+        [SerializeField] private ClickSnapController _tagsSnapController;
         [SerializeField] private BackgroundAnimation _backgroundAnimation;
         [SerializeField] private DotsContainer _dotsContainer;
         [SerializeField] private Dot _mainScreenDot;
@@ -112,6 +113,7 @@ namespace Books.Menu.View
             foreach (var mainTag in _mainTags) 
             {
                 mainTag.SetSelected(false);
+                _tagsSnapController.FollowElement(mainTag.GetComponent<RectTransform>());
             }
 
             _mainScreenLittleBook.gameObject.SetActive(false);
