@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Books.Menu.View.Dots;
 using Books.Menu.View.SnapControllers;
+using Books.Menu.View.Tags;
 using UniRx;
 using UnityEngine;
 
@@ -27,8 +28,8 @@ namespace Books.Menu.View
         [SerializeField] private ClickSnapController _tagsSnapController;
         [SerializeField] private BackgroundAnimation _backgroundAnimation;
         [SerializeField] private DotsContainer _dotsContainer;
+        [SerializeField] private TagsContainer _tagsContainer;
         [SerializeField] private Dot _mainScreenDot;
-        [SerializeField] private MainTag[] _mainTags;
         [SerializeField] private ScreenBook _mainScreenLittleBook;
         [SerializeField] private PopUp _popUp;
 
@@ -110,12 +111,6 @@ namespace Books.Menu.View
             _dotsContainer.FollowDot(dot);
             _objects.Push(dot.gameObject);
 
-            foreach (var mainTag in _mainTags) 
-            {
-                mainTag.SetSelected(false);
-                _tagsSnapController.FollowElement(mainTag.GetComponent<RectTransform>());
-            }
-
             _mainScreenLittleBook.gameObject.SetActive(false);
             var screenLittleBook = UnityEngine.Object.Instantiate<ScreenBook>(_mainScreenLittleBook, _mainScreenLittleBook.transform.parent);
             screenLittleBook.gameObject.SetActive(true);
@@ -151,7 +146,16 @@ namespace Books.Menu.View
             secondBorderRect.sizeDelta = targetSize;
             secondBorderRect.SetParent(parent, false);
             secondBorderRect.SetSiblingIndex(parent.childCount - 1);
+
+            foreach (var tag in _tagsContainer.Tags)
+            {
+                _tagsSnapController.FollowElement(tag.GetComponent<RectTransform>());
+            }
             
+            _tagsSnapController.InstantlyCenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
+            _screenBookSnapController.InstantlyCenteringOnElement(6);
+            
+            _tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index));
             _screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
             
             _backgroundAnimation.InitializeParticles();

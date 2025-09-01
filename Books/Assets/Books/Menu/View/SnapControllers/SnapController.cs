@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Books.Menu.View.SnapControllers
 {
@@ -15,14 +14,23 @@ namespace Books.Menu.View.SnapControllers
         [Header("Зависимости")]
         [SerializeField] protected RectTransform contentContainer;
         [SerializeField] protected RectTransform viewPort;
-
-        protected virtual int StartTargetElementIndex => 0;
         
         public IReadOnlyReactiveProperty<int> TargetElementIndexRP => targetElementIndex;
-        protected ReactiveProperty<int> targetElementIndex = new();
+        protected ReactiveProperty<int> targetElementIndex = new(0);
 
         protected List<RectTransform> scrollElements = new ();
         protected bool isInitialized;
+
+        private void OnEnable()
+        {
+            if (isInitialized)
+                InstantlyCenteringOnElement(targetElementIndex.Value);
+        }
+
+        public void InstantlyCenteringOnElement(int index)
+        {
+            StartCoroutine(SmoothSnapToElement(index, true));
+        }
 
         public virtual void FollowElement(RectTransform element)
         {
@@ -37,36 +45,33 @@ namespace Books.Menu.View.SnapControllers
             }
         }
 
-        protected IEnumerator SmoothSnapToElement(int targetElementIndex)
+        protected IEnumerator SmoothSnapToElement(int index, bool isInstantly = false)
         {
-            Vector2 targetPosition = GetContentContainerTargetPosition(targetElementIndex);
+            Vector2 targetPosition = GetContentContainerTargetPosition(index);
             Vector2 startPosition = contentContainer.anchoredPosition;
             
-            float elapsedTime = 0f;
-
-            while (elapsedTime < 1f)
+            if (!isInstantly)
             {
-                elapsedTime += Time.deltaTime * snapSpeed;
-                contentContainer.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, elapsedTime);
-                yield return null;
+                float elapsedTime = 0f;
+                
+                while (elapsedTime < 1f)
+                {
+                    elapsedTime += Time.deltaTime * snapSpeed;
+                    contentContainer.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, elapsedTime);
+                    yield return null;
+                }
             }
 
             contentContainer.anchoredPosition = targetPosition;
-            this.targetElementIndex.Value = targetElementIndex;
+            targetElementIndex.Value = index;
         }
 
-        private void OnEnable()
+        private Vector2 GetContentContainerTargetPosition(int index)
         {
-            if (isInitialized)
-                StartCoroutine(StartCenteringOnTargetElement());
-        }
-
-        private Vector2 GetContentContainerTargetPosition(int targetElementIndex)
-        {
-            if (targetElementIndex < 0 || targetElementIndex >= scrollElements.Count)
+            if (index < 0 || index >= scrollElements.Count)
                 throw new ArgumentException("Некорректный индекс");
 
-            RectTransform targetElement = scrollElements[targetElementIndex];
+            RectTransform targetElement = scrollElements[index];
             if (targetElement == null) throw new Exception("Целевой элемент равен null");
             
             Vector2 targetWorldCenter =
@@ -80,17 +85,16 @@ namespace Books.Menu.View.SnapControllers
             return new Vector2(contentContainer.anchoredPosition.x - localDiff.x, contentContainer.anchoredPosition.y);
         }
 
-        // Может выдавать ArgumentException("Некорректный индекс"). Не критичный момент
-        private IEnumerator StartCenteringOnTargetElement()
-        {
-            yield return null;
-            contentContainer.anchoredPosition = 
-                GetContentContainerTargetPosition(StartTargetElementIndex);
-
-            LayoutRebuilder.ForceRebuildLayoutImmediate(contentContainer);
-            yield return null;
-
-            targetElementIndex.Value = StartTargetElementIndex;
-        }
+        // private IEnumerator CenteringOnElementCoroutine(int index)
+        // {
+        //     yield return null;
+        //     contentContainer.anchoredPosition = 
+        //         GetContentContainerTargetPosition(index);
+        //
+        //     LayoutRebuilder.ForceRebuildLayoutImmediate(contentContainer);
+        //     yield return null;
+        //
+        //     targetElementIndex.Value = index;
+        // }
     }
 }
