@@ -24,38 +24,37 @@ namespace Books.Menu.View
         private ReactiveProperty<int> _targetElementIndex = new(1);
 
         private List<RectTransform> _scrollElements = new ();
-        private bool _isInitialized = false;
+        private bool _isInitialized;
 
-        public void Initialize()
+        public void FollowElement(RectTransform element)
         {
-            for (int i = 0; i < _contentContainer.childCount - 1; i++)
-            {
-                Transform element = _contentContainer.GetChild(i);
-                if (element.TryGetComponent(out ScreenBook screenBook) && element.gameObject.activeSelf)
-                {
-                    _scrollElements.Add(screenBook.GetComponent<RectTransform>());
-                }
-            }
+            if (element == null)
+                return;
             
-            _scrollRectNested.OnEndDragEvent += OnEndDrag;
-            _isInitialized = true;
+            _scrollElements.Add(element);
+
+            if (!_isInitialized)
+            {
+                _scrollRectNested.OnEndDragEvent += OnEndDrag;
+                _isInitialized = true;
+            }
         }
 
         private void OnEnable()
         {
             if (_isInitialized)
-                StartCoroutine(CenteringOnTargetElement());
+                StartCoroutine(StartCenteringOnTargetElement());
         }
 
-        private IEnumerator CenteringOnTargetElement()
+        // Может выдавать ArgumentException("Некорректный индекс"). Не критичный момент
+        private IEnumerator StartCenteringOnTargetElement()
         {
             yield return null;
+            _contentContainer.anchoredPosition = 
+                GetContentContainerTargetPosition(_targetElementIndex.Value);
+
             LayoutRebuilder.ForceRebuildLayoutImmediate(_contentContainer);
             yield return null;
-
-            var anchoredPosition = GetContentContainerTargetPosition(_targetElementIndex.Value);
-
-            _contentContainer.anchoredPosition = anchoredPosition;
         }
 
         private void OnEndDrag(PointerEventData eventData)
@@ -66,7 +65,7 @@ namespace Books.Menu.View
 
             if (Mathf.Abs(dragDistance) / UnityEngine.Screen.width < _scrollSensitivity)
             {
-                StartCoroutine(SnapToElement(targetIndex));
+                StartCoroutine(SmoothSnapToElement(targetIndex));
                 return;
             }
 
@@ -79,10 +78,10 @@ namespace Books.Menu.View
                 targetIndex = Mathf.Max(targetIndex - 1, 0);
             }
 
-            StartCoroutine(SnapToElement(targetIndex));
+            StartCoroutine(SmoothSnapToElement(targetIndex));
         }
 
-        private IEnumerator SnapToElement(int targetElementIndex)
+        private IEnumerator SmoothSnapToElement(int targetElementIndex)
         {
             Vector2 targetPosition = GetContentContainerTargetPosition(targetElementIndex);
             Vector2 startPosition = _contentContainer.anchoredPosition;

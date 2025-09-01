@@ -5410,7 +5410,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvasGroup: {fileID: 8617670886366628570}
   _mainScreenBook: {fileID: 5108046092835288838}
-  _snapController: {fileID: 3670741412095197553}
+  _screenBookSnapController: {fileID: 3670741412095197553}
   _backgroundAnimation: {fileID: 4217672874173556464}
   _dotsContainer: {fileID: 3536367461846912161}
   _mainScreenDot: {fileID: 2924553815461570467}
