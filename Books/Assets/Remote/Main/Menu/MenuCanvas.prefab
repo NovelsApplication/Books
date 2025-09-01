@@ -1177,8 +1177,9 @@ GameObject:
   - component: {fileID: 7403790296360882331}
   - component: {fileID: 9027764660373509453}
   - component: {fileID: 4262219998095157942}
+  - component: {fileID: 74668198380173070}
   m_Layer: 5
-  m_Name: Content
+  m_Name: Content_TagsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1252,6 +1253,29 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &74668198380173070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444348337665440888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1fb93923c54fa5ab1e3e13547064c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultSelectedTag: 3
+  _tags:
+  - {fileID: 5789419680428064396}
+  - {fileID: 3622180376339074874}
+  - {fileID: 1988036981498616478}
+  - {fileID: 3936239928650100805}
+  - {fileID: 9060489167134793859}
+  - {fileID: 4457490183827510981}
+  - {fileID: 2192392009536264716}
+  - {fileID: 2781159112872356482}
+  - {fileID: 8044869068047769372}
 --- !u!1 &469569339621012376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347,9 +1371,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 6
   _selectedRoot: {fileID: 5452881967582875314}
   _defaultRoot: {fileID: 1398900221106037216}
-  _mainTag: 6
 --- !u!1 &533231546356259051
 GameObject:
   m_ObjectHideFlags: 0
@@ -5414,17 +5438,8 @@ MonoBehaviour:
   _tagsSnapController: {fileID: 8748963533674569595}
   _backgroundAnimation: {fileID: 4217672874173556464}
   _dotsContainer: {fileID: 3536367461846912161}
+  _tagsContainer: {fileID: 74668198380173070}
   _mainScreenDot: {fileID: 2924553815461570467}
-  _mainTags:
-  - {fileID: 5789419680428064396}
-  - {fileID: 3622180376339074874}
-  - {fileID: 1988036981498616478}
-  - {fileID: 3936239928650100805}
-  - {fileID: 9060489167134793859}
-  - {fileID: 4457490183827510981}
-  - {fileID: 2192392009536264716}
-  - {fileID: 2781159112872356482}
-  - {fileID: 8044869068047769372}
   _mainScreenLittleBook: {fileID: 7970066522455991699}
   _popUp: {fileID: 4810480919781933545}
   _lightElements:
@@ -6490,7 +6505,7 @@ GameObject:
   - component: {fileID: 8241756882390752294}
   - component: {fileID: 3536367461846912161}
   m_Layer: 5
-  m_Name: DotsLine
+  m_Name: DotsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6724,9 +6739,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 1
   _selectedRoot: {fileID: 7746994727879566892}
   _defaultRoot: {fileID: 4192721073016562313}
-  _mainTag: 1
 --- !u!1 &3174642891198317387
 GameObject:
   m_ObjectHideFlags: 0
@@ -7948,9 +7963,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 0
   _selectedRoot: {fileID: 4650357723771149586}
   _defaultRoot: {fileID: 1042663496778504418}
-  _mainTag: 0
 --- !u!1 &4110924690813227464
 GameObject:
   m_ObjectHideFlags: 0
@@ -11016,7 +11031,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c9b9cf6405439085a0e3734b297104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapSpeed: 6
+  snapSpeed: 5
   contentContainer: {fileID: 7403790296360882331}
   viewPort: {fileID: 8033687077181579972}
 --- !u!1 &6011711728389003321
@@ -12053,9 +12068,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 4
   _selectedRoot: {fileID: 3174642891198317387}
   _defaultRoot: {fileID: 5336391947442352562}
-  _mainTag: 4
 --- !u!1 &6550181210924129256
 GameObject:
   m_ObjectHideFlags: 0
@@ -13217,9 +13232,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 8
   _selectedRoot: {fileID: 5336726839633389552}
   _defaultRoot: {fileID: 8714814143943183088}
-  _mainTag: 8
 --- !u!1 &6931297671247676193
 GameObject:
   m_ObjectHideFlags: 0
@@ -14012,9 +14027,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 7
   _selectedRoot: {fileID: 6116643626174609550}
   _defaultRoot: {fileID: 8834181206923256010}
-  _mainTag: 7
 --- !u!1 &7271230338664357300
 GameObject:
   m_ObjectHideFlags: 0
@@ -14414,9 +14429,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 2
   _selectedRoot: {fileID: 8380064386489523347}
   _defaultRoot: {fileID: 356402280901458268}
-  _mainTag: 2
 --- !u!1 &7504545905318364627
 GameObject:
   m_ObjectHideFlags: 0
@@ -14982,9 +14997,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 5
   _selectedRoot: {fileID: 7162452309057477678}
   _defaultRoot: {fileID: 4491875560686085089}
-  _mainTag: 5
 --- !u!1 &7746994727879566892
 GameObject:
   m_ObjectHideFlags: 0
@@ -17234,9 +17249,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Tag>k__BackingField: 3
   _selectedRoot: {fileID: 6650871374246455744}
   _defaultRoot: {fileID: 2906796861733229874}
-  _mainTag: 3
 --- !u!1 &9120730650237535334
 GameObject:
   m_ObjectHideFlags: 0

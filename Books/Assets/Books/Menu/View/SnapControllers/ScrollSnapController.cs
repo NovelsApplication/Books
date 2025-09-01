@@ -9,9 +9,7 @@ namespace Books.Menu.View.SnapControllers
 
         [Header("Настройка магнита - скролла")]
         [SerializeField] private float _scrollSensitivity = 0.3f;
-
-        protected override int StartTargetElementIndex => 2;
-
+        
         public override void FollowElement(RectTransform element)
         {
             if (element == null)

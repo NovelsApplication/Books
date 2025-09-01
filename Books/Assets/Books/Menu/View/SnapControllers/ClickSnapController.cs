@@ -6,8 +6,6 @@ namespace Books.Menu.View.SnapControllers
 {
     public class ClickSnapController : SnapController
     {
-        protected override int StartTargetElementIndex => 3;
-
         private List<Button> _buttonComponents = new ();
         private int _followElementsCounter;
         
