@@ -3538,7 +3538,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snapSpeed: 7
-  followedContent: []
   contentContainer: {fileID: 9058363403902162258}
   viewPort: {fileID: 1599133885774962946}
   _scrollRectNested: {fileID: 3190658973037760073}
@@ -5412,6 +5411,7 @@ MonoBehaviour:
   _canvasGroup: {fileID: 8617670886366628570}
   _mainScreenBook: {fileID: 5108046092835288838}
   _screenBookSnapController: {fileID: 3670741412095197553}
+  _tagsSnapController: {fileID: 8748963533674569595}
   _backgroundAnimation: {fileID: 4217672874173556464}
   _dotsContainer: {fileID: 3536367461846912161}
   _mainScreenDot: {fileID: 2924553815461570467}
@@ -11016,17 +11016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c9b9cf6405439085a0e3734b297104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapSpeed: 9
-  followedContent:
-  - {fileID: 806928026315260297}
-  - {fileID: 349386996291132506}
-  - {fileID: 6907176022402815475}
-  - {fileID: 2874663132302677574}
-  - {fileID: 4345280272994820007}
-  - {fileID: 3495731658854921994}
-  - {fileID: 7244571596138558376}
-  - {fileID: 6354317119574807187}
-  - {fileID: 8324436277433814184}
+  snapSpeed: 6
   contentContainer: {fileID: 7403790296360882331}
   viewPort: {fileID: 8033687077181579972}
 --- !u!1 &6011711728389003321
