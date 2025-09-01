@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Books.Menu.View.Dots;
+using Books.Menu.View.SnapControllers;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace Books.Menu.View 
 {
@@ -24,7 +23,7 @@ namespace Books.Menu.View
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private ScreenBook _mainScreenBook;
-        [SerializeField] private SnapController _screenBookSnapController;
+        [SerializeField] private ScrollSnapController _screenBookSnapController;
         [SerializeField] private BackgroundAnimation _backgroundAnimation;
         [SerializeField] private DotsContainer _dotsContainer;
         [SerializeField] private Dot _mainScreenDot;
