@@ -53,29 +53,12 @@ namespace Books.Menu.View
             LayoutRebuilder.ForceRebuildLayoutImmediate(_contentContainer);
             yield return null;
 
-            if (_scrollElements.Count <= _targetElementIndex.Value)
-            {
-                Debug.LogWarning("Not enough children in content container");
-                yield break;
-            }
-
-            RectTransform targetElement = _scrollElements[_targetElementIndex.Value];
-
-            Vector3 elementWorldCenter =
-                targetElement.TransformPoint(new Vector3(targetElement.rect.center.x, targetElement.rect.center.y, 0));
-            Vector3 viewportWorldCenter =
-                _viewPort.TransformPoint(new Vector3(_viewPort.rect.center.x, _viewPort.rect.center.y, 0));
-
-            Vector3 worldDiff = elementWorldCenter - viewportWorldCenter;
-            Vector3 localDiff = _viewPort.InverseTransformVector(worldDiff);
-
-            var anchoredPosition = _contentContainer.anchoredPosition;
-            anchoredPosition = new Vector2(anchoredPosition.x - localDiff.x, anchoredPosition.y);
+            var anchoredPosition = GetContentContainerTargetPosition(_targetElementIndex.Value);
 
             _contentContainer.anchoredPosition = anchoredPosition;
         }
 
-        public void OnEndDrag(PointerEventData eventData)
+        private void OnEndDrag(PointerEventData eventData)
         {
             float dragDistance = eventData.position.x - eventData.pressPosition.x;
 
@@ -101,23 +84,8 @@ namespace Books.Menu.View
 
         private IEnumerator SnapToElement(int targetElementIndex)
         {
-            if (targetElementIndex < 0 || targetElementIndex >= _scrollElements.Count)
-                yield break;
-
-            RectTransform targetElement = _scrollElements[targetElementIndex];
-            if (targetElement == null) yield break;
-            
-            Vector3 elementWorldCenter =
-                targetElement.TransformPoint(new Vector3(targetElement.rect.center.x, targetElement.rect.center.y, 0));
-            Vector3 viewportWorldCenter =
-                _viewPort.TransformPoint(new Vector3(_viewPort.rect.center.x, _viewPort.rect.center.y, 0));
-
-            Vector3 worldDiff = elementWorldCenter - viewportWorldCenter;
-            Vector3 localDiff = _contentContainer.parent.InverseTransformVector(worldDiff);
-
-            var anchoredPosition = _contentContainer.anchoredPosition;
-            Vector2 targetPosition = new Vector2(anchoredPosition.x - localDiff.x, anchoredPosition.y);
-            Vector2 startPosition = anchoredPosition;
+            Vector2 targetPosition = GetContentContainerTargetPosition(targetElementIndex);
+            Vector2 startPosition = _contentContainer.anchoredPosition;
             
             float elapsedTime = 0f;
 
@@ -131,7 +99,26 @@ namespace Books.Menu.View
             _contentContainer.anchoredPosition = targetPosition;
             _targetElementIndex.Value = targetElementIndex;
         }
-        
+
+        private Vector2 GetContentContainerTargetPosition(int targetElementIndex)
+        {
+            if (targetElementIndex < 0 || targetElementIndex >= _scrollElements.Count)
+                throw new ArgumentException("Некорректный индекс");
+
+            RectTransform targetElement = _scrollElements[targetElementIndex];
+            if (targetElement == null) throw new Exception("Целевой элемент равен null");
+            
+            Vector2 targetWorldCenter =
+                targetElement.TransformPoint(new Vector2(targetElement.rect.center.x, targetElement.rect.center.y));
+            Vector2 viewportWorldCenter =
+                _viewPort.TransformPoint(new Vector2(_viewPort.rect.center.x, _viewPort.rect.center.y));
+
+            Vector2 worldDiff = targetWorldCenter - viewportWorldCenter;
+            Vector2 localDiff = _viewPort.InverseTransformVector(worldDiff);
+
+            return new Vector2(_contentContainer.anchoredPosition.x - localDiff.x, _contentContainer.anchoredPosition.y);
+        }
+
         private void OnDestroy()
         {
             _scrollRectNested.OnEndDragEvent -= OnEndDrag;
