@@ -3537,11 +3537,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51efa18c66d84de1ab193396f91e6e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  snapSpeed: 7
+  followedContent: []
+  contentContainer: {fileID: 9058363403902162258}
+  viewPort: {fileID: 1599133885774962946}
   _scrollRectNested: {fileID: 3190658973037760073}
-  _contentContainer: {fileID: 9058363403902162258}
-  _viewPort: {fileID: 1599133885774962946}
   _scrollSensitivity: 0.3
-  _snapSpeed: 4.83
 --- !u!1 &1522839503738187624
 GameObject:
   m_ObjectHideFlags: 0
@@ -10907,6 +10908,7 @@ GameObject:
   - component: {fileID: 2112089983808241321}
   - component: {fileID: 7887048167864802377}
   - component: {fileID: 1396395188726539125}
+  - component: {fileID: 8748963533674569595}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -10987,11 +10989,11 @@ MonoBehaviour:
   m_Content: {fileID: 7403790296360882331}
   m_Horizontal: 1
   m_Vertical: 0
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_DecelerationRate: 0.08
+  m_ScrollSensitivity: 1.5
   m_Viewport: {fileID: 8033687077181579972}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -11002,6 +11004,31 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8748963533674569595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6005137059998793681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c9b9cf6405439085a0e3734b297104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapSpeed: 9
+  followedContent:
+  - {fileID: 806928026315260297}
+  - {fileID: 349386996291132506}
+  - {fileID: 6907176022402815475}
+  - {fileID: 2874663132302677574}
+  - {fileID: 4345280272994820007}
+  - {fileID: 3495731658854921994}
+  - {fileID: 7244571596138558376}
+  - {fileID: 6354317119574807187}
+  - {fileID: 8324436277433814184}
+  contentContainer: {fileID: 7403790296360882331}
+  viewPort: {fileID: 8033687077181579972}
 --- !u!1 &6011711728389003321
 GameObject:
   m_ObjectHideFlags: 0
