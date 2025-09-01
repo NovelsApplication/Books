@@ -5,6 +5,8 @@ using System.Linq;
 using Books.Menu.View.Dots;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Books.Menu.View 
 {
@@ -22,7 +24,7 @@ namespace Books.Menu.View
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private ScreenBook _mainScreenBook;
-        [SerializeField] private SnapController _snapController;
+        [SerializeField] private SnapController _screenBookSnapController;
         [SerializeField] private BackgroundAnimation _backgroundAnimation;
         [SerializeField] private DotsContainer _dotsContainer;
         [SerializeField] private Dot _mainScreenDot;
@@ -100,11 +102,12 @@ namespace Books.Menu.View
             {
                 OpenPopUp(poster, storyHeader, description, onClick);
             });
+            _screenBookSnapController.FollowElement(screenBook.GetComponent<RectTransform>());
             _objects.Push(screenBook.gameObject);
 
             _mainScreenDot.gameObject.SetActive(false);
             var dot = UnityEngine.Object.Instantiate<Dot>(_mainScreenDot, _dotsContainer.transform);
-            _dotsContainer.InitializeDot(dot);
+            _dotsContainer.FollowDot(dot);
             _objects.Push(dot.gameObject);
 
             foreach (var mainTag in _mainTags) 
@@ -122,6 +125,13 @@ namespace Books.Menu.View
                 OpenPopUp(poster, storyHeader, description, onClick);
             });
             _objects.Push(screenLittleBook.gameObject);
+            
+            // -------FIX-------
+            gameObject.SetActive(false);
+            await UniTask.Yield();
+            gameObject.SetActive(true);
+            await UniTask.Yield();
+            // -----------------
         }
 
         public void OnAllBooksAdded()
@@ -141,8 +151,7 @@ namespace Books.Menu.View
             secondBorderRect.SetParent(parent, false);
             secondBorderRect.SetSiblingIndex(parent.childCount - 1);
             
-            _snapController.Initialize();
-            _snapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
+            _screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
             
             _backgroundAnimation.InitializeParticles();
         }

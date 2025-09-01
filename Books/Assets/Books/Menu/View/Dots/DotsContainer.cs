@@ -8,7 +8,7 @@ namespace Books.Menu.View.Dots
         private List<Dot> _dots = new ();
         private int _selectDotIndex;
 
-        public void InitializeDot(Dot dot)
+        public void FollowDot(Dot dot)
         {
             if (dot == null)
                 return;
