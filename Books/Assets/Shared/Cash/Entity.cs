@@ -135,6 +135,8 @@ namespace Shared.Cash
 
         private bool IsCashed(string fileName)
         {
+            return false;
+
             var result = File.Exists(ConvertPath(fileName));
 
 #if UNITY_EDITOR
@@ -150,6 +152,7 @@ namespace Shared.Cash
 #if !UNITY_EDITOR && UNITY_WEBGL
             localFilesPath = "idbfs/CachedFiles";
 #endif
+
             return localFilesPath;
         }
 
@@ -168,7 +171,11 @@ namespace Shared.Cash
                     Directory.CreateDirectory(localFilesPath);
             }
 
-            return $"{localFilesPath}/{localExtraPath.Last()}";
+            var result = $"{localFilesPath}/{localExtraPath.Last()}";
+
+            Debug.Log($"Localpath - {result}");
+
+            return result;
         }
 
         private void ClearCash() 
