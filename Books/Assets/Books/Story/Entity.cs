@@ -71,6 +71,8 @@ namespace Books.Story
 
             var saveProgress = new ReactiveCommand().AddTo(this);
 
+            Debug.Log("Save 1");
+
             var saveDone = false;
             var save = new Save.Entity(new Save.Entity.Ctx
             {
@@ -91,7 +93,11 @@ namespace Books.Story
                 OnInitDone = () => saveDone = true,
             }).AddTo(this);
 
+            Debug.Log("Save 2");
+
             while (!saveDone) await UniTask.Yield();
+
+            Debug.Log("Save 3");
 
             var logic = new Logic(new Logic.Ctx
             {
@@ -120,6 +126,8 @@ namespace Books.Story
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();
+
+            Debug.Log("Save 4");
         }
 
         public void ShowImmediate() => _screen.ShowImmediate();

@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Newtonsoft.Json;
 using Shared.Disposable;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace Books.Story
 {
@@ -44,21 +42,23 @@ namespace Books.Story
 
         public Logic(Ctx ctx)
         {
+            Debug.Log("Logic -2");
             _ctx = ctx;
-
+            Debug.Log("Logic -1");
             _ctx.Screen.HideBubbleImmediate();
-
+            Debug.Log("Logic 0");
             ShowStoryProcess(_ctx.StoryDone).Forget();
         }
 
         private async UniTask ShowStoryProcess(Action<bool> onDone)
         {
+            Debug.Log("Logic 1");
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
-
+            Debug.Log("Logic 2");
             var storyDone = false;
             var storyPath = $"{_ctx.StoryPath}/Story.json";
             var storyText = string.Empty;
-
+            Debug.Log("Logic 3");
             _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data =>
             {
                 storyText = data.text;
@@ -66,6 +66,8 @@ namespace Books.Story
             }).AddTo(this);
             _ctx.GetText.Execute(storyPath);
             while (!storyDone) await UniTask.Yield();
+
+            Debug.Log("Logic 4");
 
             var story = new Ink.Runtime.Story(storyText);
             story.Continue();
