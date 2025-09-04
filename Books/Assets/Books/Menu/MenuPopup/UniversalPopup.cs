@@ -15,29 +15,36 @@ namespace Books.Menu.MenuPopup
         [SerializeField] private float _showHideDuration;
 
         private RectTransform _popupContentTransform;
+        private IPopupContent _popupContent; // Для оптимизации. Чтобы не вызывать лишний GetComp.
 
-        public void SetPopupContent(RectTransform popupTransform)
+        public void SetPopupContent(RectTransform popupTransform, IPopupContent content = null)
         {
             ClearPopupContent();
-            
+
             popupTransform.SetParent(transform);
+            
             _backgroundTransform.sizeDelta = popupTransform.rect.size;
             _backgroundTransform.anchoredPosition = popupTransform.anchoredPosition;
 
             _popupContentTransform = popupTransform;
+            _popupContent = content;
         }
 
         public void ClearPopupContent()
         {
             if (_popupContentTransform == null)
                 return;
-
-            IPopupContent content = _popupContentTransform.GetComponent<IPopupContent>();
-            content.ClearContent();
+            
+            if (_popupContent == null)
+                _popupContent = _popupContentTransform.GetComponent<IPopupContent>();
+            
+            _popupContent.ClearContent();
             
             _popupContentTransform.SetParent(null);
             Destroy(_popupContentTransform.gameObject);
+            
             _popupContentTransform = null;
+            _popupContent = null;
         }
 
         public async UniTask Show() 

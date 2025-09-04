@@ -15,10 +15,12 @@ namespace Books.Menu.View
 {
     public interface IScreen
     {
+        // Абстракция не должна зависеть от деталей. Задать вопрос насчет этого метода
+        public void Init(PopupFactory popupFactory);
         public void SetTheme(bool isLightTheme);
         public void ShowImmediate();
         public void HideImmediate();
-        public UniTask AddBookAsync(MenuPopup.Data popUpData, string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
+        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
         public void OnAllBooksAdded();
         public void Release();
     }
@@ -44,8 +46,14 @@ namespace Books.Menu.View
         private readonly Stack<GameObject> _objects = new ();
 
         private BackgroundAnimation _backgroundAnimation;
+        private PopupFactory _popupFactory;
         private bool _isLightTheme;
 
+        public void Init(PopupFactory popupFactory)
+        {
+            _popupFactory = popupFactory;
+        }
+        
         public void SetTheme(bool isLightTheme)
         {
             _isLightTheme = isLightTheme;
@@ -77,7 +85,7 @@ namespace Books.Menu.View
             }
         }
 
-        public async UniTask AddBookAsync(MenuPopup.Data screenBookPopUp, string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine) 
+        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine) 
         {
             var story = new Ink.Runtime.Story(storyText);
 
@@ -114,7 +122,7 @@ namespace Books.Menu.View
             screenBook.SetImage(poster);
             screenBook.SetButton(() => 
             {
-                OpenScreenBookPopUp(screenBookPopUp, poster, storyHeader, description, onClick);
+                OpenScreenBookPopUp(poster, storyHeader, description, onClick);
             });
             _screenBookSnapController.FollowElement(screenBook.GetComponent<RectTransform>());
             _objects.Push(screenBook.gameObject);
@@ -131,7 +139,7 @@ namespace Books.Menu.View
             screenLittleBook.SetImage(poster);
             screenLittleBook.SetButton(() =>
             {
-                OpenScreenBookPopUp(screenBookPopUp, poster, storyHeader, description, onClick);
+                OpenScreenBookPopUp(poster, storyHeader, description, onClick);
             });
             _objects.Push(screenLittleBook.gameObject);
             
@@ -174,28 +182,20 @@ namespace Books.Menu.View
             _backgroundAnimation.InitializeParticles();
         }
 
-        private void OpenScreenBookPopUp(MenuPopup.Data popUpData, Texture2D texture, string header, string description, Action onClick)
+        private void OpenScreenBookPopUp(Texture2D texture, string header, string description, Action onClick)
         {
-            _universalPopUpRoot.SetBackgroundButton(() => _universalPopUpRoot.Hide().Forget());
-
-            RectTransform instance = Instantiate(popUpData.PopupContentPrefab, _universalPopUpRoot.transform, false);
-            _universalPopUpRoot.SetPopupContent(instance);
-            
-            IPopupContent popupContent = instance.GetComponent<IPopupContent>();
             var data = new ScreenBookPopUpContent.Data {
                 Texture = texture,
                 HeaderText = header,
                 DescriptionText = description,
-                OnReadButtonClick = () =>
-                {
+                OnReadButtonClick = () => {
                     _universalPopUpRoot.HideImmediate();
                     onClick.Invoke();
                 }
-
             };
-            popupContent.Configure(data, _universalPopUpRoot);
 
-            _universalPopUpRoot.Show().Forget();
+            IPopupContent screenBookPopupContent = _popupFactory.OpenPopup(
+                PopupType.ScreenBook, _universalPopUpRoot, data);
         }
 
         public void Release() 
