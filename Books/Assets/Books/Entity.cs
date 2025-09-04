@@ -108,8 +108,7 @@ namespace Books
                     {
                         Data = _ctx.Data.MenuData,
                         ManifestPath = "Configs/StoryManifest.json",
-                        //IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-                        IsLightTheme = false,
+                        IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
                         OnGetBundle = onGetBundle,
                         GetBundle = getBundle,
                         OnGetText = onGetText,

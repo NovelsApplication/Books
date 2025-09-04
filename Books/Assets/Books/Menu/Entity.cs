@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Shared.Disposable;
 using System;
 using System.Collections.Generic;
+using Books.Menu.MenuPopup;
 using UniRx;
 using UnityEngine;
 
@@ -129,7 +130,8 @@ namespace Books.Menu
                 _ctx.GetTexture.Execute((texturePath, textureKey));
                 while (!textureDone) await UniTask.Yield();
 
-                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
+                MenuPopup.Data screenBookPopUp = _ctx.Data.PopupData.Find(obj => obj.PopupType == PopupType.ScreenBook);
+                await _screen.AddBookAsync(screenBookPopUp, storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }
             
             _screen.OnAllBooksAdded();

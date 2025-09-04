@@ -1,22 +1,46 @@
+﻿using System;
+using Books.Menu.MenuPopup.Contents;
 using Cysharp.Threading.Tasks;
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Books.Menu.View 
+namespace Books.Menu.MenuPopup
 {
-    public class PopUp : MonoBehaviour
+    public class UniversalPopup : MonoBehaviour
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _backgroudButton;
-        [SerializeField] private RawImage _image;
-        [SerializeField] private TMP_Text _headerArea;
-        [SerializeField] private TMP_Text _descriptionArea;
-        [SerializeField] private Button _readButton;
+        [SerializeField] private RawImage _backgroundImage;
+        [SerializeField] private RectTransform _backgroundTransform;
         [SerializeField] private float _showHideDuration;
 
-        public async UniTask Show()
+        private RectTransform _popupContentTransform;
+
+        public void SetPopupContent(RectTransform popupTransform)
+        {
+            ClearPopupContent();
+            
+            popupTransform.SetParent(transform);
+            _backgroundTransform.sizeDelta = popupTransform.sizeDelta;
+            _backgroundTransform.anchoredPosition = popupTransform.anchoredPosition;
+
+            _popupContentTransform = popupTransform;
+        }
+
+        public void ClearPopupContent()
+        {
+            if (_popupContentTransform == null)
+                return;
+
+            IPopupContent content = _popupContentTransform.GetComponent<IPopupContent>();
+            content.ClearContent();
+            
+            _popupContentTransform.SetParent(null);
+            Destroy(_popupContentTransform.gameObject);
+            _popupContentTransform = null;
+        }
+
+        public async UniTask Show() 
         {
             _canvasGroup.alpha = 0f;
             _canvasGroup.gameObject.SetActive(true);
@@ -77,26 +101,10 @@ namespace Books.Menu.View
             _backgroudButton.onClick.AddListener(onClick.Invoke);
         }
 
-        public void SetImage(Texture2D texture) 
+        public void SetBackgroundTexture(Texture2D texture) 
         {
-            _image.texture = texture;
-        }
-
-        public void SetHeader(string text) 
-        {
-            _headerArea.text = text;
-        }
-
-        public void SetDescription(string text)
-        {
-            _descriptionArea.text = text;
-        }
-
-        public void SetReadButton(Action onClick)
-        {
-            _readButton.onClick.RemoveAllListeners();
-            _readButton.onClick.AddListener(onClick.Invoke);
+            if (texture != null)
+                _backgroundImage.texture = texture;
         }
     }
 }
-
