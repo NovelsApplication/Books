@@ -2,6 +2,9 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Books.Menu.MenuPopup;
+using Books.Menu.MenuPopup.Contents;
+using Books.Menu.MenuPopup.Contents.Implementations;
 using Books.Menu.View.Dots;
 using Books.Menu.View.SnapControllers;
 using Books.Menu.View.Tags;
@@ -15,7 +18,7 @@ namespace Books.Menu.View
         public void SetTheme(bool isLightTheme);
         public void ShowImmediate();
         public void HideImmediate();
-        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
+        public UniTask AddBookAsync(MenuPopup.Data popUpData, string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
         public void OnAllBooksAdded();
         public void Release();
     }
@@ -32,7 +35,8 @@ namespace Books.Menu.View
         [SerializeField] private TagsContainer _tagsContainer;
         [SerializeField] private Dot _mainScreenDot;
         [SerializeField] private ScreenBook _mainScreenLittleBook;
-        [SerializeField] private PopUp _popUp;
+        
+        [SerializeField] private UniversalPopup _universalPopUpRoot;
 
         [SerializeField] private GameObject[] _lightElements;
         [SerializeField] private GameObject[] _darkElements;
@@ -40,9 +44,12 @@ namespace Books.Menu.View
         private readonly Stack<GameObject> _objects = new ();
 
         private BackgroundAnimation _backgroundAnimation;
+        private bool _isLightTheme;
 
-        public void SetTheme(bool isLightTheme) 
+        public void SetTheme(bool isLightTheme)
         {
+            _isLightTheme = isLightTheme;
+            
             foreach (var element in _lightElements) element.SetActive(isLightTheme);
             foreach (var element in _darkElements) element.SetActive(!isLightTheme);
 
@@ -58,7 +65,7 @@ namespace Books.Menu.View
             _canvasGroup.gameObject.SetActive(true);
             _canvasGroup.alpha = 1f;
 
-            _popUp.HideImmediate();
+            _universalPopUpRoot.HideImmediate();
         }
 
         public void HideImmediate()
@@ -70,7 +77,7 @@ namespace Books.Menu.View
             }
         }
 
-        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine) 
+        public async UniTask AddBookAsync(MenuPopup.Data screenBookPopUp, string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine) 
         {
             var story = new Ink.Runtime.Story(storyText);
 
@@ -107,7 +114,7 @@ namespace Books.Menu.View
             screenBook.SetImage(poster);
             screenBook.SetButton(() => 
             {
-                OpenPopUp(poster, storyHeader, description, onClick);
+                OpenScreenBookPopUp(screenBookPopUp, poster, storyHeader, description, onClick);
             });
             _screenBookSnapController.FollowElement(screenBook.GetComponent<RectTransform>());
             _objects.Push(screenBook.gameObject);
@@ -124,7 +131,7 @@ namespace Books.Menu.View
             screenLittleBook.SetImage(poster);
             screenLittleBook.SetButton(() =>
             {
-                OpenPopUp(poster, storyHeader, description, onClick);
+                OpenScreenBookPopUp(screenBookPopUp, poster, storyHeader, description, onClick);
             });
             _objects.Push(screenLittleBook.gameObject);
             
@@ -167,19 +174,28 @@ namespace Books.Menu.View
             _backgroundAnimation.InitializeParticles();
         }
 
-        private void OpenPopUp(Texture2D texture, string header, string description, Action onClick)
+        private void OpenScreenBookPopUp(MenuPopup.Data popUpData, Texture2D texture, string header, string description, Action onClick)
         {
-            _popUp.SetBackgroundButton(() => _popUp.Hide().Forget());
-            _popUp.SetImage(texture);
-            _popUp.SetHeader(header);
-            _popUp.SetDescription(description);
-            _popUp.SetReadButton(() =>
-            {
-                _popUp.HideImmediate();
-                onClick.Invoke();
-            });
+            _universalPopUpRoot.SetBackgroundButton(() => _universalPopUpRoot.Hide().Forget());
 
-            _popUp.Show().Forget();
+            RectTransform instance = Instantiate(popUpData.PopupContentPrefab, _universalPopUpRoot.transform, false);
+            _universalPopUpRoot.SetPopupContent(instance);
+            
+            IPopupContent popupContent = instance.GetComponent<IPopupContent>();
+            var data = new ScreenBookPopUpContent.Data {
+                Texture = texture,
+                HeaderText = header,
+                DescriptionText = description,
+                OnReadButtonClick = () =>
+                {
+                    _universalPopUpRoot.HideImmediate();
+                    onClick.Invoke();
+                }
+
+            };
+            popupContent.Configure(data, _universalPopUpRoot);
+
+            _universalPopUpRoot.Show().Forget();
         }
 
         public void Release() 
