@@ -21,7 +21,7 @@ namespace Books.Menu.MenuPopup
             ClearPopupContent();
             
             popupTransform.SetParent(transform);
-            _backgroundTransform.sizeDelta = popupTransform.sizeDelta;
+            _backgroundTransform.sizeDelta = popupTransform.rect.size;
             _backgroundTransform.anchoredPosition = popupTransform.anchoredPosition;
 
             _popupContentTransform = popupTransform;
