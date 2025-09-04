@@ -85,6 +85,7 @@ namespace Books.Menu
             _screen = go.GetComponent<IScreen>();
 
             _screen.SetTheme(_ctx.IsLightTheme);
+            _screen.Init(new PopupFactory(_ctx.Data.PopupData));
 
             var manifests = new List<StoryManifest>();
             var manifestsDone = false;
@@ -130,8 +131,7 @@ namespace Books.Menu
                 _ctx.GetTexture.Execute((texturePath, textureKey));
                 while (!textureDone) await UniTask.Yield();
 
-                MenuPopup.Data screenBookPopUp = _ctx.Data.PopupData.Find(obj => obj.PopupType == PopupType.ScreenBook);
-                await _screen.AddBookAsync(screenBookPopUp, storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
+                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }
             
             _screen.OnAllBooksAdded();
