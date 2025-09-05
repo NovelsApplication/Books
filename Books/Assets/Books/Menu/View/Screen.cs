@@ -196,6 +196,8 @@ namespace Books.Menu.View
 
             IPopupContent screenBookPopupContent = _popupFactory.OpenPopup(
                 PopupType.ScreenBook, _universalPopUpRoot, data);
+            
+            _universalPopUpRoot.SetBackgroundButton(() => _universalPopUpRoot.Hide().Forget());
         }
 
         public void Release() 

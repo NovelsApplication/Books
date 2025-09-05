@@ -1,6 +1,7 @@
 ﻿using System;
 using Books.Menu.MenuPopup.Contents;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +17,14 @@ namespace Books.Menu.MenuPopup
 
         private RectTransform _popupContentTransform;
         private IPopupContent _popupContent; // Для оптимизации. Чтобы не вызывать лишний GetComp.
+        private Tween _fadeTween;
 
         public void SetPopupContent(RectTransform popupTransform, IPopupContent content = null)
         {
             ClearPopupContent();
 
             popupTransform.SetParent(transform);
-            
+
             _backgroundTransform.sizeDelta = popupTransform.rect.size;
             _backgroundTransform.anchoredPosition = popupTransform.anchoredPosition;
 
@@ -56,37 +58,19 @@ namespace Books.Menu.MenuPopup
             await UniTask.Delay(50);
             _canvasGroup.gameObject.SetActive(true);
 
-            var delayMs = 50;
-            var deltaTime = delayMs / 1000f;
-
-            var timer = _showHideDuration;
-            while (timer >= 0f)
-            {
-                _canvasGroup.alpha = 1f - (timer / _showHideDuration);
-                timer -= deltaTime;
-                await UniTask.Delay(delayMs, true);
-            }
-
-            _canvasGroup.alpha = 1f;
+            _fadeTween?.Kill();
+            _fadeTween = _canvasGroup.DOFade(1f, _showHideDuration).SetUpdate(true);
+            await _fadeTween.AsyncWaitForCompletion();
         }
 
         public async UniTask Hide()
         {
+            _fadeTween?.Kill();
+            
             _canvasGroup.alpha = 1f;
-            _canvasGroup.gameObject.SetActive(true);
-
-            var delayMs = 50;
-            var deltaTime = delayMs / 1000f;
-
-            var timer = _showHideDuration;
-            while (timer >= 0f)
-            {
-                _canvasGroup.alpha = timer / _showHideDuration;
-                timer -= deltaTime;
-                await UniTask.Delay(delayMs, true);
-            }
-
-            _canvasGroup.alpha = 0f;
+            _fadeTween = _canvasGroup.DOFade(0f, _showHideDuration).SetUpdate(true);
+            await _fadeTween.AsyncWaitForCompletion();
+            
             _canvasGroup.gameObject.SetActive(false);
         }
 
