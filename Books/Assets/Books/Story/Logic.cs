@@ -27,6 +27,9 @@ namespace Books.Story
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
 
+            public IObservable<(string path, string fileName)> OnGetVideo;
+            public ReactiveCommand<string> GetVideo;
+
             public Action<bool> StoryDone;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;

@@ -33,6 +33,9 @@ namespace Books.Story
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
 
+            public IObservable<(string path, string fileName)> OnGetVideo;
+            public ReactiveCommand<string> GetVideo;
+
             public Action InitDone;
             public Action<bool> StoryDone;
 
@@ -114,6 +117,9 @@ namespace Books.Story
 
                 OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
+
+                OnGetVideo = _ctx.OnGetVideo,
+                GetVideo = _ctx.GetVideo,
 
                 StoryDone = _ctx.StoryDone,
 
