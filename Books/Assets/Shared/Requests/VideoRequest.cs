@@ -31,13 +31,11 @@ namespace Shared.Requests
 
             using var request = _ctx.GetRequest.Invoke(localPath);
 
-            Debug.Log($"Get video req {request.url}");
+            Debug.Log($"Try load video from: {request.url}");
 
             await request.SendWebRequest();
 
             _ctx.OnGetVideo.Execute((request.downloadHandler.data, localPath));
-
-            Debug.Log($"Get video done {request.downloadHandler.data.Length} : {localPath}");
         }
     }
 }

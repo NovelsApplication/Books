@@ -98,7 +98,7 @@ namespace Books.Story
 
                 while (!locationDone) await UniTask.Yield();
 
-                await _ctx.Screen.ShowLocation(_locationImage);
+                await _ctx.Screen.ShowLocation(_locationImage, null);
             }
 
             _characterImage = null;

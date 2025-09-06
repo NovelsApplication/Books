@@ -15,7 +15,7 @@ namespace Books.Story.View
         public UniTask ShowBubble(Action<int> onClick, string mainCharacter, string header, string body, Texture2D characterImage, params (string header, int index)[] buttons);
         public void HideBubbleImmediate();
 
-        public UniTask ShowLocation(Texture image);
+        public UniTask ShowLocation(Texture image, string videoPath);
         public UniTask HideLocation();
         public void HideLocationImmediate();
 
@@ -71,9 +71,9 @@ namespace Books.Story.View
             _bubble.gameObject.SetActive(false);
         }
 
-        public async UniTask ShowLocation(Texture image) 
+        public async UniTask ShowLocation(Texture image, string videoPath) 
         {
-            await _location.Show(image);
+            await _location.Show(image, videoPath);
         }
 
         public async UniTask HideLocation() 

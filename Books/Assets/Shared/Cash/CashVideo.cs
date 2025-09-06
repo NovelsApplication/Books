@@ -20,6 +20,8 @@ namespace Shared.Cash
 
             public Func<string, bool> IsCashed;
 
+            public Action<byte[], string> ToCash;
+
             public Func<string, string> ConvertPath;
         }
 
@@ -57,11 +59,10 @@ namespace Shared.Cash
 
         private string VideoClipToCache(byte[] data, string fileName)
         {
-            var file = _ctx.ConvertPath.Invoke(fileName);
-            if (File.Exists(file))
-                File.Delete(file);
+            _ctx.ToCash.Invoke(data, fileName);
 
-            File.WriteAllBytes(file, data);
+            var file = _ctx.ConvertPath.Invoke(fileName);
+            Debug.Log($"Save video to: {file}");
 
             return file;
         }
