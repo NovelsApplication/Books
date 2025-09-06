@@ -195,8 +195,6 @@ namespace Shared.Cash
 
             var result = $"{localFilesPath}/{localExtraPath.Last()}";
 
-            Debug.Log($"Localpath - {result}");
-
             return result;
         }
 

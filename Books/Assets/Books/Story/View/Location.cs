@@ -1,16 +1,25 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Books.Story.View 
 {
     public class Location : MonoBehaviour
     {
+        [SerializeField] private VideoPlayer _player;
         [SerializeField] private RawImage _image;
         [SerializeField] private float _showHideDuration;
 
-        public async UniTask Show(Texture2D image) 
+        public async UniTask Show(Texture image) 
         {
+            if (image is RenderTexture rt) 
+            {
+                _player.targetTexture = rt;
+                _player.url = rt.name;
+                //return;
+            }
+
             _image.color = Color.black;
             _image.texture = image;
 
