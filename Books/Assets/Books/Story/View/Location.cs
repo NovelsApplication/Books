@@ -11,13 +11,14 @@ namespace Books.Story.View
         [SerializeField] private RawImage _image;
         [SerializeField] private float _showHideDuration;
 
-        public async UniTask Show(Texture image) 
+        public async UniTask Show(Texture image, string videoPath) 
         {
             if (image is RenderTexture rt) 
             {
+                Debug.Log($"Show 1 {videoPath}");
                 _player.targetTexture = rt;
-                _player.url = rt.name;
-                //return;
+                _player.url = $"file:///{videoPath}";
+                Debug.Log($"Show 2 {_player.url}");
             }
 
             _image.color = Color.black;

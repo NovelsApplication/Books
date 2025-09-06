@@ -99,6 +99,8 @@ namespace Shared.Cash
             if (File.Exists(file))
                 File.Delete(file);
 
+            Debug.Log($"Save audio to: {file}");
+
             using (var stream = File.Open(file, FileMode.Create))
             {
                 var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();

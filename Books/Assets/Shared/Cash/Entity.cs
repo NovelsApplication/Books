@@ -149,6 +149,8 @@ namespace Shared.Cash
 
                 IsCashed = fileName => IsCashed(fileName),
 
+                ToCash = (data, fileName) => ArrayToCash(data, fileName),
+
                 ConvertPath = fileName => ConvertPath(fileName),
             }).AddTo(this);
 
