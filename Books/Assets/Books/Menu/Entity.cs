@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Shared.Disposable;
 using System;
 using System.Collections.Generic;
+using Books.Menu.MenuPopup;
 using UniRx;
 using UnityEngine;
 
@@ -84,6 +85,7 @@ namespace Books.Menu
             _screen = go.GetComponent<IScreen>();
 
             _screen.SetTheme(_ctx.IsLightTheme);
+            _screen.Init(new PopupFactory(_ctx.Data.PopupData));
 
             var manifests = new List<StoryManifest>();
             var manifestsDone = false;
@@ -119,7 +121,7 @@ namespace Books.Menu
                 var textureDone = false;
                 var texturePath = $"{storyManifest.StoryPath}/Poster.png";
                 Texture2D texture = null;
-                var textureKey = "poster";
+                var textureKey = texturePath;
 
                 _ctx.OnGetTexture.Where(data => data.key == textureKey).Subscribe(data =>
                 {
@@ -131,6 +133,8 @@ namespace Books.Menu
 
                 await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }
+            
+            _screen.OnAllBooksAdded();
 
             _ctx.InitDone.Invoke();
         }

@@ -1,14 +1,15 @@
 using UnityEngine;
 
-namespace Books.Menu.View 
+namespace Books.Menu.View.Tags 
 {
     public class MainTag : MonoBehaviour
     {
+        [field: SerializeField] 
+        public Entity.MainTags Tag { get; private set; }
+        
         [SerializeField] private GameObject _selectedRoot;
         [SerializeField] private GameObject _defaultRoot;
-
-        [SerializeField] private Entity.MainTags _mainTag;
-
+        
         public void SetSelected(bool state) 
         {
             _selectedRoot.SetActive(state);
