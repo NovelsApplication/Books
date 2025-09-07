@@ -22,6 +22,9 @@ namespace Shared.Requests
 
             public ReactiveCommand<(AudioClip clip, string clipPath)> OnGetAudio;
             public IObservable<string> GetAudio;
+
+            public ReactiveCommand<(byte[] data, string videoPath)> OnGetVideo;
+            public IObservable<string> GetVideo;
         }
 
         private readonly Ctx _ctx;
@@ -60,6 +63,14 @@ namespace Shared.Requests
                 GetAudio = _ctx.GetAudio,
 
                 GetRequest = GetRequestMultimedia,
+            }).AddTo(this);
+
+            new VideoRequest(new VideoRequest.Ctx
+            {
+                OnGetVideo = _ctx.OnGetVideo,
+                GetVideo = _ctx.GetVideo,
+
+                GetRequest = GetRequest,
             }).AddTo(this);
         }
 
