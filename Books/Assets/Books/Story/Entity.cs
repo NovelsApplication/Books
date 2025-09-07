@@ -33,6 +33,9 @@ namespace Books.Story
             public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
             public ReactiveCommand<string> GetMusic;
 
+            public IObservable<(string path, string fileName)> OnGetVideo;
+            public ReactiveCommand<string> GetVideo;
+
             public Action InitDone;
             public Action<bool> StoryDone;
 
@@ -71,8 +74,6 @@ namespace Books.Story
 
             var saveProgress = new ReactiveCommand().AddTo(this);
 
-            Debug.Log("Save 1");
-
             var saveDone = false;
             var save = new Save.Entity(new Save.Entity.Ctx
             {
@@ -93,11 +94,7 @@ namespace Books.Story
                 OnInitDone = () => saveDone = true,
             }).AddTo(this);
 
-            Debug.Log("Save 2");
-
             while (!saveDone) await UniTask.Yield();
-
-            Debug.Log("Save 3");
 
             var logic = new Logic(new Logic.Ctx
             {
@@ -115,6 +112,9 @@ namespace Books.Story
                 OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
 
+                OnGetVideo = _ctx.OnGetVideo,
+                GetVideo = _ctx.GetVideo,
+
                 StoryDone = _ctx.StoryDone,
 
                 ProcessLine = _ctx.ProcessLine,
@@ -126,8 +126,6 @@ namespace Books.Story
             }).AddTo(this);
 
             _ctx.InitDone.Invoke();
-
-            Debug.Log("Save 4");
         }
 
         public void ShowImmediate() => _screen.ShowImmediate();
