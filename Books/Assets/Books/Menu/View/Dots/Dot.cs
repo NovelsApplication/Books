@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Books.Menu.View 
+namespace Books.Menu.View.Dots 
 {
     public class Dot : MonoBehaviour
     {

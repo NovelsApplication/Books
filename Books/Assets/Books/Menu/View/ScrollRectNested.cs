@@ -6,6 +6,9 @@ namespace Books.Menu.View
 {
     public class ScrollRectNested : ScrollRect
     {
+        public event Action<PointerEventData> OnEndDragEvent;
+        public event Action<PointerEventData> OnBeginDragEvent;
+        
         private ScrollRect _parentScrollRect;
 
         private bool _routeToParent = false;
@@ -54,6 +57,7 @@ namespace Books.Menu.View
             else
             {
                 base.OnBeginDrag(eventData);
+                OnBeginDragEvent?.Invoke(eventData);
             }
         }
 
@@ -67,6 +71,7 @@ namespace Books.Menu.View
             else
             {
                 base.OnEndDrag(eventData);
+                OnEndDragEvent?.Invoke(eventData);
             }
             _routeToParent = false;
         }
