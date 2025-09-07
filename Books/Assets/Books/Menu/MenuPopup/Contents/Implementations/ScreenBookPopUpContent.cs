@@ -35,6 +35,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _descriptionArea.text = default;
             
             _readButton.onClick.RemoveAllListeners();
+            _closeButton.onClick.RemoveAllListeners();
         }
 
         public struct Data : IPopupContentData

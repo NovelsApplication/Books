@@ -176,6 +176,7 @@ namespace Books.Menu.View
             _tagsSnapController.InstantlyCenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
             _screenBookSnapController.InstantlyCenteringOnElement(2);
             
+            // сделать отписки
             _tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index));
             _screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
             

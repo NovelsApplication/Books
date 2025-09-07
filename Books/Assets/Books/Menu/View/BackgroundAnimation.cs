@@ -92,13 +92,15 @@ namespace Books.Menu.View
             }
         }
 
+        private System.Random _shuffleRandom = new System.Random(DateTime.UtcNow.Second);
+        
         private void ShufflePool()
         {
             var tempList = new List<ParticleBehavior>(_pool);
             
             for (int i = tempList.Count - 1; i > 0; i--)
             {
-                int randomIndex = UnityEngine.Random.Range(0, i + 1);
+                int randomIndex = _shuffleRandom.Next(0, i + 1);
                 (tempList[i], tempList[randomIndex]) = (tempList[randomIndex], tempList[i]);
             }
             

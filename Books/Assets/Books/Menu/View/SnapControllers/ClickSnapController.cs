@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,9 +25,15 @@ namespace Books.Menu.View.SnapControllers
             _buttonComponents.Add(buttonComponent);
         }
 
+        private IEnumerator _smoothSnapToElement;
+
         private void OnElementClick(int targetElementIndex)
         {
-            StartCoroutine(SmoothSnapToElement(targetElementIndex));
+            if (_smoothSnapToElement != null)
+                StopCoroutine(_smoothSnapToElement);
+            
+            _smoothSnapToElement = SmoothSnapToElement(targetElementIndex);
+            StartCoroutine(_smoothSnapToElement);
         }
     }
 }

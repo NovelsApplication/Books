@@ -25,7 +25,7 @@ namespace Books.Menu.MenuPopup
                 throw new Exception($"Не найдет попап с типом [{popupType}] в данных");
             }
 
-            RectTransform contentInstance = Object.Instantiate(popupConfig.PopupContentPrefab, popupRoot.transform);
+            RectTransform contentInstance = Object.Instantiate(popupConfig.PopupContentPrefab, popupRoot.transform, false);
             IPopupContent popupContent = contentInstance.GetComponent<IPopupContent>();
             
             popupRoot.SetPopupContent(contentInstance, popupContent);
