@@ -5,9 +5,9 @@ namespace Books.Menu.View.Dots
 {
     public class DotsContainer : MonoBehaviour
     {
-        private List<Dot> _dots = new ();
+        private readonly List<Dot> _dots = new ();
         private int _selectDotIndex;
-
+        
         public void FollowDot(Dot dot)
         {
             if (dot == null)
@@ -19,7 +19,7 @@ namespace Books.Menu.View.Dots
             _dots.Add(dot);
         }
         
-        public void SetDotSelect(int index)
+        internal void SetDotSelect(int index)
         {
             if (index > _dots.Count - 1)
                 return;

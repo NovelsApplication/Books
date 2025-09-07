@@ -23,7 +23,7 @@ namespace Books.Menu.MenuPopup
         {
             ClearPopupContent();
 
-            popupTransform.SetParent(transform);
+            popupTransform.SetParent(transform, false);
 
             _backgroundTransform.sizeDelta = popupTransform.rect.size;
             _backgroundTransform.anchoredPosition = popupTransform.anchoredPosition;
@@ -52,6 +52,7 @@ namespace Books.Menu.MenuPopup
         public async UniTask Show() 
         {
             _canvasGroup.alpha = 0f;
+            // так пришлось
             _canvasGroup.gameObject.SetActive(true);
             await UniTask.Delay(50);
             _canvasGroup.gameObject.SetActive(false);

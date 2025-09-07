@@ -1,6 +1,7 @@
 ﻿using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -8,8 +9,8 @@ namespace Books.Menu.View.ParticlesView
 {
     public class ParticleBehavior : MonoBehaviour
     {
-        [Header("Продолжительность")] 
-        [SerializeField] protected float duration = 5f;
+        [Header("Продолжительность")] [FormerlySerializedAs("duration")] 
+        [SerializeField] protected float _duration = 5f;
 
         [Header("Дистанция передвижения")] 
         [SerializeField] private float _distance = 50f;
@@ -21,15 +22,19 @@ namespace Books.Menu.View.ParticlesView
         [Header("Величина и тип искривление траектории")]
         [Range(0, 10)] [SerializeField] private int _curveStrength = 5;
 
+        [FormerlySerializedAs("startFade")]
         [Header("Начальная прозрачность")] 
-        [Range(0, 1)] [SerializeField] protected float startFade = 0.7f;
+        [Range(0, 1)] [SerializeField] protected float _startFade = 0.7f;
 
+        [FormerlySerializedAs("fadeInPercentage")]
         [Header("Время ПОЯВЛЕНИЯ в процентах от общего")] 
-        [Range(0, 0.5f)] [SerializeField] protected float fadeInPercentage = 0.2f;
+        [Range(0, 0.5f)] [SerializeField] protected float _fadeInPercentage = 0.2f;
         
+        [FormerlySerializedAs("fadeOutPercentage")]
         [Header("Время УГАСАНИЯ в процентах от общего")] 
-        [Range(0, 0.5f)] [SerializeField] protected float fadeOutPercentage = 0.2f;
+        [Range(0, 0.5f)] [SerializeField] protected float _fadeOutPercentage = 0.2f;
 
+        // можно отказаться от свойст и заменить функциями
         protected Sequence MainSequence { get; private set; }
         protected RectTransform Target { get; private set; }
         protected Image Image { get; private set; }
@@ -55,12 +60,12 @@ namespace Books.Menu.View.ParticlesView
             Target.anchoredPosition = startPos;
             Image.color = new Color(Image.color.r, Image.color.g, Image.color.b, 0f);
             
-            MainSequence.Append(Target.DoCurveAnchorPos(startPos, finishPos, _curveStrength, duration).SetEase(_moveEase));
-            MainSequence.Join(Image.DOFade(startFade, duration * fadeInPercentage).SetEase(Ease.OutQuad));
+            MainSequence.Append(Target.DoCurveAnchorPos(startPos, finishPos, _curveStrength, _duration).SetEase(_moveEase));
+            MainSequence.Join(Image.DOFade(_startFade, _duration * _fadeInPercentage).SetEase(Ease.OutQuad));
             MainSequence.Join(Target.DORotate(new Vector3(0, 0, _rotationStrength * 90f),
-                duration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
-            MainSequence.Insert(duration * (1 - fadeOutPercentage), 
-                Image.DOFade(0f, duration * fadeOutPercentage).SetEase(Ease.InQuad));
+                _duration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+            MainSequence.Insert(_duration * (1 - _fadeOutPercentage), 
+                Image.DOFade(0f, _duration * _fadeOutPercentage).SetEase(Ease.InQuad));
             
             MainSequence.OnComplete(() => callback?.Invoke());
             MainSequence.Play();
@@ -81,13 +86,9 @@ namespace Books.Menu.View.ParticlesView
             CleanupSequence();
         }
 
-        protected void CleanupSequence()
+        private void CleanupSequence()
         {
-            if (MainSequence != null)
-            {
-                MainSequence.Kill();
-                MainSequence = null;
-            }
+            MainSequence?.Kill();
         }
 
         private Vector2 GetRandomStartPosition()

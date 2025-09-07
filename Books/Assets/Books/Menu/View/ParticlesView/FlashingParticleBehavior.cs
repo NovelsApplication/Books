@@ -26,10 +26,10 @@ namespace Books.Menu.View.ParticlesView
             _flashingSequence = DOTween.Sequence();
             _flashingSequence.Pause();
 
-            if (_useStartFadeAsMax) _maxFadeValue = startFade;
+            if (_useStartFadeAsMax) _maxFadeValue = _startFade;
             _minFadeValue = Mathf.Clamp(_minFadeValue, _minFadeValue, _maxFadeValue);
             
-            float flashingDuration = duration - duration * fadeInPercentage - duration * fadeOutPercentage;
+            float flashingDuration = _duration - _duration * _fadeInPercentage - _duration * _fadeOutPercentage;
             
             if (flashingDuration <= 0)
             {
@@ -45,9 +45,11 @@ namespace Books.Menu.View.ParticlesView
                 _flashingSequence.Append(Image.DOFade(_minFadeValue, _flashCycleDuration / 2).SetEase(Ease.InOutQuad));
                 _flashingSequence.Append(Image.DOFade(_maxFadeValue, _flashCycleDuration / 2).SetEase(Ease.InOutQuad));
             }
-
-            MainSequence.Insert(duration * fadeInPercentage, _flashingSequence);
+            
+            // выделить в отдельный метод в родителе
+            MainSequence.Insert(_duration * _fadeInPercentage, _flashingSequence);
             MainSequence.Play();
+            //
         }
         
         private void OnEnable()

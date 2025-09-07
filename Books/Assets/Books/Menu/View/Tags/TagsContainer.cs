@@ -7,6 +7,7 @@ namespace Books.Menu.View.Tags
     {
         [SerializeField] private Entity.MainTags _defaultSelectedTag = Entity.MainTags.All;
 
+        // сделать массив
         [SerializeField] private List<MainTag> _tags;
         public List<MainTag> Tags => _tags;
 
