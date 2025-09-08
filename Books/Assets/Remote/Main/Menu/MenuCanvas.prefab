@@ -964,7 +964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1fb93923c54fa5ab1e3e13547064c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultSelectedTag: 3
+  _defaultSelectedTag: 1
   _tags:
   - {fileID: 5789419680428064396}
   - {fileID: 3622180376339074874}
@@ -1433,14 +1433,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 4
+  _duration: 4
   _distance: 805.1
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 1
-  startFade: 0.091
-  fadeInPercentage: 0.384
-  fadeOutPercentage: 0.381
+  _startFade: 0.091
+  _fadeInPercentage: 0.384
+  _fadeOutPercentage: 0.381
 --- !u!1 &709331865365710508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,14 +1529,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 20
+  _duration: 20
   _distance: 0
   _moveEase: 1
   _rotationStrength: 1
   _curveStrength: 0
-  startFade: 1
-  fadeInPercentage: 0.319
-  fadeOutPercentage: 0.143
+  _startFade: 1
+  _fadeInPercentage: 0.319
+  _fadeOutPercentage: 0.143
   _useStartFadeAsMax: 1
   _maxFadeValue: 1
   _minFadeValue: 0.091
@@ -2199,14 +2199,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 20
+  _duration: 20
   _distance: 0
   _moveEase: 1
   _rotationStrength: 1
   _curveStrength: 0
-  startFade: 0.844
-  fadeInPercentage: 0.431
-  fadeOutPercentage: 0.243
+  _startFade: 0.844
+  _fadeInPercentage: 0.431
+  _fadeOutPercentage: 0.243
   _useStartFadeAsMax: 1
   _maxFadeValue: 1
   _minFadeValue: 0.215
@@ -2299,14 +2299,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 14
+  _duration: 14
   _distance: 108.9
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 1
-  startFade: 1
-  fadeInPercentage: 0.5
-  fadeOutPercentage: 0.437
+  _startFade: 1
+  _fadeInPercentage: 0.5
+  _fadeOutPercentage: 0.437
 --- !u!1 &1161594360468900976
 GameObject:
   m_ObjectHideFlags: 0
@@ -3006,14 +3006,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 20
+  _duration: 20
   _distance: 0
   _moveEase: 1
   _rotationStrength: 1
   _curveStrength: 0
-  startFade: 1
-  fadeInPercentage: 0.431
-  fadeOutPercentage: 0.243
+  _startFade: 1
+  _fadeInPercentage: 0.431
+  _fadeOutPercentage: 0.243
   _useStartFadeAsMax: 1
   _maxFadeValue: 1
   _minFadeValue: 0.215
@@ -3138,9 +3138,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51efa18c66d84de1ab193396f91e6e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapSpeed: 7
-  contentContainer: {fileID: 9058363403902162258}
-  viewPort: {fileID: 1599133885774962946}
+  _snapSpeed: 7
+  _contentContainer: {fileID: 9058363403902162258}
+  _viewPort: {fileID: 1599133885774962946}
   _scrollRectNested: {fileID: 3190658973037760073}
   _scrollSensitivity: 0.3
 --- !u!1 &1527997335258716030
@@ -3307,14 +3307,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 15
+  _duration: 15
   _distance: 50
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 0.038
-  fadeInPercentage: 0.39
-  fadeOutPercentage: 0.469
+  _startFade: 0.038
+  _fadeInPercentage: 0.39
+  _fadeOutPercentage: 0.469
 --- !u!1 &1677846821713838474
 GameObject:
   m_ObjectHideFlags: 0
@@ -6666,14 +6666,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 10
+  _duration: 10
   _distance: 70
   _moveEase: 4
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 0.062
-  fadeInPercentage: 0.387
-  fadeOutPercentage: 0.387
+  _startFade: 0.062
+  _fadeInPercentage: 0.387
+  _fadeOutPercentage: 0.387
 --- !u!1 &4055573641627832824
 GameObject:
   m_ObjectHideFlags: 0
@@ -7722,14 +7722,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 20
+  _duration: 20
   _distance: 0
   _moveEase: 1
   _rotationStrength: 1
   _curveStrength: 0
-  startFade: 0.844
-  fadeInPercentage: 0.319
-  fadeOutPercentage: 0.143
+  _startFade: 0.844
+  _fadeInPercentage: 0.319
+  _fadeOutPercentage: 0.143
   _useStartFadeAsMax: 1
   _maxFadeValue: 1
   _minFadeValue: 0.091
@@ -7857,14 +7857,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 11
+  _duration: 11
   _distance: 50
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 0.05
-  fadeInPercentage: 0.443
-  fadeOutPercentage: 0.454
+  _startFade: 0.05
+  _fadeInPercentage: 0.443
+  _fadeOutPercentage: 0.454
 --- !u!1 &5007460875665328864
 GameObject:
   m_ObjectHideFlags: 0
@@ -8190,14 +8190,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 15
+  _duration: 15
   _distance: 50
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 1
-  fadeInPercentage: 0.39
-  fadeOutPercentage: 0.469
+  _startFade: 1
+  _fadeInPercentage: 0.39
+  _fadeOutPercentage: 0.469
 --- !u!1 &5253870009502579516
 GameObject:
   m_ObjectHideFlags: 0
@@ -8286,14 +8286,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 14
+  _duration: 14
   _distance: 108.9
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 1
-  startFade: 0.045
-  fadeInPercentage: 0.5
-  fadeOutPercentage: 0.437
+  _startFade: 0.045
+  _fadeInPercentage: 0.5
+  _fadeOutPercentage: 0.437
 --- !u!1 &5277487255570426128
 GameObject:
   m_ObjectHideFlags: 0
@@ -9370,9 +9370,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c9b9cf6405439085a0e3734b297104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapSpeed: 5
-  contentContainer: {fileID: 7403790296360882331}
-  viewPort: {fileID: 8033687077181579972}
+  _snapSpeed: 5
+  _contentContainer: {fileID: 7403790296360882331}
+  _viewPort: {fileID: 8033687077181579972}
 --- !u!1 &6011711728389003321
 GameObject:
   m_ObjectHideFlags: 0
@@ -9537,14 +9537,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 10
+  _duration: 10
   _distance: 70
   _moveEase: 4
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 1
-  fadeInPercentage: 0.387
-  fadeOutPercentage: 0.387
+  _startFade: 1
+  _fadeInPercentage: 0.387
+  _fadeOutPercentage: 0.387
 --- !u!1 &6027546777896358720
 GameObject:
   m_ObjectHideFlags: 0
@@ -9770,14 +9770,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 11
+  _duration: 11
   _distance: 50
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 2
-  startFade: 1
-  fadeInPercentage: 0.443
-  fadeOutPercentage: 0.454
+  _startFade: 1
+  _fadeInPercentage: 0.443
+  _fadeOutPercentage: 0.454
 --- !u!1 &6116643626174609550
 GameObject:
   m_ObjectHideFlags: 0
@@ -12259,14 +12259,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 6
+  _duration: 6
   _distance: 220
   _moveEase: 4
   _rotationStrength: 0
   _curveStrength: 3
-  startFade: 0.05
-  fadeInPercentage: 0.443
-  fadeOutPercentage: 0.443
+  _startFade: 0.05
+  _fadeInPercentage: 0.443
+  _fadeOutPercentage: 0.443
 --- !u!1 &7556516837252515082
 GameObject:
   m_ObjectHideFlags: 0
@@ -12506,14 +12506,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 6
+  _duration: 6
   _distance: 220
   _moveEase: 4
   _rotationStrength: 0
   _curveStrength: 3
-  startFade: 1
-  fadeInPercentage: 0.443
-  fadeOutPercentage: 0.443
+  _startFade: 1
+  _fadeInPercentage: 0.443
+  _fadeOutPercentage: 0.443
 --- !u!1 &7710006469023590277
 GameObject:
   m_ObjectHideFlags: 0
@@ -12814,14 +12814,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 4
+  _duration: 4
   _distance: 805.1
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 1
-  startFade: 1
-  fadeInPercentage: 0.384
-  fadeOutPercentage: 0.381
+  _startFade: 1
+  _fadeInPercentage: 0.384
+  _fadeOutPercentage: 0.381
 --- !u!1 &7860464541846315013
 GameObject:
   m_ObjectHideFlags: 0
@@ -13063,14 +13063,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 16.8
+  _duration: 16.8
   _distance: 93.4
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 6
-  startFade: 0.03
-  fadeInPercentage: 0.5
-  fadeOutPercentage: 0.466
+  _startFade: 0.03
+  _fadeInPercentage: 0.5
+  _fadeOutPercentage: 0.466
 --- !u!1 &8060022622365698459
 GameObject:
   m_ObjectHideFlags: 0
@@ -13445,14 +13445,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 16.8
+  _duration: 16.8
   _distance: 93.4
   _moveEase: 1
   _rotationStrength: 0
   _curveStrength: 6
-  startFade: 1
-  fadeInPercentage: 0.5
-  fadeOutPercentage: 0.466
+  _startFade: 1
+  _fadeInPercentage: 0.5
+  _fadeOutPercentage: 0.466
 --- !u!1 &8231895519036855174
 GameObject:
   m_ObjectHideFlags: 0
