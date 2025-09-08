@@ -83,9 +83,8 @@ namespace Books.Menu
 
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
-
+            
             _screen.SetTheme(_ctx.IsLightTheme);
-            _screen.Init(new PopupFactory(_ctx.Data.PopupData));
 
             var manifests = new List<StoryManifest>();
             var manifestsDone = false;
@@ -103,6 +102,7 @@ namespace Books.Menu
             manifestProcess.Dispose();
 
             manifests = JsonConvert.DeserializeObject<List<StoryManifest>>(manifestText);
+            _screen.Init(new PopupFactory(_ctx.Data.PopupData), manifests.Count);
 
             foreach (var storyManifest in manifests) 
             {
