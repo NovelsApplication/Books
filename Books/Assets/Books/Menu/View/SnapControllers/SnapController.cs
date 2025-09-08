@@ -1,54 +1,64 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Books.Menu.View.SnapControllers
 {
     public class SnapController : MonoBehaviour
     {
         [Header("Настройки магнита")]
-        [SerializeField] protected float snapSpeed = 6f;
+        [SerializeField] [FormerlySerializedAs("snapSpeed")]
+        protected float _snapSpeed = 6f;
 
         [Header("Зависимости")]
-        [SerializeField] protected RectTransform contentContainer;
-        [SerializeField] protected RectTransform viewPort;
+        [SerializeField] [FormerlySerializedAs("contentContainer")]
+        protected RectTransform _contentContainer;
         
-        public IReadOnlyReactiveProperty<int> TargetElementIndexRP => targetElementIndex;
-        protected ReactiveProperty<int> targetElementIndex = new(0);
+        [SerializeField] [FormerlySerializedAs("viewPort")]  
+        protected RectTransform _viewPort;
+        
+        public IReadOnlyReactiveProperty<int> TargetElementIndexRP => _targetElementIndex;
+        protected ReactiveProperty<int> _targetElementIndex = new(0);
 
-        protected List<RectTransform> scrollElements = new ();
-        protected bool isInitialized;
+        protected readonly List<RectTransform> _scrollElements = new ();
+        protected bool _isInitialized;
 
         private void OnEnable()
         {
-            if (isInitialized)
-                InstantlyCenteringOnElement(targetElementIndex.Value);
+            if (_isInitialized)
+                InstantlyCenteringOnElement(_targetElementIndex.Value);
         }
 
         public void InstantlyCenteringOnElement(int index)
         {
             StartCoroutine(SmoothSnapToElement(index, true));
         }
-
-        public virtual void FollowElement(RectTransform element)
+        
+        public void FollowElement(RectTransform element)
         {
             if (element == null)
                 return;
             
-            scrollElements.Add(element);
-
-            if (!isInitialized)
+            _scrollElements.Add(element);
+            int index = _scrollElements.Count - 1;
+            OnFollowElement(element, index);
+            
+            if (!_isInitialized)
             {
-                isInitialized = true;
+                _isInitialized = true;
             }
         }
+        
+        protected virtual void OnFollowElement(RectTransform element, int index) {}
 
         protected IEnumerator SmoothSnapToElement(int index, bool isInstantly = false)
         {
             Vector2 targetPosition = GetContentContainerTargetPosition(index);
-            Vector2 startPosition = contentContainer.anchoredPosition;
+            Vector2 startPosition = _contentContainer.anchoredPosition;
             
             if (!isInstantly)
             {
@@ -56,33 +66,33 @@ namespace Books.Menu.View.SnapControllers
                 
                 while (elapsedTime < 1f)
                 {
-                    elapsedTime += Time.deltaTime * snapSpeed;
-                    contentContainer.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, elapsedTime);
+                    elapsedTime += Time.deltaTime * _snapSpeed;
+                    _contentContainer.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, elapsedTime);
                     yield return null;
                 }
             }
 
-            contentContainer.anchoredPosition = targetPosition;
-            targetElementIndex.Value = index;
+            _contentContainer.anchoredPosition = targetPosition;
+            _targetElementIndex.Value = index;
         }
 
         private Vector2 GetContentContainerTargetPosition(int index)
         {
-            if (index < 0 || index >= scrollElements.Count)
+            if (index < 0 || index >= _scrollElements.Count)
                 throw new ArgumentException("Некорректный индекс");
 
-            RectTransform targetElement = scrollElements[index];
+            RectTransform targetElement = _scrollElements[index];
             if (targetElement == null) throw new Exception("Целевой элемент равен null");
             
             Vector2 targetWorldCenter =
                 targetElement.TransformPoint(new Vector2(targetElement.rect.center.x, targetElement.rect.center.y));
             Vector2 viewportWorldCenter =
-                viewPort.TransformPoint(new Vector2(viewPort.rect.center.x, viewPort.rect.center.y));
+                _viewPort.TransformPoint(new Vector2(_viewPort.rect.center.x, _viewPort.rect.center.y));
 
             Vector2 worldDiff = targetWorldCenter - viewportWorldCenter;
-            Vector2 localDiff = viewPort.InverseTransformVector(worldDiff);
+            Vector2 localDiff = _viewPort.InverseTransformVector(worldDiff);
 
-            return new Vector2(contentContainer.anchoredPosition.x - localDiff.x, contentContainer.anchoredPosition.y);
+            return new Vector2(_contentContainer.anchoredPosition.x - localDiff.x, _contentContainer.anchoredPosition.y);
         }
 
         // private IEnumerator CenteringOnElementCoroutine(int index)

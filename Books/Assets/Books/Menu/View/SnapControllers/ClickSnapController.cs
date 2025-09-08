@@ -7,25 +7,17 @@ namespace Books.Menu.View.SnapControllers
 {
     public class ClickSnapController : SnapController
     {
-        private List<Button> _buttonComponents = new ();
-        private int _followElementsCounter;
-        
-        public override void FollowElement(RectTransform element)
+        private readonly List<Button> _buttonComponents = new ();
+        private IEnumerator _smoothSnapToElement;
+
+        protected override void OnFollowElement(RectTransform element, int index)
         {
-            base.FollowElement(element);
-
-            int tempFollowElementIndex = _followElementsCounter;
-            _followElementsCounter++;
-
             Button buttonComponent = element.GetComponent<Button>();
             if (buttonComponent == null) 
                 return;
-            buttonComponent.onClick.AddListener(() => OnElementClick(tempFollowElementIndex));
-            
+            buttonComponent.onClick.AddListener(() => OnElementClick(index));
             _buttonComponents.Add(buttonComponent);
         }
-
-        private IEnumerator _smoothSnapToElement;
 
         private void OnElementClick(int targetElementIndex)
         {

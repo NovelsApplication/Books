@@ -10,17 +10,11 @@ namespace Books.Menu.View.SnapControllers
         [Header("Настройка магнита - скролла")]
         [SerializeField] private float _scrollSensitivity = 0.3f;
         
-        public override void FollowElement(RectTransform element)
+        protected override void OnFollowElement(RectTransform element, int index)
         {
-            if (element == null)
-                return;
-            
-            scrollElements.Add(element);
-
-            if (!isInitialized)
+            if (!_isInitialized)
             {
                 _scrollRectNested.OnEndDragEvent += OnEndDrag;
-                isInitialized = true;
             }
         }
 
@@ -28,7 +22,7 @@ namespace Books.Menu.View.SnapControllers
         {
             float dragDistance = eventData.position.x - eventData.pressPosition.x;
 
-            int targetIndex = targetElementIndex.Value;
+            int targetIndex = _targetElementIndex.Value;
 
             if (Mathf.Abs(dragDistance) / UnityEngine.Screen.width < _scrollSensitivity)
             {
@@ -38,7 +32,7 @@ namespace Books.Menu.View.SnapControllers
 
             if (dragDistance < 0)
             {
-                targetIndex = Mathf.Min(targetIndex + 1, scrollElements.Count - 1);
+                targetIndex = Mathf.Min(targetIndex + 1, _scrollElements.Count - 1);
             }
             else
             {

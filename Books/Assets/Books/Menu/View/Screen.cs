@@ -16,7 +16,7 @@ namespace Books.Menu.View
     public interface IScreen
     {
         // Абстракция не должна зависеть от деталей. Задать вопрос насчет этого метода
-        public void Init(PopupFactory popupFactory);
+        public void Init(PopupFactory popupFactory, int booksCount);
         public void SetTheme(bool isLightTheme);
         public void ShowImmediate();
         public void HideImmediate();
@@ -49,9 +49,12 @@ namespace Books.Menu.View
         private PopupFactory _popupFactory;
         private bool _isLightTheme;
 
-        public void Init(PopupFactory popupFactory)
+        private readonly CompositeDisposable _disposable = new ();
+
+        public void Init(PopupFactory popupFactory, int booksCount)
         {
             _popupFactory = popupFactory;
+            _dotsContainer.Initialize(booksCount);
         }
         
         public void SetTheme(bool isLightTheme)
@@ -176,9 +179,8 @@ namespace Books.Menu.View
             _tagsSnapController.InstantlyCenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
             _screenBookSnapController.InstantlyCenteringOnElement(2);
             
-            // сделать отписки
-            _tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index));
-            _screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index));
+            _disposable.Add(_tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index)));
+            _disposable.Add(_screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index)));
             
             _backgroundAnimation.InitializeParticles();
         }
@@ -203,6 +205,8 @@ namespace Books.Menu.View
 
         public void Release() 
         {
+            _disposable.Dispose();
+            
             while(_objects.Count > 0) 
             {
                 GameObject.Destroy(_objects.Pop());
