@@ -22,7 +22,7 @@ namespace Books.Menu.View.ParticlesView
         {
             base.ActivateAnimation(callback);
             
-            CleanupFlashingSequence();
+            _flashingSequence?.Kill();
             _flashingSequence = DOTween.Sequence();
             _flashingSequence.Pause();
 
@@ -34,7 +34,7 @@ namespace Books.Menu.View.ParticlesView
             if (flashingDuration <= 0)
             {
                 Debug.LogWarning($"Необходимо снизить долю времени появления и угасания. Продолжительность мерцания равна {flashingDuration} у объекта {gameObject.name}");
-                MainSequence.Play();
+                PlayMainSequence();
                 return;
             }
 
@@ -42,38 +42,22 @@ namespace Books.Menu.View.ParticlesView
             
             for (int i = 0; i < cycles; i++)
             {
-                _flashingSequence.Append(Image.DOFade(_minFadeValue, _flashCycleDuration / 2).SetEase(Ease.InOutQuad));
-                _flashingSequence.Append(Image.DOFade(_maxFadeValue, _flashCycleDuration / 2).SetEase(Ease.InOutQuad));
+                _flashingSequence.Append(DoFadeParticleImage(_minFadeValue, _flashCycleDuration / 2).SetEase(Ease.InOutQuad));
+                _flashingSequence.Append(DoFadeParticleImage(_maxFadeValue, _flashCycleDuration / 2).SetEase(Ease.InOutQuad));
             }
             
-            // выделить в отдельный метод в родителе
-            MainSequence.Insert(_duration * _fadeInPercentage, _flashingSequence);
-            MainSequence.Play();
-            //
-        }
-        
-        private void OnEnable()
-        {
-            _flashingSequence?.Play();
+            InsertInMainSequence(_duration * _fadeInPercentage, _flashingSequence);
+            PlayMainSequence();
         }
 
         private void OnDisable()
         {
-            CleanupFlashingSequence();
+            _flashingSequence?.Kill();
         }
 
         private void OnDestroy()
         {
-            CleanupFlashingSequence();
-        }
-
-        private void CleanupFlashingSequence()
-        {
-            if (_flashingSequence != null)
-            {
-                _flashingSequence.Kill();
-                _flashingSequence = null;
-            }
+            _flashingSequence?.Kill();
         }
     }
 }
