@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Books.Menu.View.Tags
@@ -7,9 +8,8 @@ namespace Books.Menu.View.Tags
     {
         [SerializeField] private Entity.MainTags _defaultSelectedTag = Entity.MainTags.All;
 
-        // сделать массив
-        [SerializeField] private List<MainTag> _tags;
-        public List<MainTag> Tags => _tags;
+        [SerializeField] private MainTag[] _tags;
+        public IReadOnlyCollection<MainTag> Tags => _tags;
 
         public MainTag CurrentSelectedTag => _selectedTag;
         private MainTag _selectedTag;
@@ -19,12 +19,12 @@ namespace Books.Menu.View.Tags
 
         private void Start()
         {
-            if (_tags == null || _tags.Count == 0)
+            if (_tags == null || _tags.Length == 0)
                 return;
 
             foreach (var t in _tags) t.SetSelected(false);
 
-            _selectedTag = _tags.Find(tag => tag.Tag == _defaultSelectedTag);
+            _selectedTag = Array.Find(_tags, t => t.Tag == _defaultSelectedTag);
             if (_selectedTag == null)
             {
                 Debug.LogErrorFormat($"Object with default tag - {_defaultSelectedTag} was not founded");
@@ -32,12 +32,12 @@ namespace Books.Menu.View.Tags
             }
 
             _selectedTag.SetSelected(true);
-            _selectedTagIndex = _tags.IndexOf(_selectedTag);
+            _selectedTagIndex = Array.IndexOf(_tags, _selectedTag);
         }
 
         public void SetTagSelected(int index)
         {
-            if (index > _tags.Count - 1)
+            if (index > _tags.Length - 1)
                 return;
             
             _selectedTag.SetSelected(false);

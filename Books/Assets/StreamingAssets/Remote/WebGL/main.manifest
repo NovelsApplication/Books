@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 2311931683
+CRC: 3950690813
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0a480c25095ef550766ed0e2ffee77ab
+    Hash: 74620a8ae9fe90015b0db99a0b1b6b3c
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 9b380a9b023fc32c62d97749467d12bc
+    Hash: 40c551271f983b1abfee3b6a0b5537a7
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 894d8c37823fa8899a97c140b1056f60
+    Hash: d22bfa06c05cad81cab3244404bd1e01
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -22,17 +22,25 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: 11500000, guid: 8e1fb93923c54fa5ab1e3e13547064c3, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 6a4f5eebe6549c840b86e80cb08e74db, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 68d121d134a84acc90689926d6f885de, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: e3d116653c3349a429e2f10b4171d55c, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 3f1d9109f5b1a2d4a8f6035a95de562f, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 46ca7a7bc5ed47c2b1af4f44f5c8fe17, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
 - Class: 114
@@ -41,6 +49,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f5cc1e303cd94c89a216bcb1f20d285f, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: ddd4f923d03699c45958a071233d95ef, type: 3}
 - Class: 114
@@ -52,6 +62,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 89c5594910c81d549b0b1dfdabe1de41, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 51efa18c66d84de1ab193396f91e6e6f, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
@@ -60,11 +72,17 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: e2b03545e5bb45a46a052864a32c8216, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 32c9b9cf6405439085a0e3734b297104, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: d6e9f8bf155b4e54d9f404b79cd2a8d3, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 83f1d5cabd5e45288d4db913ad5c56fa, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f4ba49731bab4a76ab7951e7e583a328, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: c6f4a95d8b2d0254d94071748e686053, type: 3}
 - Class: 114
@@ -92,6 +110,8 @@ ClassTypes:
 - Class: 328
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
+- AssemblyName: Books.Menu
+  ClassName: Books.Menu.View.BackgroundAnimation/PoolObject
 - AssemblyName: Books.Menu
   ClassName: Books.Menu.View.ScreenBook/Label
 - AssemblyName: Unity.TextMeshPro
@@ -141,47 +161,82 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
+- Assets/Remote/Main/Menu/Images/Particles/3.png
+- Assets/Remote/Main/Menu/Images/Particles/8.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/New.png
+- Assets/Remote/Main/Menu/Images/Particles/9.png
 - Assets/Remote/Main/Menu/Images/Bubble.png
 - Assets/Remote/Main/Menu/Images/Menu/UserIcon.png
+- Assets/Remote/Main/Menu/Images/DarkBackground.png
+- "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (1).png"
+- "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F.png"
+- Assets/Remote/Main/Menu/Images/Particles/6.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (7).png"
 - Assets/Remote/Main/Story/StoryCanvas.prefab
+- Assets/Remote/Main/Menu/Images/Particles/14.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
+- Assets/Remote/Main/Popups/UniversalPopUpRoot.prefab
 - Assets/Remote/Main/Menu/Images/Menu/Background1.png
 - Assets/Remote/Main/Menu/Images/Menu/SettingsIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (5).png"
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Special.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackgroundMain.png
+- Assets/Remote/Main/Menu/Images/Particles/1.png
 - Assets/Remote/Main/Menu/Refs/Menu.png
 - Assets/Remote/Main/Fader/FaderCanvas.prefab
 - Assets/Remote/Main/Menu/MenuCanvas.prefab
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDone.png
+- Assets/Remote/Main/Menu/Images/Particles/15.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F
+  (780 x 200 \u043F\u0438\u043A\u0441.).png"
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (3).png"
 - Assets/Remote/Main/Menu/Images/Menu/Background2.png
 - "Assets/Remote/Main/Story/Refs/\u0433\u043E\u0441\u0442\u0438\u043D\u043D\u0430\u044F_\u0434\u0435\u043D\u044C.png"
 - Assets/Remote/Main/Menu/Images/LightBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
 - Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
+- Assets/Remote/Main/Popups/ContentPrefabs/ScreenBookPopUpContent.prefab
 - Assets/Remote/Main/Menu/Images/Menu/Background4.png
+- Assets/Remote/Main/Menu/Images/Particles/12.png
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
 - Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/1 (2).png
 - Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
+- Assets/Remote/Main/Menu/Images/PopUp/1 (1).png
+- Assets/Remote/Main/Menu/Images/Particles/10.png
+- "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (4).png"
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/InProgress.png
 - Assets/Remote/Main/Menu/Refs/PopUp.png
 - Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
+- Assets/Remote/Main/Menu/Images/Particles/7.png
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/1 (1) 1.png
 - Assets/Remote/Main/Menu/Images/PopUp/DialogsIcon.png
-- Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/ForYou.png
+- Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
+- Assets/Remote/Main/Menu/Images/Particles/11.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
+- Assets/Remote/Main/Menu/Images/Particles/2.png
 - Assets/Remote/Main/Menu/Images/PopUp/RefreshIcon.png
+- Assets/Remote/Main/Popups/ContentPrefabs/OneButtonWarningContent.prefab
 - "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Menu/Images/PopUp/SuitsIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
+- Assets/Remote/Main/Menu/Images/Particles/5.png
+- Assets/Remote/Main/Menu/Images/Particles/13.png
 - Assets/Remote/Main/Menu/Images/Menu/Heart.png
-- Assets/Remote/Main/Menu/Images/DarkBackground.png
+- Assets/Remote/Main/Menu/Images/Particles/4.png
 Dependencies: []
