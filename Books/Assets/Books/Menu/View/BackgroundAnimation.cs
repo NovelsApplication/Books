@@ -17,6 +17,7 @@ namespace Books.Menu.View
 
         private readonly Queue<ParticleBehavior> _pool = new();
         private readonly List<ParticleBehavior> _activeParticles = new();
+        private readonly System.Random _shuffleRandom = new (DateTime.UtcNow.Second);
         
         private Coroutine _animationCoroutine;
         private bool _isRunning;
@@ -91,8 +92,6 @@ namespace Books.Menu.View
                 _pool.Enqueue(particle);
             }
         }
-
-        private System.Random _shuffleRandom = new System.Random(DateTime.UtcNow.Second);
         
         private void ShufflePool()
         {
