@@ -44,6 +44,7 @@ namespace Books.Menu.View.Tags
             
             if (_selectedTag.Value != null)
                 _selectedTag.Value.SetSelected(false);
+            
             _selectedTagIndex = index;
             _selectedTag.Value = _tags[_selectedTagIndex];
             _selectedTag.Value.SetSelected(true);
