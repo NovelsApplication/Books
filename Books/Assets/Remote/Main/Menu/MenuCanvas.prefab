@@ -379,7 +379,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2489640268526913285}
   m_Layer: 5
-  m_Name: TagsRoot
+  m_Name: GenreRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4816,7 +4816,7 @@ GameObject:
   - component: {fileID: 2895261885932334729}
   - component: {fileID: 639920107477948113}
   m_Layer: 5
-  m_Name: Tags
+  m_Name: Genres
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7054,6 +7054,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4168332628699624290}
   - component: {fileID: 7970066522455991699}
+  - component: {fileID: 3716158268540956314}
   m_Layer: 5
   m_Name: LittleBook
   m_TagString: Untagged
@@ -7105,8 +7106,22 @@ MonoBehaviour:
     _labelRoot: {fileID: 1248853972427313586}
   _headerArea: {fileID: 0}
   _descriptionArea: {fileID: 0}
-  _tagsArea: {fileID: 0}
+  _genreArea: {fileID: 0}
   _button: {fileID: 5335794684517998623}
+--- !u!114 &3716158268540956314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4370390919161508637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fb3e62ee503454181e7bd3c9e2487a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _screenBook: {fileID: 7970066522455991699}
+  _contentRoot: {fileID: 3690152628144464331}
 --- !u!1 &4448557388733756183
 GameObject:
   m_ObjectHideFlags: 0
@@ -10247,7 +10262,7 @@ MonoBehaviour:
     _labelRoot: {fileID: 372660154391468195}
   _headerArea: {fileID: 6840747539605058120}
   _descriptionArea: {fileID: 2658809408932291970}
-  _tagsArea: {fileID: 3646189699447870208}
+  _genreArea: {fileID: 3646189699447870208}
   _button: {fileID: 1178422165232072842}
 --- !u!1 &6489241265453303991
 GameObject:
@@ -10394,7 +10409,7 @@ GameObject:
   - component: {fileID: 6737595784482435752}
   - component: {fileID: 3646189699447870208}
   m_Layer: 5
-  m_Name: TagsText
+  m_Name: GenresText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
