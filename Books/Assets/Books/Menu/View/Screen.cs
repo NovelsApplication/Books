@@ -140,12 +140,12 @@ namespace Books.Menu.View
             screenLittleBook.gameObject.SetActive(true);
             screenLittleBook.SetLabels(label);
             screenLittleBook.SetImage(poster);
-            screenLittleBook.SetMainTags(new [] {Entity.MainTags.All, Entity.MainTags.New, Entity.MainTags.Continue});
+            screenLittleBook.SetMainTags(new [] {Entity.MainTags.All, Entity.MainTags.InProgress, Entity.MainTags.Continue, Entity.MainTags.Done});
             screenLittleBook.SetButton(() =>
             {
                 OpenScreenBookPopUp(poster, storyHeader, description, onClick);
             });
-            if (screenLittleBook.TryGetComponent(out MainTagFilterHandler tagFilterHandler)) 
+            if (screenLittleBook.TryGetComponent(out MainTagFilterHandler tagFilterHandler))
             {
                 _disposable.Add(
                     _tagsContainer.SelectedTag.Where(mainTag => mainTag != null)
