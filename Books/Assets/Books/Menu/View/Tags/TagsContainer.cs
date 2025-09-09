@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Menu.View.Tags
@@ -11,8 +12,8 @@ namespace Books.Menu.View.Tags
         [SerializeField] private MainTag[] _tags;
         public IReadOnlyCollection<MainTag> Tags => _tags;
 
-        public MainTag CurrentSelectedTag => _selectedTag;
-        private MainTag _selectedTag;
+        public IReadOnlyReactiveProperty<MainTag> SelectedTag => _selectedTag;
+        private ReactiveProperty<MainTag> _selectedTag = new();
 
         public int CurrentSelectedTagIndex => _selectedTagIndex;
         private int _selectedTagIndex;
@@ -24,26 +25,28 @@ namespace Books.Menu.View.Tags
 
             foreach (var t in _tags) t.SetSelected(false);
 
-            _selectedTag = Array.Find(_tags, t => t.Tag == _defaultSelectedTag);
-            if (_selectedTag == null)
+            var selected = Array.Find(_tags, t => t.Tag == _defaultSelectedTag);
+            if (selected == null)
             {
                 Debug.LogErrorFormat($"Object with default tag - {_defaultSelectedTag} was not founded");
-                _selectedTag = _tags[0];
+                selected = _tags[0];
             }
 
-            _selectedTag.SetSelected(true);
-            _selectedTagIndex = Array.IndexOf(_tags, _selectedTag);
+            _selectedTag.Value = selected;
+            _selectedTag.Value.SetSelected(true);
+            _selectedTagIndex = Array.IndexOf(_tags, selected);
         }
 
         public void SetTagSelected(int index)
         {
-            if (index > _tags.Length - 1)
+            if (index < 0 || index > _tags.Length - 1)
                 return;
             
-            _selectedTag.SetSelected(false);
+            if (_selectedTag.Value != null)
+                _selectedTag.Value.SetSelected(false);
             _selectedTagIndex = index;
-            _selectedTag = _tags[_selectedTagIndex];
-            _selectedTag.SetSelected(true);
+            _selectedTag.Value = _tags[_selectedTagIndex];
+            _selectedTag.Value.SetSelected(true);
         }
     }
 }

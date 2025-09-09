@@ -19,8 +19,10 @@ namespace Books.Menu.View
         [SerializeField] private Label[] _labels;
         [SerializeField] private TMP_Text _headerArea;
         [SerializeField] private TMP_Text _descriptionArea;
-        [SerializeField] private TMP_Text _tagsArea;
+        [SerializeField] private TMP_Text _genreArea;
         [SerializeField] private Button _button;
+
+        private Entity.MainTags[] _bookTags;
 
         public void SetLabels(Entity.Labels labelId) 
         {
@@ -37,14 +39,29 @@ namespace Books.Menu.View
             _descriptionArea.text = descriptionText;
         }
 
-        public void SetTags(params string[] tags)
+        public void SetGenre(params string[] tags)
         {
-            _tagsArea.text = string.Join(" ♥ ", tags);
+            _genreArea.text = string.Join(" ♥ ", tags);
         }
 
         public void SetImage(Texture2D image) 
         {
             _image.texture = image;
+        }
+
+        public void SetMainTags(Entity.MainTags[] bookTags)
+        {
+            _bookTags = bookTags;
+        }
+
+        public bool IsTaggedWith(Entity.MainTags checkedTag)
+        {
+            if (Array.Exists(_bookTags, t => t == checkedTag))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void SetButton(Action onClick) 

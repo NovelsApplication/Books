@@ -95,7 +95,7 @@ namespace Books.Menu.View
             var label = Entity.Labels.Next;
             var storyHeader = string.Empty;
             var description = string.Empty;
-            var tags = new string[0];
+            var genres = new string[0];
             var mainTags = new Entity.MainTags[0];
             while (story.canContinue) 
             {
@@ -103,7 +103,7 @@ namespace Books.Menu.View
                 if (!lineData.HasValue) continue;
 
                 if (lineData.Value.header.ToLower() == "название") storyHeader = lineData.Value.body;
-                if (lineData.Value.header.ToLower() == "жанры") tags = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                if (lineData.Value.header.ToLower() == "жанры") genres = lineData.Value.body.Split(",", StringSplitOptions.RemoveEmptyEntries);
                 if (lineData.Value.header.ToLower() == "бирка" && Enum.TryParse<Entity.Labels>(lineData.Value.body, out var l)) label = l;
                 if (lineData.Value.header.ToLower() == "раздел") 
                 {
@@ -121,7 +121,7 @@ namespace Books.Menu.View
             screenBook.SetLabels(label);
             screenBook.SetHeader(storyHeader);
             screenBook.SetDescription(description);
-            screenBook.SetTags(tags);
+            screenBook.SetGenre(genres);
             screenBook.SetImage(poster);
             screenBook.SetButton(() => 
             {
@@ -140,10 +140,19 @@ namespace Books.Menu.View
             screenLittleBook.gameObject.SetActive(true);
             screenLittleBook.SetLabels(label);
             screenLittleBook.SetImage(poster);
+            screenLittleBook.SetMainTags(new [] {Entity.MainTags.All, Entity.MainTags.New, Entity.MainTags.Continue});
             screenLittleBook.SetButton(() =>
             {
                 OpenScreenBookPopUp(poster, storyHeader, description, onClick);
             });
+            if (screenLittleBook.TryGetComponent(out MainTagFilterHandler tagFilterHandler)) 
+            {
+                _disposable.Add(
+                    _tagsContainer.SelectedTag.Where(mainTag => mainTag != null)
+                        .Subscribe(mainTag => tagFilterHandler.HideIfNotTaggedAs(mainTag.Tag).Forget()));
+            }
+            
+            
             _objects.Push(screenLittleBook.gameObject);
             
             // -------FIX-------
@@ -181,6 +190,7 @@ namespace Books.Menu.View
             
             _disposable.Add(_tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index)));
             _disposable.Add(_screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index)));
+            
             
             _backgroundAnimation.InitializeParticles();
         }
