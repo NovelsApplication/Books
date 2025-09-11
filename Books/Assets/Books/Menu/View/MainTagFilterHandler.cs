@@ -15,21 +15,23 @@ namespace Books.Menu.View
         {
             if (_screenBook.IsTaggedWith(tag))
             {
-                //_canvasGroup.alpha = 0;
+                _canvasGroup.alpha = 0;
                 _canvasGroup.gameObject.SetActive(false);
 
                 await UniTask.Yield();
                 
                 _screenBook.gameObject.SetActive(true);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(_gridLayout.GetComponent<RectTransform>());
-                await UniTask.Delay(25);
+                await UniTask.Delay(10);
                 
                 _canvasGroup.gameObject.SetActive(true);
-                //await _canvasGroup.DOFade(1f, 0.15f).AsyncWaitForCompletion();
+                await _canvasGroup.DOFade(1f, 0.20f).SetEase(Ease.InExpo)
+                    .AsyncWaitForCompletion();
             }
             else
             {
-                //await _canvasGroup.DOFade(0, 0.1f).AsyncWaitForCompletion();
+                await _canvasGroup.DOFade(0, 0.20f).SetEase(Ease.InExpo)
+                    .AsyncWaitForCompletion();
                 _screenBook.gameObject.SetActive(false);
             }
         }
