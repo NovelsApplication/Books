@@ -102,7 +102,7 @@ namespace Books.Menu
             manifestProcess.Dispose();
 
             manifests = JsonConvert.DeserializeObject<List<StoryManifest>>(manifestText);
-            _screen.Init(new PopupFactory(_ctx.Data.PopupData), manifests.Count);
+            _screen.Init(_ctx.Data.PopupData, manifests.Count);
 
             foreach (var storyManifest in manifests) 
             {

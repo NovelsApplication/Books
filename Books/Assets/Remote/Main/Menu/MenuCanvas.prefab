@@ -14998,6 +14998,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UniversalPopUpRoot
       objectReference: {fileID: 0}
+    - target: {fileID: 6638426618270371847, guid: 2a50d59c33fd66944858470cbf8d1e2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

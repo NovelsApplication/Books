@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Books.Menu.MenuPopup.Contents;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -16,10 +17,36 @@ namespace Books.Menu.MenuPopup
         [SerializeField] private float _showHideDuration;
 
         private RectTransform _popupContentTransform;
-        private IPopupContent _popupContent; // Для оптимизации. Чтобы не вызывать лишний GetComp.
+        private IPopupContent _popupContent; 
         private Tween _fadeTween;
 
-        public void SetPopupContent(RectTransform popupTransform, IPopupContent content = null)
+        private UniversalPopup _root;
+        
+        public static (UniversalPopup root, IPopupContent content) OpenPopup(PopupType popupType, UniversalPopup popupRoot, List<Data> popupData, IPopupContentData data = null)
+        {
+            Data popupConfig = popupData.Find(i => i.PopupType == popupType);
+
+            if (popupConfig.PopupContentPrefab == null)
+            {
+                throw new Exception($"Не найдет попап с типом [{popupType}] в данных");
+            }
+
+            RectTransform contentTransform = Instantiate(popupConfig.PopupContentPrefab);
+            IPopupContent content = contentTransform.GetComponent<IPopupContent>();
+
+            var newPopupRoot = Instantiate(popupRoot, popupRoot.transform.parent);
+            
+            newPopupRoot.SetPopupContent(contentTransform, content);
+            
+            if (data != null)
+                content.Configure(data, newPopupRoot, () => OpenPopup(popupType, popupRoot, popupData, data));
+            
+            newPopupRoot.Show().Forget();
+            
+            return (newPopupRoot, content);
+        }
+
+        private void SetPopupContent(RectTransform popupTransform, IPopupContent content, IPopupContentData data = null)
         {
             ClearPopupContent();
 
@@ -32,19 +59,16 @@ namespace Books.Menu.MenuPopup
             _popupContent = content;
         }
 
-        public void ClearPopupContent()
+        private void ClearPopupContent()
         {
             if (_popupContentTransform == null)
                 return;
-            
-            if (_popupContent == null)
-                _popupContent = _popupContentTransform.GetComponent<IPopupContent>();
-            
+
             _popupContent.ClearContent();
             
             _popupContentTransform.SetParent(null);
             Destroy(_popupContentTransform.gameObject);
-            
+
             _popupContentTransform = null;
             _popupContent = null;
         }
@@ -73,6 +97,7 @@ namespace Books.Menu.MenuPopup
             await _fadeTween.AsyncWaitForCompletion();
             
             _canvasGroup.gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
         public void ShowImmediate() 
@@ -85,6 +110,7 @@ namespace Books.Menu.MenuPopup
         {
             _canvasGroup.gameObject.SetActive(false);
             _canvasGroup.alpha = 0f;
+            Destroy(gameObject);
         }
 
         public void SetBackgroundButton(Action onClick) 
