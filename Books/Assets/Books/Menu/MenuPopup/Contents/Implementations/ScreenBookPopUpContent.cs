@@ -13,19 +13,23 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
         [SerializeField] private TMP_Text _descriptionArea;
         [SerializeField] private Button _readButton;
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _testButton;
 
         public override PopupType PopupType => PopupType.ScreenBook;
 
-        protected override void OnConfigure()
+        protected override void OnConfigure(Action testAction)
         {
             _image.texture = ContentData.Texture;
             _headerArea.text = ContentData.HeaderText;
             _descriptionArea.text = ContentData.DescriptionText;
             
-            _readButton.onClick.RemoveAllListeners();
-            _readButton.onClick.AddListener(ContentData.OnReadButtonClick.Invoke);
+            //_readButton.onClick.RemoveAllListeners();
+            //_readButton.onClick.AddListener(ContentData.OnReadButtonClick.Invoke);
             _closeButton.onClick.RemoveAllListeners();
             _closeButton.onClick.AddListener(() => Root.Hide().Forget());
+            
+            _testButton.onClick.RemoveAllListeners();
+            _testButton.onClick.AddListener(testAction.Invoke);
         }
 
         protected override void OnClearContent()
@@ -34,7 +38,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _headerArea.text = default;
             _descriptionArea.text = default;
             
-            _readButton.onClick.RemoveAllListeners();
+            //_readButton.onClick.RemoveAllListeners();
             _closeButton.onClick.RemoveAllListeners();
         }
 
@@ -44,6 +48,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             public string HeaderText;
             public string DescriptionText;
             public Action OnReadButtonClick;
+            public Action OnTestButtonClick;
         }
     }
 }

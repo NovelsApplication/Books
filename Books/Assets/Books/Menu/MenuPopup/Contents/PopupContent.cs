@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Books.Menu.MenuPopup.Contents
 {
     public interface IPopupContent
     {
         public PopupType PopupType { get; }
-        public void Configure(IPopupContentData data, UniversalPopup root);
+        public void Configure(IPopupContentData data, UniversalPopup root, Action testAction);
         public void ClearContent();
     }
 
@@ -19,7 +20,7 @@ namespace Books.Menu.MenuPopup.Contents
         protected TData ContentData { get; private set; }
         protected UniversalPopup Root { get; private set; }
 
-        public void Configure(IPopupContentData data, UniversalPopup root)
+        public void Configure(IPopupContentData data, UniversalPopup root, Action testAction)
         {
             ClearContent();
             
@@ -27,7 +28,7 @@ namespace Books.Menu.MenuPopup.Contents
             {
                 ContentData = tData;
                 Root = root;
-                OnConfigure();
+                OnConfigure(testAction);
             }
         }
 
@@ -41,7 +42,7 @@ namespace Books.Menu.MenuPopup.Contents
             }
         }
 
-        protected virtual void OnConfigure() { }
+        protected virtual void OnConfigure(Action testAction) { }
         protected virtual void OnClearContent() { }
     }
 }

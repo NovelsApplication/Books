@@ -19,7 +19,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
 
         public override PopupType PopupType => PopupType.OneButtonWarning;
 
-        protected override void OnConfigure()
+        protected override void OnConfigure(Action testAction)
         {
             _titleText.text = ContentData.TitleText;
             _infoText.text = ContentData.InfoText;
@@ -40,7 +40,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _confirmButton.onClick.RemoveAllListeners();
             _closeButton.onClick.RemoveAllListeners();
         }
-        
+
         public struct Data : IPopupContentData
         {
             public string TitleText;

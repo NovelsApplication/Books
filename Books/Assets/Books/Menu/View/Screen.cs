@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Books.Menu.MenuPopup;
-using Books.Menu.MenuPopup.Contents;
 using Books.Menu.MenuPopup.Contents.Implementations;
 using Books.Menu.View.Dots;
 using Books.Menu.View.SnapControllers;
@@ -15,8 +14,7 @@ namespace Books.Menu.View
 {
     public interface IScreen
     {
-        // Абстракция не должна зависеть от деталей. Задать вопрос насчет этого метода
-        public void Init(PopupFactory popupFactory, int booksCount);
+        public void Init(List<MenuPopup.Data> popupConfig, int booksCount);
         public void SetTheme(bool isLightTheme);
         public void ShowImmediate();
         public void HideImmediate();
@@ -46,14 +44,14 @@ namespace Books.Menu.View
         private readonly Stack<GameObject> _objects = new ();
 
         private BackgroundAnimation _backgroundAnimation;
-        private PopupFactory _popupFactory;
+        private List<MenuPopup.Data> _popupConfig;
         private bool _isLightTheme;
 
         private readonly CompositeDisposable _disposable = new ();
 
-        public void Init(PopupFactory popupFactory, int booksCount)
+        public void Init(List<MenuPopup.Data> popupConfig, int booksCount)
         {
-            _popupFactory = popupFactory;
+            _popupConfig = popupConfig;
             _dotsContainer.Initialize(booksCount);
         }
         
@@ -75,8 +73,6 @@ namespace Books.Menu.View
             _canvasGroup.gameObject.SetActive(false);
             _canvasGroup.gameObject.SetActive(true);
             _canvasGroup.alpha = 1f;
-
-            _universalPopUpRoot.HideImmediate();
         }
 
         public void HideImmediate()
@@ -204,13 +200,18 @@ namespace Books.Menu.View
                 OnReadButtonClick = () => {
                     _universalPopUpRoot.HideImmediate();
                     onClick.Invoke();
+                },
+                OnTestButtonClick = () =>
+                {
+                    
                 }
             };
-
-            IPopupContent screenBookPopupContent = _popupFactory.OpenPopup(
-                PopupType.ScreenBook, _universalPopUpRoot, data);
             
-            _universalPopUpRoot.SetBackgroundButton(() => _universalPopUpRoot.Hide().Forget());
+            var popupData = UniversalPopup.OpenPopup(
+                PopupType.ScreenBook, _universalPopUpRoot, _popupConfig, data);
+            
+            UniversalPopup root = popupData.root;
+            root.SetBackgroundButton(() => root.Hide().Forget());
         }
 
         public void Release() 
