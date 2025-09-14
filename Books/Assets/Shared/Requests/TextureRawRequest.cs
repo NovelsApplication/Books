@@ -30,8 +30,6 @@ namespace Shared.Requests
         {
             using var request = _ctx.GetRequest.Invoke(localPath);
 
-            Debug.Log($"Try load image from: {request.url}");
-
             await request.SendWebRequest();
 
             _ctx.OnGetTextureRaw.Execute((request.downloadHandler.data, localPath));

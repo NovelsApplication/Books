@@ -56,13 +56,14 @@ namespace Books.Story
             var storyDone = false;
             var storyPath = $"{_ctx.StoryPath}/Story.json";
             var storyText = string.Empty;
-            _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data =>
+            var onGetTextDisp = _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data =>
             {
                 storyText = data.text;
                 storyDone = true;
-            }).AddTo(this);
+            });
             _ctx.GetText.Execute(storyPath);
             while (!storyDone) await UniTask.Yield();
+            onGetTextDisp.Dispose();
 
             var story = new Ink.Runtime.Story(storyText);
             story.Continue();
@@ -89,16 +90,16 @@ namespace Books.Story
                 var locationDone = false;
                 var locationKey = "location";
 
-                _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
+                var onGetLocTextDisp = _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
                 {
                     _locationImage = data.texture;
                     locationDone = true;
-                }).AddTo(this);
+                });
                 _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey));
-
                 while (!locationDone) await UniTask.Yield();
+                onGetLocTextDisp.Dispose();
 
-                await _ctx.Screen.ShowLocation(_locationImage, null);
+                await _ctx.Screen.ShowLocation(_locationImage);
             }
 
             _characterImage = null;
@@ -107,13 +108,14 @@ namespace Books.Story
                 var characterDone = false;
                 var characterKey = "char";
 
-                _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
+                var onGetCharTextDisp = _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
                 {
                     _characterImage = data.texture;
                     characterDone = true;
                 }).AddTo(this);
                 _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
                 while (!characterDone) await UniTask.Yield();
+                onGetCharTextDisp.Dispose();
             }
 
             while (!IsDisposed)
@@ -140,13 +142,14 @@ namespace Books.Story
                     _ctx.CharacterImagePath.Value = $"{_ctx.StoryPath}/Characters/{lineData.Value.attributes.Replace(" ", "_")}.png";
                     var characterKey = "char";
 
-                    _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
+                    var onGetCharTextDisp = _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
                     {
                         _characterImage = data.texture;
                         characterDone = true;
-                    }).AddTo(this);
+                    });
                     _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
                     while (!characterDone) await UniTask.Yield();
+                    onGetCharTextDisp.Dispose();
                 }
 
                 var buttons = story.currentChoices.Select(c => (c.text, c.index)).ToArray();
