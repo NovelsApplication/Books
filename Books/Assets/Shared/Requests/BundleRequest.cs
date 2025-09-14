@@ -33,10 +33,12 @@ namespace Shared.Requests
             path = $"Remote/Win/{localPath}";
 #endif
 
-            using var request = _ctx.GetRequest.Invoke(path);
-            await request.SendWebRequest();
+            using (var request = _ctx.GetRequest.Invoke(path))
+            {
+                await request.SendWebRequest();
 
-            _ctx.OnGetBundle.Execute((request.downloadHandler.data, localPath));
+                _ctx.OnGetBundle.Execute((request.downloadHandler.data, localPath));
+            }
         }
     }
 }

@@ -159,13 +159,7 @@ namespace Shared.Cash
 
         private bool IsCashed(string fileName)
         {
-            return false;
-
             var result = File.Exists(ConvertPath(fileName));
-
-#if UNITY_EDITOR
-            //result = false;
-#endif
 
             return result;
         }

@@ -56,13 +56,14 @@ namespace Books.Story
         {
             var bundlesDone = false;
             UnityEngine.Object bundle = null;
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
+            var onGetBundleDisp = _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
             {
                 bundle = data.bundle;
                 bundlesDone = true;
-            }).AddTo(this);
+            });
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
             while (!bundlesDone) await UniTask.Yield();
+            onGetBundleDisp.Dispose();
 
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
