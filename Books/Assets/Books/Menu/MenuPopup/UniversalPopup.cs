@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Books.Menu.MenuPopup.Contents;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,37 +17,52 @@ namespace Books.Menu.MenuPopup
         [SerializeField] private RectTransform _backgroundTransform;
         [SerializeField] private float _showHideDuration;
 
+        [SerializeField]
         private RectTransform _popupContentTransform;
+        
         private IPopupContent _popupContent; 
         private Tween _fadeTween;
-
-        private UniversalPopup _root;
         
-        public static (UniversalPopup root, IPopupContent content) OpenPopup(PopupType popupType, UniversalPopup popupRoot, List<Data> popupData, IPopupContentData data = null)
+        public static (UniversalPopup root, IPopupContent content) OpenPopup(PopupType popupType, UniversalPopup popupRoot, List<Data> popupConfigs, IPopupContentData data = null)
         {
-            Data popupConfig = popupData.Find(i => i.PopupType == popupType);
+            Data config = popupConfigs.Find(i => i.PopupType == popupType);
 
-            if (popupConfig.PopupContentPrefab == null)
+            if (config.PopupContentPrefab == null)
             {
                 throw new Exception($"Не найдет попап с типом [{popupType}] в данных");
             }
-
-            RectTransform contentTransform = Instantiate(popupConfig.PopupContentPrefab);
-            IPopupContent content = contentTransform.GetComponent<IPopupContent>();
-
-            var newPopupRoot = Instantiate(popupRoot, popupRoot.transform.parent);
             
+            RectTransform contentTransform = Instantiate(config.PopupContentPrefab);
+            IPopupContent content = contentTransform.GetComponent<IPopupContent>();
+            
+            var newPopupRoot = CreatePopupOnTop(popupRoot, popupRoot.transform.parent);
+
             newPopupRoot.SetPopupContent(contentTransform, content);
             
             if (data != null)
-                content.Configure(data, newPopupRoot, () => OpenPopup(popupType, popupRoot, popupData, data));
+                content.Configure(data, newPopupRoot, popupConfigs);
             
             newPopupRoot.Show().Forget();
             
             return (newPopupRoot, content);
         }
 
-        private void SetPopupContent(RectTransform popupTransform, IPopupContent content, IPopupContentData data = null)
+        private static UniversalPopup CreatePopupOnTop(UniversalPopup prefab, Transform root)
+        {
+            UniversalPopup popupComponent = Instantiate(prefab, root);
+            
+            // плохо, возможно, нужно переделать
+            if (popupComponent._popupContentTransform != null)
+            {
+                IPopupContent content = popupComponent._popupContentTransform.GetComponent<IPopupContent>();
+                popupComponent._popupContent = content;
+                popupComponent.ClearPopupContent();
+            }
+            
+            return popupComponent;
+        }
+
+        private void SetPopupContent(RectTransform popupTransform, IPopupContent content)
         {
             ClearPopupContent();
 

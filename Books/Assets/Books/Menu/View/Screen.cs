@@ -187,7 +187,6 @@ namespace Books.Menu.View
             _disposable.Add(_tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index)));
             _disposable.Add(_screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index)));
             
-            
             _backgroundAnimation.InitializeParticles();
         }
 
@@ -200,10 +199,6 @@ namespace Books.Menu.View
                 OnReadButtonClick = () => {
                     _universalPopUpRoot.HideImmediate();
                     onClick.Invoke();
-                },
-                OnTestButtonClick = () =>
-                {
-                    
                 }
             };
             
