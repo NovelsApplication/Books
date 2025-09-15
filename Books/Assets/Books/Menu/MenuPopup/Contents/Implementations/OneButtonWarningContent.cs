@@ -13,13 +13,10 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
         [SerializeField] private Button _confirmButton;
         [SerializeField] private TextMeshProUGUI _buttonText;
         [SerializeField] private Button _closeButton;
-        
-        [SerializeField] private GameObject[] _lightElements;
-        [SerializeField] private GameObject[] _darkElements;
 
         public override PopupType PopupType => PopupType.OneButtonWarning;
 
-        protected override void OnConfigure(Action testAction)
+        protected override void OnConfigure()
         {
             _titleText.text = ContentData.TitleText;
             _infoText.text = ContentData.InfoText;
@@ -47,7 +44,6 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             public string InfoText;
             public string ButtonText;
             public Action OnButtonClick;
-            public bool IsLightTheme;
         }
     }
 }

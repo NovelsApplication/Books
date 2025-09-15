@@ -2099,9 +2099,9 @@ MonoBehaviour:
   _image: {fileID: 8448586342805581878}
   _headerArea: {fileID: 4298088010106435657}
   _descriptionArea: {fileID: 1518665990867559072}
-  _readButton: {fileID: 0}
+  _readButton: {fileID: 6150683939779233875}
   _closeButton: {fileID: 6161557489723572617}
-  _testButton: {fileID: 6150683939779233875}
+  _testButton: {fileID: 8921956901437765402}
 --- !u!1 &6130256081012664045
 GameObject:
   m_ObjectHideFlags: 0
