@@ -50,11 +50,17 @@ namespace Books.Menu.View.Tags
             _selectedTag.Value.SetSelected(true);
         }
 
-        public void SetTagSelected(MainTag tag)
+        public void SetTagSelected(Entity.MainTags tag)
         {
-            int index = Array.IndexOf(_tags, tag);
-            if (index != -1)
-                SetTagSelected(index);
+            var selected = Array.Find(_tags, t => t.Tag == tag);
+            if (selected == null)
+            {
+                Debug.LogErrorFormat($"Object with tag - {tag} was not founded");
+                selected = _tags[0];
+            }
+            
+            int index = Array.IndexOf(_tags, selected);
+            SetTagSelected(index);
         }
     }
 }
