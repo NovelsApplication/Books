@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 1928474534
+CRC: 2523997442
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b2b674a7c7dabe024d81294d94dc9922
+    Hash: dee18d46e499ba29f847c5fc8928c5c0
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c7999ffe8618043a8863ef91734b105d
+    Hash: e860fd2b9aaa0ee617574611d048ad24
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 409edf7a8181ef97aadbb08de6805c41
+    Hash: 9eef3c459d0dae5eb888db4726e162db
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -21,6 +21,8 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 48
   Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: e2b03545e5bb45a46a052864a32c8216, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 8e1fb93923c54fa5ab1e3e13547064c3, type: 3}
 - Class: 114
@@ -33,6 +35,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 68d121d134a84acc90689926d6f885de, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: e3d116653c3349a429e2f10b4171d55c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 09e40fe4b15f429193122c290891f808, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 3f1d9109f5b1a2d4a8f6035a95de562f, type: 3}
 - Class: 114
@@ -71,8 +75,6 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: e2b03545e5bb45a46a052864a32c8216, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 32c9b9cf6405439085a0e3734b297104, type: 3}
 - Class: 114
@@ -229,6 +231,7 @@ Assets:
 - Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
+- Assets/Remote/Main/Popups/ContentPrefabs/TwoButtonWarningContent.prefab
 - Assets/Remote/Main/Menu/Images/Particles/11.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
 - Assets/Remote/Main/Menu/Images/Particles/2.png

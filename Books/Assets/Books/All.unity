@@ -348,6 +348,8 @@ MonoBehaviour:
         _popupType: 2
       - _popupContentPrefab: {fileID: 7728992062928979609, guid: 6c326a0cd80c7e249943371cf2d3d08c, type: 3}
         _popupType: 1
+      - _popupContentPrefab: {fileID: 2279187001013505327, guid: 57830cd53a223964eace75556ecd3c9e, type: 3}
+        _popupType: 3
     _storyData:
       _screenName: StoryCanvas
 --- !u!4 &404478306
