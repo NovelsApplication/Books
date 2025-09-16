@@ -136,7 +136,7 @@ namespace Books.Menu.View
             screenLittleBook.gameObject.SetActive(true);
             screenLittleBook.SetLabels(label);
             screenLittleBook.SetImage(poster);
-            screenLittleBook.SetMainTags(new [] {Entity.MainTags.All, Entity.MainTags.InProgress, Entity.MainTags.Continue, Entity.MainTags.Done});
+            screenLittleBook.SetMainTags(new [] {Entity.MainTags.All, Entity.MainTags.InProgress, Entity.MainTags.Continue, Entity.MainTags.Free});
             screenLittleBook.SetButton(() =>
             {
                 OpenScreenBookPopUp(poster, storyHeader, description, onClick);
@@ -198,7 +198,10 @@ namespace Books.Menu.View
                 DescriptionText = description,
                 OnReadButtonClick = () => {
                     _universalPopUpRoot.HideImmediate();
-                    onClick.Invoke();
+                    onClick.Invoke(); 
+                },
+                GoToFreeTag = () => {
+                    //_tagsSnapController.InstantlyCenteringOnElement();
                 }
             };
             

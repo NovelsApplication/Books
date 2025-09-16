@@ -39,16 +39,18 @@ namespace Books.Menu.MenuPopup
             newPopupRoot.SetPopupContent(contentTransform, content);
 
             if (data != null)
+            {
                 content.Configure(data, newPopupRoot, popupConfigs);
-            
-            newPopupRoot.Show().Forget();
-            
+                newPopupRoot.Show().Forget();
+            }
+
             return (newPopupRoot, content);
         }
 
         private static UniversalPopup CreatePopupOnTop(UniversalPopup parentRootPrefab, Transform root)
         {
             UniversalPopup popupComponent = Instantiate(parentRootPrefab, root);
+            popupComponent.gameObject.SetActive(false);
             
             // Работает, но мне не очень нравится. Возможно, нужно передалать
             if (popupComponent._popupContentTransform != null)
@@ -62,10 +64,10 @@ namespace Books.Menu.MenuPopup
             return popupComponent;
         }
 
-        public void CloseAllPopups(bool isImmediate = false)
+        public void CloseParentPopups(bool isImmediate = false)
         {
             if (_parentPopupRoot != null)
-                _parentPopupRoot.CloseAllPopups(isImmediate);
+                _parentPopupRoot.CloseParentPopups(isImmediate);
 
             if (!isImmediate)
                 Hide().Forget();

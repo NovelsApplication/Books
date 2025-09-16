@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,6 +45,34 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
 
         private void OnTestButtonClick()
         {
+            ReactiveCommand<UniversalPopup> closeParentPopups = new ReactiveCommand<UniversalPopup>();
+            
+            var popup = UniversalPopup.OpenPopup(
+                PopupType.TwoButtonWarning, Root, Configs);
+
+            var data = new TwoButtonWarningContent.Data {
+                TitleText = "Тестовый попап",
+                InfoText = "Тут оглавление... попап с двумя кнопками",
+                FirstButtonText = "Понятно",
+                SecondButtonText = "Вернуться к бесплатным",
+                OnFirstButtonClick = () => {
+                    popup.root.Hide().Forget();
+                },
+                OnSecondButtonClick = () => {
+                    popup.root.CloseParentPopups();
+                    ContentData.GoToFreeTag?.Invoke();
+                }
+            };
+            
+            popup.content.Configure(data, popup.root, Configs);
+            popup.root.Show().Forget();
+            
+            popup.root.SetBackgroundButton(() => popup.root.Hide().Forget());
+        }
+        
+        //для теста визуала задника
+        private void OnTestButtonClick1()
+        {
             IPopupContentData oneButtonWarningData = null;
             UniversalPopup oneButtonWarningRoot = null;
             UniversalPopup twoButtonWarningRoot = null;
@@ -69,7 +98,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
                     oneButtonWarningRoot = popup.root;
                 },
                 OnSecondButtonClick = () => {
-                    twoButtonWarningRoot.CloseAllPopups();
+                    twoButtonWarningRoot.CloseParentPopups();
                     Debug.Log("Закрыть все");
                 }
             };
@@ -90,6 +119,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             public string HeaderText;
             public string DescriptionText;
             public Action OnReadButtonClick;
+            public Action GoToFreeTag;
         }
     }
 }

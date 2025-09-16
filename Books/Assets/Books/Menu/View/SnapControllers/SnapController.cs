@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -94,17 +93,5 @@ namespace Books.Menu.View.SnapControllers
 
             return new Vector2(_contentContainer.anchoredPosition.x - localDiff.x, _contentContainer.anchoredPosition.y);
         }
-
-        // private IEnumerator CenteringOnElementCoroutine(int index)
-        // {
-        //     yield return null;
-        //     contentContainer.anchoredPosition = 
-        //         GetContentContainerTargetPosition(index);
-        //
-        //     LayoutRebuilder.ForceRebuildLayoutImmediate(contentContainer);
-        //     yield return null;
-        //
-        //     targetElementIndex.Value = index;
-        // }
     }
 }
