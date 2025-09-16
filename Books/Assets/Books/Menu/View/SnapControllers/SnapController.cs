@@ -29,12 +29,12 @@ namespace Books.Menu.View.SnapControllers
         private void OnEnable()
         {
             if (_isInitialized)
-                InstantlyCenteringOnElement(_targetElementIndex.Value);
+                CenteringOnElement(_targetElementIndex.Value, true);
         }
 
-        public void InstantlyCenteringOnElement(int index)
+        public void CenteringOnElement(int index, bool isInstantly = false)
         {
-            StartCoroutine(SmoothSnapToElement(index, true));
+            StartCoroutine(SmoothSnapToElement(index, isInstantly));
         }
         
         public void FollowElement(RectTransform element)
