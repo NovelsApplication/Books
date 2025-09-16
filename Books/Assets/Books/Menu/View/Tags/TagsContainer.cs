@@ -39,9 +39,9 @@ namespace Books.Menu.View.Tags
 
         public void SetTagSelected(int index)
         {
-            if (index < 0 || index > _tags.Length - 1)
+            if (index < 0 || index > _tags.Length - 1 || index == _selectedTagIndex)
                 return;
-            
+
             if (_selectedTag.Value != null)
                 _selectedTag.Value.SetSelected(false);
             

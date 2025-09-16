@@ -143,8 +143,7 @@ namespace Books.Menu.View
             });
             if (screenLittleBook.TryGetComponent(out MainTagFilterHandler tagFilterHandler))
             {
-                _disposable.Add(
-                    _tagsContainer.SelectedTag.Where(mainTag => mainTag != null)
+                _disposable.Add(_tagsContainer.SelectedTag.Where(mainTag => mainTag != null)
                         .Subscribe(mainTag => tagFilterHandler.HideIfNotTaggedAs(mainTag.Tag).Forget()));
             }
             
@@ -181,11 +180,15 @@ namespace Books.Menu.View
                 _tagsSnapController.FollowElement(tag.GetComponent<RectTransform>());
             }
             
-            _tagsSnapController.InstantlyCenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
-            _screenBookSnapController.InstantlyCenteringOnElement(2);
+            _tagsSnapController.CenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
+            _screenBookSnapController.CenteringOnElement(2);
             
             _disposable.Add(_tagsSnapController.TargetElementIndexRP.Subscribe(index => _tagsContainer.SetTagSelected(index)));
             _disposable.Add(_screenBookSnapController.TargetElementIndexRP.Subscribe(index => _dotsContainer.SetDotSelect(index)));
+            _disposable.Add(_tagsContainer.SelectedTag.Where(mainTag => mainTag != null).Subscribe(_ => {
+                        if (_tagsSnapController.TargetElementIndexRP.Value != _tagsContainer.CurrentSelectedTagIndex)
+                            _tagsSnapController.CenteringOnElement(_tagsContainer.CurrentSelectedTagIndex);
+            }));
             
             _backgroundAnimation.InitializeParticles();
         }
@@ -201,7 +204,7 @@ namespace Books.Menu.View
                     onClick.Invoke(); 
                 },
                 GoToFreeTag = () => {
-                    //_tagsSnapController.InstantlyCenteringOnElement();
+                    _tagsContainer.SetTagSelected(Entity.MainTags.Free);
                 }
             };
             
