@@ -1,7 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +18,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
 
         public override PopupType PopupType => PopupType.TwoButtonWarning;
 
-        protected override void OnConfigure(Subject<Unit> closeParentRequest)
+        protected override void OnConfigure()
         {
             _titleText.text = ContentData.TitleText;
             _infoText.text = ContentData.InfoText;
@@ -27,15 +26,12 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _firstButton.onClick.RemoveAllListeners();
             _firstButton.onClick.AddListener(() => {
                 ContentData.OnFirstButtonClick?.Invoke();
-                //closeParentRequest?.OnNext(Unit.Default);
             });
             _firstButtonText.text = ContentData.FirstButtonText;
 
             _secondButton.onClick.RemoveAllListeners();
             _secondButton.onClick.AddListener(() => {
                 ContentData.OnSecondButtonClick?.Invoke();
-                ContentData.CloseRequest?.Invoke(Root);
-                closeParentRequest?.OnNext(Unit.Default);
             });
             _secondButtonText.text = ContentData.SecondButtonText;
 
@@ -55,6 +51,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _closeButton.onClick.RemoveAllListeners();
         }
 
+
         public struct Data : IPopupContentData
         {
             public string TitleText;
@@ -63,7 +60,6 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             public string SecondButtonText;
             public Action OnFirstButtonClick;
             public Action OnSecondButtonClick;
-            public Action<UniversalPopup> CloseRequest;
         }
     }
 }

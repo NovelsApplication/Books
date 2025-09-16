@@ -8,7 +8,7 @@ namespace Books.Menu.MenuPopup.Contents
     public interface IPopupContent
     {
         public PopupType PopupType { get; }
-        public IObservable<Unit> Configure(IPopupContentData data, UniversalPopup root, List<MenuPopup.Data> configs);
+        public void Configure(IPopupContentData data, UniversalPopup root, List<MenuPopup.Data> configs);
         public void ClearContent();
     }
 
@@ -23,25 +23,21 @@ namespace Books.Menu.MenuPopup.Contents
         protected UniversalPopup Root { get; private set; }
         protected List<MenuPopup.Data> Configs { get; private set; }
 
-        public IObservable<Unit> Configure(IPopupContentData data, UniversalPopup root, List<MenuPopup.Data> configs)
+        public void Configure(IPopupContentData data, UniversalPopup root, List<MenuPopup.Data> configs)
         {
             ClearContent();
             
-            var closeParentRequest = new Subject<Unit>();
-
             if (data is TData tData)
             {
                 ContentData = tData;
                 Root = root;
                 Configs = configs;
-                OnConfigure(closeParentRequest);
+                OnConfigure();
             }
             else
             {
                 Debug.LogErrorFormat($"Несовместимый тип данных: ожидается {typeof(TData).Name}", nameof(data));
             }
-
-            return closeParentRequest;
         }
 
         public void ClearContent()
@@ -54,7 +50,7 @@ namespace Books.Menu.MenuPopup.Contents
             }
         }
 
-        protected virtual void OnConfigure(Subject<Unit> closeParentRequest) { }
+        protected virtual void OnConfigure() { }
         protected virtual void OnClearContent() { }
     }
 }

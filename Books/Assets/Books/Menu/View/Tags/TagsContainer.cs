@@ -49,5 +49,12 @@ namespace Books.Menu.View.Tags
             _selectedTag.Value = _tags[_selectedTagIndex];
             _selectedTag.Value.SetSelected(true);
         }
+
+        public void SetTagSelected(MainTag tag)
+        {
+            int index = Array.IndexOf(_tags, tag);
+            if (index != -1)
+                SetTagSelected(index);
+        }
     }
 }

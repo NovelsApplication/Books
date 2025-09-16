@@ -1,7 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +16,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
 
         public override PopupType PopupType => PopupType.OneButtonWarning;
 
-        protected override void OnConfigure(Subject<Unit> closeParentRequest)
+        protected override void OnConfigure()
         {
             _titleText.text = ContentData.TitleText;
             _infoText.text = ContentData.InfoText;

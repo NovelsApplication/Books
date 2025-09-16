@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Books.Menu.MenuPopup.Contents;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,16 +12,17 @@ namespace Books.Menu.MenuPopup
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _backgroudButton;
+        [SerializeField] private Image _backgroungButtonImage;
         [SerializeField] private RawImage _backgroundImage;
         [SerializeField] private RectTransform _backgroundTransform;
         [SerializeField] private float _showHideDuration;
 
-        [SerializeField]
-        private RectTransform _popupContentTransform;
-        private IPopupContent _popupContent; 
+        [SerializeField] private RectTransform _popupContentTransform;
+        private IPopupContent _popupContent;
+        private UniversalPopup _parentPopupRoot;
         private Tween _fadeTween;
         
-        public static (UniversalPopup root, IPopupContent content, IObservable<Unit> closeRequest) OpenPopup(PopupType popupType, UniversalPopup popupRoot, List<Data> popupConfigs, IPopupContentData data = null)
+        public static (UniversalPopup root, IPopupContent content) OpenPopup(PopupType popupType, UniversalPopup parentPopupRoot, List<Data> popupConfigs, IPopupContentData data = null)
         {
             Data config = popupConfigs.Find(i => i.PopupType == popupType);
 
@@ -34,32 +34,43 @@ namespace Books.Menu.MenuPopup
             RectTransform contentTransform = Instantiate(config.PopupContentPrefab);
             IPopupContent content = contentTransform.GetComponent<IPopupContent>();
             
-            var newPopupRoot = CreatePopupOnTop(popupRoot, popupRoot.transform.parent);
+            var newPopupRoot = CreatePopupOnTop(parentPopupRoot, parentPopupRoot.transform.parent);
 
             newPopupRoot.SetPopupContent(contentTransform, content);
 
-            IObservable<Unit> closeRequest = null;
             if (data != null)
-                closeRequest = content.Configure(data, newPopupRoot, popupConfigs);
+                content.Configure(data, newPopupRoot, popupConfigs);
             
             newPopupRoot.Show().Forget();
             
-            return (newPopupRoot, content, closeRequest);
+            return (newPopupRoot, content);
         }
 
-        private static UniversalPopup CreatePopupOnTop(UniversalPopup prefab, Transform root)
+        private static UniversalPopup CreatePopupOnTop(UniversalPopup parentRootPrefab, Transform root)
         {
-            UniversalPopup popupComponent = Instantiate(prefab, root);
+            UniversalPopup popupComponent = Instantiate(parentRootPrefab, root);
             
-            // мне не очень нравится. Возможно, нужно передалать
+            // Работает, но мне не очень нравится. Возможно, нужно передалать
             if (popupComponent._popupContentTransform != null)
             {
                 IPopupContent content = popupComponent._popupContentTransform.GetComponent<IPopupContent>();
                 popupComponent._popupContent = content;
+                popupComponent._parentPopupRoot = parentRootPrefab;
                 popupComponent.ClearPopupContent();
             }
             
             return popupComponent;
+        }
+
+        public void CloseAllPopups(bool isImmediate = false)
+        {
+            if (_parentPopupRoot != null)
+                _parentPopupRoot.CloseAllPopups(isImmediate);
+
+            if (!isImmediate)
+                Hide().Forget();
+            else
+                HideImmediate();
         }
 
         private void SetPopupContent(RectTransform popupTransform, IPopupContent content)
