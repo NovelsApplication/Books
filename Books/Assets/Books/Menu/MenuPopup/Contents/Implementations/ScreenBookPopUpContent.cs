@@ -1,7 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +17,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
 
         public override PopupType PopupType => PopupType.ScreenBook;
 
-        protected override void OnConfigure(Subject<Unit> closeParentRequest)
+        protected override void OnConfigure()
         {
             _image.texture = ContentData.Texture;
             _headerArea.text = ContentData.HeaderText;
@@ -45,13 +44,17 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
 
         private void OnTestButtonClick()
         {
-            IPopupContentData data22 = null;
+            IPopupContentData oneButtonWarningData = null;
+            UniversalPopup oneButtonWarningRoot = null;
+            UniversalPopup twoButtonWarningRoot = null;
+
             var data1 = new OneButtonWarningContent.Data {
                 TitleText = "Тестовый попап #2",
                 InfoText = "Тут оглавление... попап с одной кнопкой",
                 ButtonText = "Открыть попап #1",
                 OnButtonClick = () => {
-                    UniversalPopup.OpenPopup(PopupType.TwoButtonWarning, Root, Configs, data22);
+                    var popup = UniversalPopup.OpenPopup(PopupType.TwoButtonWarning, oneButtonWarningRoot, Configs, oneButtonWarningData);
+                    twoButtonWarningRoot = popup.root;
                 },
             };
             
@@ -62,20 +65,23 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
                 SecondButtonText = "Закрыть все",
                 OnFirstButtonClick = () => {
                     Debug.Log("Открыть след. попап");
-                    UniversalPopup.OpenPopup(PopupType.OneButtonWarning, Root, Configs, data1);
+                    var popup = UniversalPopup.OpenPopup(PopupType.OneButtonWarning, twoButtonWarningRoot, Configs, data1);
+                    oneButtonWarningRoot = popup.root;
                 },
                 OnSecondButtonClick = () => {
+                    twoButtonWarningRoot.CloseAllPopups();
                     Debug.Log("Закрыть все");
-                },
+                }
             };
-
-            data22 = data2;
+            
+            oneButtonWarningData = data2;
 
             var popup = UniversalPopup.OpenPopup(
                 PopupType.TwoButtonWarning, Root, Configs, data2);
+
+            twoButtonWarningRoot = popup.root;
             
             popup.root.SetBackgroundButton(() => popup.root.Hide().Forget());
-            popup.closeRequest.Subscribe((_) => Root.Hide().Forget());
         }
 
         public struct Data : IPopupContentData
