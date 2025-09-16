@@ -1016,8 +1016,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46ca7a7bc5ed47c2b1af4f44f5c8fe17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _titleText: {fileID: 4478293033212756540}
-  _infoText: {fileID: 5176362345091891032}
+  _titleText: {fileID: 4896127241325303022}
+  _infoText: {fileID: 6631935235989006429}
   _confirmButton: {fileID: 270403657168000898}
   _buttonText: {fileID: 1955398396369935459}
   _closeButton: {fileID: 6911713716730123492}

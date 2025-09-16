@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Books.Menu.MenuPopup.Contents;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using UnityEditor;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,11 +19,10 @@ namespace Books.Menu.MenuPopup
 
         [SerializeField]
         private RectTransform _popupContentTransform;
-        
         private IPopupContent _popupContent; 
         private Tween _fadeTween;
         
-        public static (UniversalPopup root, IPopupContent content) OpenPopup(PopupType popupType, UniversalPopup popupRoot, List<Data> popupConfigs, IPopupContentData data = null)
+        public static (UniversalPopup root, IPopupContent content, IObservable<Unit> closeRequest) OpenPopup(PopupType popupType, UniversalPopup popupRoot, List<Data> popupConfigs, IPopupContentData data = null)
         {
             Data config = popupConfigs.Find(i => i.PopupType == popupType);
 
@@ -38,20 +37,21 @@ namespace Books.Menu.MenuPopup
             var newPopupRoot = CreatePopupOnTop(popupRoot, popupRoot.transform.parent);
 
             newPopupRoot.SetPopupContent(contentTransform, content);
-            
+
+            IObservable<Unit> closeRequest = null;
             if (data != null)
-                content.Configure(data, newPopupRoot, popupConfigs);
+                closeRequest = content.Configure(data, newPopupRoot, popupConfigs);
             
             newPopupRoot.Show().Forget();
             
-            return (newPopupRoot, content);
+            return (newPopupRoot, content, closeRequest);
         }
 
         private static UniversalPopup CreatePopupOnTop(UniversalPopup prefab, Transform root)
         {
             UniversalPopup popupComponent = Instantiate(prefab, root);
             
-            // плохо, возможно, нужно переделать
+            // мне не очень нравится. Возможно, нужно передалать
             if (popupComponent._popupContentTransform != null)
             {
                 IPopupContent content = popupComponent._popupContentTransform.GetComponent<IPopupContent>();

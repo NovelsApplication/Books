@@ -202,10 +202,10 @@ namespace Books.Menu.View
                 }
             };
             
-            var popupData = UniversalPopup.OpenPopup(
+            var popup = UniversalPopup.OpenPopup(
                 PopupType.ScreenBook, _universalPopUpRoot, _popupConfig, data);
             
-            UniversalPopup root = popupData.root;
+            UniversalPopup root = popup.root;
             root.SetBackgroundButton(() => root.Hide().Forget());
         }
 
