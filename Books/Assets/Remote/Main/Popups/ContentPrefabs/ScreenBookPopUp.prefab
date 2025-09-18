@@ -2052,7 +2052,7 @@ GameObject:
   - component: {fileID: 5074620276331231233}
   - component: {fileID: 365575345596014532}
   m_Layer: 5
-  m_Name: ScreenBookPopUpContent
+  m_Name: ScreenBookPopUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
