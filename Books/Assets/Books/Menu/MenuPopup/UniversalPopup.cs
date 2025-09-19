@@ -12,8 +12,7 @@ namespace Books.Menu.MenuPopup
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _backgroudButton;
-        [SerializeField] private Image _backgroungButtonImage;
-        [SerializeField] private RawImage _backgroundImage;
+        [SerializeField] private Image _backgroundButtonImage;
         [SerializeField] private RectTransform _backgroundTransform;
         [SerializeField] private float _showHideDuration;
 
@@ -50,6 +49,7 @@ namespace Books.Menu.MenuPopup
         private static UniversalPopup CreatePopupOnTop(UniversalPopup parentRootPrefab, Transform root)
         {
             UniversalPopup popupComponent = Instantiate(parentRootPrefab, root);
+            popupComponent._parentPopupRoot = parentRootPrefab;
             popupComponent.gameObject.SetActive(false);
             
             // Работает, но мне не очень нравится. Возможно, нужно передалать
@@ -57,17 +57,20 @@ namespace Books.Menu.MenuPopup
             {
                 IPopupContent content = popupComponent._popupContentTransform.GetComponent<IPopupContent>();
                 popupComponent._popupContent = content;
-                popupComponent._parentPopupRoot = parentRootPrefab;
                 popupComponent.ClearPopupContent();
             }
+            
+            
             
             return popupComponent;
         }
 
         public void CloseParentPopups(bool isImmediate = false)
         {
-            if (_parentPopupRoot != null)
-                _parentPopupRoot.CloseParentPopups(isImmediate);
+            if (_parentPopupRoot == null)
+                return;
+            
+            _parentPopupRoot.CloseParentPopups(isImmediate);
 
             if (!isImmediate)
                 Hide().Forget();
@@ -146,12 +149,6 @@ namespace Books.Menu.MenuPopup
         {
             _backgroudButton.onClick.RemoveAllListeners();
             _backgroudButton.onClick.AddListener(onClick.Invoke);
-        }
-
-        public void SetBackgroundTexture(Texture2D texture) 
-        {
-            if (texture != null)
-                _backgroundImage.texture = texture;
         }
     }
 }

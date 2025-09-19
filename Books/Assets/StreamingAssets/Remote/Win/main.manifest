@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 272186788
+CRC: 2258022445
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a0d0423791b79d6698e8ebbaaf62f280
+    Hash: 53e593213e0bc9f4c48cc21020a7ad90
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 9e144b344a6b674906cde8ae2566d6cf
+    Hash: 1ef92788fc4100e8676f0f6f6f52aecf
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 487ca008f3a7c612b86dbd8bdaaa4be7
+    Hash: 328175b7f26a7c0e6582b10b7dc1dc8c
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -35,6 +35,10 @@ ClassTypes:
   Script: {fileID: 11500000, guid: e3d116653c3349a429e2f10b4171d55c, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 09e40fe4b15f429193122c290891f808, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 3f1d9109f5b1a2d4a8f6035a95de562f, type: 3}
 - Class: 114
@@ -131,6 +135,16 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.TMP_FontWeightPair
 - AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_InputField/OnChangeEvent
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_InputField/SelectionEvent
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_InputField/SubmitEvent
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_InputField/TextSelectionEvent
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_InputField/TouchScreenKeyboardEvent
+- AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.VertexGradient
 - AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.PersistentCallGroup
@@ -166,6 +180,7 @@ SerializeReferenceClassIdentifiers:
   ClassName: UnityEngine.UI.SpriteState
 Assets:
 - Assets/Remote/Main/Menu/Images/Particles/3.png
+- Assets/Remote/Main/Popups/ContentPrefabs/Settings/SettingsPopUp.prefab
 - Assets/Remote/Main/Menu/Images/Particles/8.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/New.png
 - Assets/Remote/Main/Menu/Images/Particles/9.png
@@ -191,6 +206,14 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Special.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackgroundMain.png
 - Assets/Remote/Main/Menu/Images/Particles/1.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0422\u044B \u043C\u043E\u0436\u0435\u0448\u044C
+  \u043F\u0435\u0440\u0435\u043D\u043E\u0441\u0438\u0442\u044C \u043F\u0440\u043E\u0433\u0440\u0435\u0441\u0441
+  \u043C\u0435\u0436\u0434\u0443 \u0441\u043B\u043E\u0442\u0430\u043C\u0438 \u0438
+  \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0442\u044C \u043F\u0440\u043E\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0435
+  \u043D\u0430 \u043D\u043E\u0432\u043E\u043C \u0441\u043B\u043E\u0442\u0435 \u0441
+  \u043B\u044E\u0431\u043E\u0433\u043E \u043C\u043E\u043C\u0435\u043D\u0442\u0430
+  \u0438\u0441\u0442\u043E\u0440\u0438\u0438. \u041F\u0435\u0440\u0435\u043D\u0435\u0441\u0442\u0438
+  \u043F\u0440\u043E\u0433\u0440\u0435\u0441\u0441.png"
 - Assets/Remote/Main/Menu/Refs/Menu.png
 - Assets/Remote/Main/Fader/FaderCanvas.prefab
 - Assets/Remote/Main/Menu/MenuCanvas.prefab
@@ -202,11 +225,12 @@ Assets:
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (3).png"
 - Assets/Remote/Main/Menu/Images/Menu/Background2.png
 - "Assets/Remote/Main/Story/Refs/\u0433\u043E\u0441\u0442\u0438\u043D\u043D\u0430\u044F_\u0434\u0435\u043D\u044C.png"
+- Assets/Remote/Main/Popups/ContentPrefabs/NetworkButtonsPopUp.prefab
 - Assets/Remote/Main/Menu/Images/LightBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
 - Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
-- Assets/Remote/Main/Popups/ContentPrefabs/ScreenBookPopUpContent.prefab
+- Assets/Remote/Main/Popups/ContentPrefabs/ScreenBookPopUp.prefab
 - Assets/Remote/Main/Menu/Images/Menu/Background4.png
 - Assets/Remote/Main/Menu/Images/Particles/12.png
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
@@ -218,9 +242,13 @@ Assets:
 - "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (4).png"
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (11) (1).png"
 - Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/InProgress.png
 - Assets/Remote/Main/Menu/Refs/PopUp.png
+- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (6).png"
 - Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Particles/7.png
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster.png
@@ -231,12 +259,13 @@ Assets:
 - Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
-- Assets/Remote/Main/Popups/ContentPrefabs/TwoButtonWarningContent.prefab
+- Assets/Remote/Main/Popups/ContentPrefabs/TwoButtonWarning.prefab
 - Assets/Remote/Main/Menu/Images/Particles/11.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
 - Assets/Remote/Main/Menu/Images/Particles/2.png
 - Assets/Remote/Main/Menu/Images/PopUp/RefreshIcon.png
-- Assets/Remote/Main/Popups/ContentPrefabs/OneButtonWarningContent.prefab
+- Assets/Remote/Main/Popups/ContentPrefabs/OneButtonWarning/LightOneButtonWarning.prefab
+- Assets/Remote/Main/Popups/ContentPrefabs/TextField/TextFieldPopup.prefab
 - "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Menu/Images/PopUp/SuitsIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
