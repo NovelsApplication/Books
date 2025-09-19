@@ -43,7 +43,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _closeButton.onClick.RemoveAllListeners();
         }
 
-        private void OnTestButtonClick()
+        private void OnTestButtonClick1()
         {
             ReactiveCommand<UniversalPopup> closeParentPopups = new ReactiveCommand<UniversalPopup>();
             
@@ -71,7 +71,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
         }
         
         //для теста визуала задника
-        private void OnTestButtonClick1()
+        private void OnTestButtonClick()
         {
             IPopupContentData oneButtonWarningData = null;
             UniversalPopup oneButtonWarningRoot = null;
