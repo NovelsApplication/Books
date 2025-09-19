@@ -43,18 +43,16 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _closeButton.onClick.RemoveAllListeners();
         }
 
-        private void OnTestButtonClick1()
+        private void OnTestButtonClick()
         {
-            ReactiveCommand<UniversalPopup> closeParentPopups = new ReactiveCommand<UniversalPopup>();
-            
             var popup = UniversalPopup.OpenPopup(
                 PopupType.TwoButtonWarning, Root, Configs);
 
             var data = new TwoButtonWarningContent.Data {
-                TitleText = "Тестовый попап",
-                InfoText = "Тут оглавление... попап с двумя кнопками",
-                FirstButtonText = "Понятно",
-                SecondButtonText = "Вернуться к бесплатным",
+                TitleText = "Внимание!",
+                InfoText = "Данная история вышла на монетизацию, ее продолжение будет доступно после оплаты.",
+                FirstButtonText = "Купить",
+                SecondButtonText = "К бесплатным историям",
                 OnFirstButtonClick = () => {
                     popup.root.Hide().Forget();
                 },
@@ -71,7 +69,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
         }
         
         //для теста визуала задника
-        private void OnTestButtonClick()
+        private void OnTestButtonClick1()
         {
             IPopupContentData oneButtonWarningData = null;
             UniversalPopup oneButtonWarningRoot = null;

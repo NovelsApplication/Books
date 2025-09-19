@@ -257,8 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvasGroup: {fileID: 7576979090339603357}
   _backgroudButton: {fileID: 1758505775207231066}
-  _backgroungButtonImage: {fileID: 4436882787094561820}
-  _backgroundImage: {fileID: 3582451725767017917}
+  _backgroundButtonImage: {fileID: 4436882787094561820}
   _backgroundTransform: {fileID: 2441605884887463941}
   _showHideDuration: 0.2
   _popupContentTransform: {fileID: 0}
