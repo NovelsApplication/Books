@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 1357562187
+CRC: 4193179830
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f608b641875a9c26fa5be76bfc5cda24
+    Hash: 748c7bb5de1d48e39a0c6b013356a5ae
   TypeTreeHash:
     serializedVersion: 2
     Hash: 1ef92788fc4100e8676f0f6f6f52aecf
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 50726f988877f2acf77130070ae8bedc
+    Hash: cd6b9c2fd68a72ed21732199f6322b79
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -231,6 +231,7 @@ Assets:
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (3).png"
 - Assets/Remote/Main/Menu/Images/Menu/Background2.png
 - "Assets/Remote/Main/Story/Refs/\u0433\u043E\u0441\u0442\u0438\u043D\u043D\u0430\u044F_\u0434\u0435\u043D\u044C.png"
+- Assets/Remote/Main/Menu/Images/PopUp/IMG_0269.PNG
 - Assets/Remote/Main/Popups/ContentPrefabs/NetworkButtonsPopUp.prefab
 - Assets/Remote/Main/Menu/Images/LightBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/Cloud.png

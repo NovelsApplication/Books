@@ -136,7 +136,7 @@ namespace Books.Menu.View
             screenLittleBook.gameObject.SetActive(true);
             screenLittleBook.SetLabels(label);
             screenLittleBook.SetImage(poster);
-            screenLittleBook.SetMainTags(new [] {Entity.MainTags.All, Entity.MainTags.InProgress, Entity.MainTags.Continue, Entity.MainTags.Free});
+            screenLittleBook.SetMainTags(mainTags);
             screenLittleBook.SetButton(() =>
             {
                 OpenScreenBookPopUp(poster, storyHeader, description, onClick);
