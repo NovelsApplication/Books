@@ -60,8 +60,6 @@ namespace Books.Menu.MenuPopup
                 popupComponent.ClearPopupContent();
             }
             
-            
-            
             return popupComponent;
         }
 
