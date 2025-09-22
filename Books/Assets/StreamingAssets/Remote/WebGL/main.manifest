@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 35318827
+CRC: 2640111888
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 61dabec95b9eb0b348287e8d1cf6f1c7
+    Hash: 0efe32521d0a83f187bbd99732fc8613
   TypeTreeHash:
     serializedVersion: 2
     Hash: 1ef92788fc4100e8676f0f6f6f52aecf
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: f14c504a197929bba4ccc9ef05b33b01
+    Hash: da4882bcd03e1117c6021d1129bba1f1
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -220,27 +220,31 @@ Assets:
   \u043B\u044E\u0431\u043E\u0433\u043E \u043C\u043E\u043C\u0435\u043D\u0442\u0430
   \u0438\u0441\u0442\u043E\u0440\u0438\u0438. \u041F\u0435\u0440\u0435\u043D\u0435\u0441\u0442\u0438
   \u043F\u0440\u043E\u0433\u0440\u0435\u0441\u0441.png"
-- Assets/Remote/Main/Menu/Refs/Menu.png
+- "Assets/Remote/Main/Menu/Images/Particles/\u0421\u0435\u0440\u0434\u0435\u0447\u043A\u043E.png"
 - Assets/Remote/Main/Fader/FaderCanvas.prefab
-- Assets/Remote/Main/Menu/MenuCanvas.prefab
+- "Assets/Remote/Main/Menu/Images/Particles/\u041A\u0440\u0443\u0436\u043E\u043A
+  2.png"
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDone.png
 - Assets/Remote/Main/Menu/Images/Particles/15.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F
   (780 x 200 \u043F\u0438\u043A\u0441.).png"
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (3).png"
+- Assets/Remote/Main/Menu/Refs/Menu.png
 - Assets/Remote/Main/Menu/Images/Menu/Background2.png
+- Assets/Remote/Main/Menu/MenuCanvas.prefab
 - "Assets/Remote/Main/Story/Refs/\u0433\u043E\u0441\u0442\u0438\u043D\u043D\u0430\u044F_\u0434\u0435\u043D\u044C.png"
 - Assets/Remote/Main/Menu/Images/PopUp/IMG_0269.PNG
 - Assets/Remote/Main/Popups/ContentPrefabs/NetworkButtonsPopUp.prefab
 - Assets/Remote/Main/Menu/Images/LightBackground.png
-- Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
+- "Assets/Remote/Main/Menu/Images/Particles/\u041A\u0440\u0443\u0436\u043E\u043A.png"
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
-- Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
+- Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
 - Assets/Remote/Main/Popups/ContentPrefabs/ScreenBookPopUp.prefab
 - Assets/Remote/Main/Menu/Images/Menu/Background4.png
 - Assets/Remote/Main/Menu/Images/Particles/12.png
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
+- Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/1 (2).png
 - Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
