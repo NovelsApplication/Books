@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 2171888978
+CRC: 2330526072
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: bfddcc9ad3eb2b7dd75c6d50068a213c
+    Hash: 19eeb60518b16f4ae9f98aa3e778e354
   TypeTreeHash:
     serializedVersion: 2
     Hash: 1ef92788fc4100e8676f0f6f6f52aecf
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 9a03c6b98364655bd9e929e50b334c8c
+    Hash: 610ecb677fdc0326c3af561739f61876
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -237,6 +237,7 @@ Assets:
 - Assets/Remote/Main/Popups/ContentPrefabs/photo_2025-09-07_18-22-21.jpg
 - "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
+- Assets/Remote/Main/Menu/Images/Menu/LightSmallShadow.png
 - Assets/Remote/Main/Menu/Images/Particles/5.png
 - Assets/Remote/Main/Menu/Images/Particles/13.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
@@ -279,6 +280,7 @@ Assets:
 - Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/LightBookShadow.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackground.png
+- Assets/Remote/Main/Menu/Images/Menu/DarkSmallShadow.png
 - "Assets/Remote/Main/Menu/Images/\u041A\u0430\u043A \u0443 \u041A\u0420\u0440.png"
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
 - Assets/Remote/Main/Popups/ContentPrefabs/TwoButtonWarning.prefab
