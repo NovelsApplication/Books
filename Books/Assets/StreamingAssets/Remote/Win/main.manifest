@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.27f1
-CRC: 2330526072
+CRC: 3106992737
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 19eeb60518b16f4ae9f98aa3e778e354
+    Hash: 708289c645683db8a9bcdb36a0ad9554
   TypeTreeHash:
     serializedVersion: 2
     Hash: 1ef92788fc4100e8676f0f6f6f52aecf
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 610ecb677fdc0326c3af561739f61876
+    Hash: 21d6572d945a115a176b2504f8601897
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -131,6 +131,8 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.KerningTable
 - AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.LigatureSubstitutionRecord
+- AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.MarkPositionAdjustment
 - AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.MarkToBaseAdjustmentRecord
@@ -208,8 +210,6 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Particles/15.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F
   (780 x 200 \u043F\u0438\u043A\u0441.).png"
-- "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
-  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (3).png"
 - Assets/Remote/Main/Menu/Images/LightBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
@@ -252,6 +252,7 @@ Assets:
 - Assets/Remote/Main/Story/StoryCanvas.prefab
 - Assets/Remote/Main/Menu/Images/Particles/14.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
+- Assets/Remote/Main/Menu/Images/PopUp/animIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (5).png"

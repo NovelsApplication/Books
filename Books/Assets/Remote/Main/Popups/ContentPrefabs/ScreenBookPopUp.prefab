@@ -33,7 +33,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 80}
+  m_SizeDelta: {x: 0, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &404422648712730551
 GameObject:
@@ -503,8 +503,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 158.8, y: -170.9}
-  m_SizeDelta: {x: 275.9, y: 257.1}
+  m_AnchoredPosition: {x: 161.4, y: -171.6}
+  m_SizeDelta: {x: 255.9, y: 237.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1923413900715240868
 GameObject:
@@ -1107,7 +1107,7 @@ GameObject:
   - component: {fileID: 2567296023744583712}
   - component: {fileID: 2795085281926732697}
   m_Layer: 5
-  m_Name: Pictures
+  m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1160,7 +1160,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d4d91cdbca1c8c04199a7179ae6b8a20, type: 3}
+  m_Sprite: {fileID: -1210927860, guid: d12e01ecec69cea409cabe08e3caa753, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1557,7 +1557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.34901962}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1573,7 +1573,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 0.5
 --- !u!1 &5014970728724835619
 GameObject:
   m_ObjectHideFlags: 0
@@ -1591,7 +1591,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &835599662030386687
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1609,7 +1609,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -70, y: -70}
+  m_SizeDelta: {x: -40, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2796967056509254260
 CanvasRenderer:
@@ -1684,7 +1684,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 854, y: -2007.2133}
+  m_AnchoredPosition: {x: 854, y: -1976.8333}
   m_SizeDelta: {x: 1708, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2075987015156365248
@@ -1716,7 +1716,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u041F\u043E\u0440\u0430 \u043F\u043E\u0436\u0438\u043D\u0430\u0442\u044C
-    \u043F\u043B\u043E\u0434\u044B \u0441\u0432\u043E\u0438\u0445 \u0432\u044B\u0431\u043E\u0440\u043E\u0432..."
+    \u043F\u043B\u043E\u0434\u044B \u0441\u0432\u043E\u0438\u0445 \u0432\u044B\u0431\u043E\u0440\u043E\u0432... "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3876adfb97c768e4486f349e4c54b222, type: 2}
   m_sharedMaterial: {fileID: 2506337353736764830, guid: 3876adfb97c768e4486f349e4c54b222, type: 2}
@@ -1952,7 +1952,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1.1
+  m_PixelsPerUnitMultiplier: 0.65
 --- !u!114 &6134129830987282775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3139,7 +3139,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -70, y: -70}
+  m_SizeDelta: {x: -90, y: -90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6577462605743287787
 CanvasRenderer:
@@ -3214,7 +3214,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 854, y: -1669.807}
+  m_AnchoredPosition: {x: 854, y: -1749.1421}
   m_SizeDelta: {x: 1708, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3058144827606641463
@@ -3404,4 +3404,4 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1.1
+  m_PixelsPerUnitMultiplier: 0.65
