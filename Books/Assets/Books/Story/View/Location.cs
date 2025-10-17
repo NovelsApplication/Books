@@ -17,7 +17,7 @@ namespace Books.Story.View
             {
                 Debug.Log($"Show 1 {videoPath}");
                 _player.targetTexture = rt;
-                _player.url = $"file:///{videoPath}";
+                _player.url = $"file:///{videoPath}"; //
                 Debug.Log($"Show 2 {_player.url}");
             }
 
