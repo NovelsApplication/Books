@@ -11,8 +11,7 @@ namespace Shared.Requests
     {
         public struct Ctx
         {
-            public ReactiveCommand<(byte[] data, string assetPath)> OnGetBundle;
-            public IObservable<string> GetBundle;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetBundle;
 
             public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTexture;
 
@@ -29,7 +28,6 @@ namespace Shared.Requests
 
             new BundleRequest(new BundleRequest.Ctx
             {
-                OnGetBundle = _ctx.OnGetBundle,
                 GetBundle = _ctx.GetBundle,
 
                 GetRequest = GetRequest,
