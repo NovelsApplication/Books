@@ -52,7 +52,7 @@ namespace Books.Menu
             public ReactiveCommand<string> GetText;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
-            public ReactiveCommand<(string fileName, string key)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
 
@@ -118,20 +118,15 @@ namespace Books.Menu
                 _ctx.GetText.Execute(storyPath);
                 while (!storyDone) await UniTask.Yield();
 
-                var textureDone = false;
                 var texturePath = $"{storyManifest.StoryPath}/Poster.png";
-                Texture2D texture = null;
                 var textureKey = texturePath;
 
-                _ctx.OnGetTexture.Where(data => data.key == textureKey).Subscribe(data =>
-                {
-                    texture = data.texture;
-                    textureDone = true;
-                }).AddTo(this);
-                _ctx.GetTexture.Execute((texturePath, textureKey));
-                while (!textureDone) await UniTask.Yield();
+                var textureTask = new ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>>().AddTo(this);
+                _ctx.GetTexture.Execute((texturePath, textureKey, textureTask));
+                var textureData = await textureTask.Value.Invoke();
+                textureTask.Dispose();
 
-                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
+                await _screen.AddBookAsync(storyText, textureData.texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }
             
             _screen.OnAllBooksAdded();

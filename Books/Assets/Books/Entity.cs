@@ -37,8 +37,7 @@ namespace Books
 
             var saveText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
 
-            var onGetTexture = new ReactiveCommand<(Texture2D texture, string key)>().AddTo(this);
-            var getTexture = new ReactiveCommand<(string fileName, string key)>().AddTo(this);
+            var getTexture = new ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)>().AddTo(this);
 
             var getMusic = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
@@ -55,7 +54,6 @@ namespace Books
 
                 SaveText = saveText,
 
-                OnGetTexture = onGetTexture,
                 GetTexture = getTexture,
 
                 GetMusic = getMusic,
@@ -111,7 +109,6 @@ namespace Books
                         GetBundle = getBundle,
                         OnGetText = onGetText,
                         GetText = getText,
-                        OnGetTexture = onGetTexture,
                         GetTexture = getTexture,
                         InitDone = () => mainDone = true,
                         ProcessLine = ProcessLine,
@@ -145,7 +142,6 @@ namespace Books
                     LoadText = loadText,
                     SaveText = saveText,
                     ClearProgress = clearStoryProgress,
-                    OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
                     GetMusic = getMusic,
                     InitDone = () => storyInitDone = true,

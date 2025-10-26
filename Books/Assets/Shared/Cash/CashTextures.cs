@@ -13,8 +13,7 @@ namespace Shared.Cash
         {
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTextureRequest;
 
-            public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
-            public IObservable<(string fileName, string key)> GetTexture;
+            public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
 
             public Func<string, bool> IsCashed;
 
@@ -31,23 +30,23 @@ namespace Shared.Cash
 
             _ctx = ctx;
 
-            _ctx.GetTexture.Subscribe(async data => await GetTextureAsync(data.fileName, data.key)).AddTo(this);
+            _ctx.GetTexture.Subscribe(data => data.task.Value = async () => await GetTextureAsync(data.path, data.key)).AddTo(this);
         }
 
-        private async UniTask GetTextureAsync(string fileName, string key)
+        private async UniTask<(Texture2D texture, string key)> GetTextureAsync(string path, string key)
         {
-            if (_ctx.IsCashed.Invoke(fileName))
+            if (_ctx.IsCashed.Invoke(path))
             {
-                _ctx.OnGetTexture.Execute((TextureFromCache(fileName, key), key));
+                return (TextureFromCache(path, key), key);
             }
             else
             {
                 var task = new ReactiveProperty<Func<UniTask<byte[]>>>().AddTo(this);
-                _ctx.GetTextureRequest.Execute((fileName, task));
+                _ctx.GetTextureRequest.Execute((path, task));
                 var textureRawData = await task.Value.Invoke();
                 task.Dispose();
 
-                _ctx.OnGetTexture.Execute((TextureToCache(textureRawData, fileName, key), key));
+                return (TextureToCache(textureRawData, path, key), key);
             }
         }
 
