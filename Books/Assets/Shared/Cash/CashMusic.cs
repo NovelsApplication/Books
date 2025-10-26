@@ -21,10 +21,8 @@ namespace Shared.Cash
 
         public struct Ctx
         {
-            public IObservable<(AudioClip clip, string audioPath)> OnGetMusicRequest;
-            public ReactiveCommand<string> GetMusicRequest;
-
-            public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusicAsync;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusicRequest;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public Func<string, bool> IsCashed;
 
@@ -40,7 +38,7 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            _ctx.GetMusicAsync.Subscribe(data =>
+            _ctx.GetMusic.Subscribe(data =>
             {
                 data.task.Value = async () => await GetMusicAsync(data.path);
             }).AddTo(this);
@@ -55,16 +53,10 @@ namespace Shared.Cash
             }
             else
             {
-                var audioRequestDone = false;
-                AudioClip clip = null;
-                var disposable = _ctx.OnGetMusicRequest.Where(data => path == data.audioPath).Subscribe(data =>
-                {
-                    clip = data.clip;
-                    audioRequestDone = true;
-                });
-                _ctx.GetMusicRequest.Execute(path);
-                while (!audioRequestDone) await UniTask.Yield();
-                disposable.Dispose();
+                var task = new ReactiveProperty<Func<UniTask<AudioClip>>>();
+                _ctx.GetMusicRequest.Execute((path, task));
+                var clip = await task.Value.Invoke();
+                task.Dispose();
 
                 var result = AudioClipToCache(clip, path);
                 return result;
