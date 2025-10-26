@@ -13,7 +13,7 @@ namespace Shared.Cash
         {
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTextureRequest;
 
-            public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
+            public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
             public Func<string, bool> IsCashed;
 
@@ -33,11 +33,11 @@ namespace Shared.Cash
             _ctx.GetTexture.Subscribe(data => data.task.Value = async () => await GetTextureAsync(data.path, data.key)).AddTo(this);
         }
 
-        private async UniTask<(Texture2D texture, string key)> GetTextureAsync(string path, string key)
+        private async UniTask<Texture2D> GetTextureAsync(string path, string key)
         {
             if (_ctx.IsCashed.Invoke(path))
             {
-                return (TextureFromCache(path, key), key);
+                return TextureFromCache(path, key);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace Shared.Cash
                 var textureRawData = await task.Value.Invoke();
                 task.Dispose();
 
-                return (TextureToCache(textureRawData, path, key), key);
+                return TextureToCache(textureRawData, path, key);
             }
         }
 

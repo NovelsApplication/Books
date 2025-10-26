@@ -27,7 +27,7 @@ namespace Books.Story
             public ReactiveCommand ClearProgress;
             public ReactiveCommand<(string text, string textPath)> SaveText;
 
-            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
