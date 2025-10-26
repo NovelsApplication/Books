@@ -42,9 +42,6 @@ namespace Books
 
             var getMusic = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
-            var onGetVideo = new ReactiveCommand<(string path, string fileName)>().AddTo(this);
-            var getVideo = new ReactiveCommand<string>().AddTo(this);
-
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
                 OnGetBundle = onGetBundle,
@@ -62,9 +59,6 @@ namespace Books
                 GetTexture = getTexture,
 
                 GetMusic = getMusic,
-
-                OnGetVideo = onGetVideo,
-                GetVideo = getVideo,
 
                 ClearCash = _ctx.ClearCash,
             }).AddTo(this);
@@ -154,8 +148,6 @@ namespace Books
                     OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
                     GetMusic = getMusic,
-                    OnGetVideo = onGetVideo,
-                    GetVideo = getVideo,
                     InitDone = () => storyInitDone = true,
                     StoryDone = isClearSave => 
                     { 

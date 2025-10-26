@@ -26,9 +26,6 @@ namespace Books.Story
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
-            public IObservable<(string path, string fileName)> OnGetVideo;
-            public ReactiveCommand<string> GetVideo;
-
             public Action<bool> StoryDone;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;

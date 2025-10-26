@@ -32,9 +32,6 @@ namespace Books.Story
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
-            public IObservable<(string path, string fileName)> OnGetVideo;
-            public ReactiveCommand<string> GetVideo;
-
             public Action InitDone;
             public Action<bool> StoryDone;
 
@@ -110,9 +107,6 @@ namespace Books.Story
                 GetTexture = _ctx.GetTexture,
 
                 GetMusic = _ctx.GetMusic,
-
-                OnGetVideo = _ctx.OnGetVideo,
-                GetVideo = _ctx.GetVideo,
 
                 StoryDone = _ctx.StoryDone,
 
