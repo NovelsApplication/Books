@@ -48,8 +48,7 @@ namespace Books.Menu
             public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
-            public IObservable<(string text, string textPath)> OnGetText;
-            public ReactiveCommand<string> GetText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
@@ -88,35 +87,22 @@ namespace Books.Menu
             _screen.Init(new PopupFactory(_ctx.Data.PopupData));
 
             var manifests = new List<StoryManifest>();
-            var manifestsDone = false;
-            var manifestPath = _ctx.ManifestPath;
-            var manifestText = string.Empty;
 
-            var manifestProcess = _ctx.OnGetText.Where(data => data.textPath == manifestPath).Subscribe(data =>
-            {
-                manifestText = data.text;
-                manifestsDone = true;
-            });
-
-            _ctx.GetText.Execute(manifestPath);
-            while (!manifestsDone) await UniTask.Yield();
-            manifestProcess.Dispose();
+            var manifestTask = new ReactiveProperty<Func<UniTask<string>>>();
+            _ctx.GetText.Execute((_ctx.ManifestPath, manifestTask));
+            var manifestText = await manifestTask.Value.Invoke();
+            manifestTask.Dispose();
 
             manifests = JsonConvert.DeserializeObject<List<StoryManifest>>(manifestText);
 
             foreach (var storyManifest in manifests) 
             {
-                var storyDone = false;
                 var storyPath = $"{storyManifest.StoryPath}/Story.json";
-                var storyText = string.Empty;
 
-                _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data => 
-                {
-                    storyText = data.text;
-                    storyDone = true;
-                }).AddTo(this);
-                _ctx.GetText.Execute(storyPath);
-                while (!storyDone) await UniTask.Yield();
+                var storyTask = new ReactiveProperty<Func<UniTask<string>>>();
+                _ctx.GetText.Execute((storyPath, storyTask));
+                var storyText = await storyTask.Value.Invoke();
+                storyTask.Dispose();
 
                 var texturePath = $"{storyManifest.StoryPath}/Poster.png";
                 var textureKey = texturePath;

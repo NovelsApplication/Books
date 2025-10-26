@@ -15,8 +15,7 @@ namespace Shared.Cash
             public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
 
-            public ReactiveCommand<(string text, string textPath)> OnGetText;
-            public IObservable<string> GetText;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public ReactiveCommand<(string text, string textPath)> OnLoadText;
             public IObservable<string> LoadText;
@@ -77,7 +76,6 @@ namespace Shared.Cash
             {
                 GetTextRequest = getTextRequest,
 
-                OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
                 OnLoadText = _ctx.OnLoadText,

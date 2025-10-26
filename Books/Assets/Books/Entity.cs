@@ -29,8 +29,7 @@ namespace Books
             var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
 
-            var onGetText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-            var getText = new ReactiveCommand<string>().AddTo(this);
+            var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
 
             var onLoadText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
             var loadText = new ReactiveCommand<string>().AddTo(this);
@@ -46,7 +45,6 @@ namespace Books
                 OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
 
-                OnGetText = onGetText,
                 GetText = getText,
 
                 OnLoadText = onLoadText,
@@ -107,7 +105,6 @@ namespace Books
                         IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
                         OnGetBundle = onGetBundle,
                         GetBundle = getBundle,
-                        OnGetText = onGetText,
                         GetText = getText,
                         GetTexture = getTexture,
                         InitDone = () => mainDone = true,
@@ -136,7 +133,6 @@ namespace Books
                     StoryPath = storyManifest.Value.StoryPath,
                     OnGetBundle = onGetBundle,
                     GetBundle = getBundle,
-                    OnGetText = onGetText,
                     GetText = getText,
                     OnLoadText = onLoadText,
                     LoadText = loadText,

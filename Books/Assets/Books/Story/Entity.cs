@@ -18,8 +18,7 @@ namespace Books.Story
             public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
-            public IObservable<(string text, string textPath)> OnGetText;
-            public ReactiveCommand<string> GetText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public IObservable<(string text, string textPath)> OnLoadText;
             public ReactiveCommand<string> LoadText;
@@ -97,7 +96,6 @@ namespace Books.Story
                 Screen = _screen,
                 StoryPath = _ctx.StoryPath,
 
-                OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
                 SaveProgress = saveProgress,

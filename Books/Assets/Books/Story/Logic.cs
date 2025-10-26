@@ -16,8 +16,7 @@ namespace Books.Story
             public View.IScreen Screen;
             public string StoryPath;
 
-            public IObservable<(string text, string textPath)> OnGetText;
-            public ReactiveCommand<string> GetText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public ReactiveCommand SaveProgress;
 
@@ -48,17 +47,12 @@ namespace Books.Story
         private async UniTask ShowStoryProcess(Action<bool> onDone)
         {
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
-            var storyDone = false;
+
             var storyPath = $"{_ctx.StoryPath}/Story.json";
-            var storyText = string.Empty;
-            var onGetTextDisp = _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data =>
-            {
-                storyText = data.text;
-                storyDone = true;
-            });
-            _ctx.GetText.Execute(storyPath);
-            while (!storyDone) await UniTask.Yield();
-            onGetTextDisp.Dispose();
+            var storyTask = new ReactiveProperty<Func<UniTask<string>>>();
+            _ctx.GetText.Execute((storyPath, storyTask));
+            var storyText = await storyTask.Value.Invoke();
+            storyTask.Dispose();
 
             var story = new Ink.Runtime.Story(storyText);
             story.Continue();
