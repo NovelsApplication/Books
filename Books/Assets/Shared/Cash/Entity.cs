@@ -12,9 +12,7 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public IObservable<(string assetPath, string assetName)> GetBundle;
-
+            public IObservable<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
             public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
             public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
             public IObservable<(string path, string text)> SaveText;
@@ -57,7 +55,6 @@ namespace Shared.Cash
             {
                 GetBundleRequest = getBundleRequest,
 
-                OnGetBundle = _ctx.OnGetBundle,
                 GetBundle = _ctx.GetBundle,
 
                 IsCashed = fileName => IsCashed(fileName),
