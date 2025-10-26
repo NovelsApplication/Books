@@ -20,8 +20,7 @@ namespace Shared.Requests
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
 
-            public ReactiveCommand<(AudioClip clip, string clipPath)> OnGetAudio;
-            public IObservable<string> GetAudio;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetAudio;
 
             public ReactiveCommand<(byte[] data, string videoPath)> OnGetVideo;
             public IObservable<string> GetVideo;
@@ -59,7 +58,6 @@ namespace Shared.Requests
 
             new AudioRequest(new AudioRequest.Ctx
             {
-                OnGetAudio = _ctx.OnGetAudio,
                 GetAudio = _ctx.GetAudio,
 
                 GetRequest = GetRequestMultimedia,

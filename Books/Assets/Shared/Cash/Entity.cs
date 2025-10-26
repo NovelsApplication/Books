@@ -49,8 +49,7 @@ namespace Shared.Cash
             var onGetTextRequest = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
             var getTextRequest = new ReactiveCommand<string>().AddTo(this);
 
-            var onGetAudioRequest = new ReactiveCommand<(AudioClip clip, string audioPath)>().AddTo(this);
-            var getAudioRequest = new ReactiveCommand<string>().AddTo(this);
+            var getAudioRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
             var onGetVideoRequest = new ReactiveCommand<(byte[] data, string audioPath)>().AddTo(this);
             var getVideoRequest = new ReactiveCommand<string>().AddTo(this);
@@ -66,7 +65,6 @@ namespace Shared.Cash
                 OnGetText = onGetTextRequest,
                 GetText = getTextRequest,
 
-                OnGetAudio = onGetAudioRequest,
                 GetAudio = getAudioRequest,
 
                 OnGetVideo = onGetVideoRequest,
@@ -124,10 +122,9 @@ namespace Shared.Cash
 
             new CashMusic(new CashMusic.Ctx
             {
-                OnGetMusicRequest = onGetAudioRequest,
                 GetMusicRequest = getAudioRequest,
 
-                GetMusicAsync = _ctx.GetMusic,
+                GetMusic = _ctx.GetMusic,
 
                 IsCashed = fileName => IsCashed(fileName),
 

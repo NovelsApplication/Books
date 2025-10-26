@@ -17,9 +17,10 @@ namespace Books.Story
 
             var audioClipPath = $"{_ctx.StoryPath}/Music/{body.Replace(" ", "_")}.mp3";
 
-            var getMusicTask = new ReactiveProperty<Func<UniTask<AudioClip>>>().AddTo(this);
+            var getMusicTask = new ReactiveProperty<Func<UniTask<AudioClip>>>();
             _ctx.GetMusic.Execute((audioClipPath, getMusicTask));
             var audioClip = await getMusicTask.Value.Invoke();
+            getMusicTask.Dispose();
 
             if (_music == null) 
             {
