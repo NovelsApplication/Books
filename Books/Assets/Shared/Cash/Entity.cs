@@ -40,8 +40,7 @@ namespace Shared.Cash
             var onGetBundleRequest = new ReactiveCommand<(byte[] data, string assetPath)>().AddTo(this);
             var getBundleRequest = new ReactiveCommand<string>().AddTo(this);
 
-            var onGetTextureRawRequest = new ReactiveCommand<(byte[] data, string texturePath)>().AddTo(this);
-            var getTextureRawRequest = new ReactiveCommand<string>().AddTo(this);
+            var getTextureRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)>().AddTo(this);
 
             var onGetTextRequest = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
             var getTextRequest = new ReactiveCommand<string>().AddTo(this);
@@ -53,8 +52,7 @@ namespace Shared.Cash
                 OnGetBundle = onGetBundleRequest,
                 GetBundle = getBundleRequest,
 
-                OnGetTextureRaw = onGetTextureRawRequest,
-                GetTextureRaw = getTextureRawRequest,
+                GetTexture = getTextureRequest,
 
                 OnGetText = onGetTextRequest,
                 GetText = getTextRequest,
@@ -99,8 +97,7 @@ namespace Shared.Cash
 
             new CashTextures(new CashTextures.Ctx
             {
-                OnGetTextureRawRequest = onGetTextureRawRequest,
-                GetTextureRawRequest = getTextureRawRequest,
+                GetTextureRequest = getTextureRequest,
 
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
