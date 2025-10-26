@@ -27,8 +27,7 @@ namespace Books.Story
             public ReactiveCommand ClearProgress;
             public ReactiveCommand<(string text, string textPath)> SaveText;
 
-            public IObservable<(Texture2D texture, string key)> OnGetTexture;
-            public ReactiveCommand<(string fileName, string key)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
@@ -103,7 +102,6 @@ namespace Books.Story
 
                 SaveProgress = saveProgress,
 
-                OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
 
                 GetMusic = _ctx.GetMusic,

@@ -23,8 +23,7 @@ namespace Shared.Cash
 
             public IObservable<(string text, string textPath)> SaveText;
 
-            public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
-            public IObservable<(string fileName, string key)> GetTexture;
+            public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
@@ -99,7 +98,6 @@ namespace Shared.Cash
             {
                 GetTextureRequest = getTextureRequest,
 
-                OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
 
                 IsCashed = fileName => IsCashed(fileName),
