@@ -32,8 +32,7 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            var onGetBundleRequest = new ReactiveCommand<(byte[] data, string assetPath)>().AddTo(this);
-            var getBundleRequest = new ReactiveCommand<string>().AddTo(this);
+            var getBundleRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)>().AddTo(this);
 
             var getTextureRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)>().AddTo(this);
 
@@ -43,7 +42,6 @@ namespace Shared.Cash
 
             new Requests.Entity(new Requests.Entity.Ctx
             {
-                OnGetBundle = onGetBundleRequest,
                 GetBundle = getBundleRequest,
 
                 GetTexture = getTextureRequest,
@@ -57,7 +55,6 @@ namespace Shared.Cash
 
             new CashBundles(new CashBundles.Ctx
             {
-                OnGetBundleRequest = onGetBundleRequest,
                 GetBundleRequest = getBundleRequest,
 
                 OnGetBundle = _ctx.OnGetBundle,

@@ -11,8 +11,7 @@ namespace Shared.Requests
     {
         public struct Ctx
         {
-            public ReactiveCommand<(byte[] data, string assetPath)> OnGetBundle;
-            public IObservable<string> GetBundle;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetBundle;
 
             public Func<string, UnityWebRequest> GetRequest;
         }
@@ -23,10 +22,10 @@ namespace Shared.Requests
         {
             _ctx = ctx;
 
-            _ctx.GetBundle.Subscribe(path => GetBundle(path)).AddTo(this);
+            _ctx.GetBundle.Subscribe(data => data.task.Value = async () => await GetBundle(data.path)).AddTo(this);
         }
 
-        private async void GetBundle(string localPath)
+        private async UniTask<byte[]> GetBundle(string localPath)
         {
             var path = $"Remote/WebGL/{localPath}";
 #if UNITY_EDITOR
@@ -37,7 +36,7 @@ namespace Shared.Requests
             {
                 await request.SendWebRequest();
 
-                _ctx.OnGetBundle.Execute((request.downloadHandler.data, localPath));
+                return request.downloadHandler.data;
             }
         }
     }

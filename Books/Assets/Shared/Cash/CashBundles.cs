@@ -11,8 +11,7 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public IObservable<(byte[] data, string assetPath)> OnGetBundleRequest;
-            public ReactiveCommand<string> GetBundleRequest;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetBundleRequest;
 
             public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
             public IObservable<(string assetPath, string assetName)> GetBundle;
@@ -44,16 +43,10 @@ namespace Shared.Cash
                 }
                 else
                 {
-                    var bundleRequestDone = false;
-                    byte[] bundleData = null;
-                    var disposable = _ctx.OnGetBundleRequest.Where(data => assetPath == data.assetPath).Subscribe(data => 
-                    {
-                        bundleData = data.data;
-                        bundleRequestDone = true;
-                    });
-                    _ctx.GetBundleRequest.Execute(assetPath);
-                    while (!bundleRequestDone) await UniTask.Yield();
-                    disposable.Dispose();
+                    var task = new ReactiveProperty<Func<UniTask<byte[]>>>();
+                    _ctx.GetBundleRequest.Execute((assetPath, task));
+                    var bundleData = await task.Value.Invoke();
+                    task.Dispose();
 
                     bundle = await BundleToCache(bundleData, assetPath);
                 }
