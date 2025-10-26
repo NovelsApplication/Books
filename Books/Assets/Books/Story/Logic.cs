@@ -21,7 +21,7 @@ namespace Books.Story
 
             public ReactiveCommand SaveProgress;
 
-            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>> task)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
@@ -84,9 +84,9 @@ namespace Books.Story
             {
                 var locationKey = "location";
 
-                var task = new ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>>();
+                var task = new ReactiveProperty<Func<UniTask<Texture2D>>>();
                 _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey, task));
-                _locationImage = (await task.Value.Invoke()).texture;
+                _locationImage = await task.Value.Invoke();
                 task.Dispose();
 
                 await _ctx.Screen.ShowLocation(_locationImage);
@@ -97,9 +97,9 @@ namespace Books.Story
             {
                 var characterKey = "char";
 
-                var task = new ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>>();
+                var task = new ReactiveProperty<Func<UniTask<Texture2D>>>();
                 _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey, task));
-                _characterImage = (await task.Value.Invoke()).texture;
+                _characterImage = await task.Value.Invoke();
                 task.Dispose();
             }
 
@@ -126,9 +126,9 @@ namespace Books.Story
                     _ctx.CharacterImagePath.Value = $"{_ctx.StoryPath}/Characters/{lineData.Value.attributes.Replace(" ", "_")}.png";
                     var characterKey = "char";
 
-                    var task = new ReactiveProperty<Func<UniTask<(Texture2D texture, string key)>>>();
+                    var task = new ReactiveProperty<Func<UniTask<Texture2D>>>();
                     _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey, task));
-                    _characterImage = (await task.Value.Invoke()).texture;
+                    _characterImage = await task.Value.Invoke();
                     task.Dispose();
                 }
 
