@@ -17,7 +17,7 @@ namespace Shared.Cash
 
             public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
 
-            public IObservable<(string text, string textPath)> SaveText;
+            public IObservable<(string path, string text)> SaveText;
 
             public Func<string, bool> IsCashed;
 
@@ -33,7 +33,7 @@ namespace Shared.Cash
 
             _ctx.GetText.Subscribe(data => data.task.Value = async () => await GetTextAsync(data.path)).AddTo(this);
             _ctx.LoadText.Subscribe(data => data.task.Value = () => LoadText(data.path)).AddTo(this);
-            _ctx.SaveText.Subscribe(data => TextToCache(data.text, data.textPath)).AddTo(this);
+            _ctx.SaveText.Subscribe(data => TextToCache(data.path, data.text)).AddTo(this);
         }
 
         private string LoadText(string path) 
@@ -61,7 +61,7 @@ namespace Shared.Cash
                 var text = await task.Value.Invoke();
                 task.Dispose();
 
-                return TextToCache(text, path); 
+                return TextToCache(path, text); 
             }
         }
 
@@ -71,7 +71,7 @@ namespace Shared.Cash
             return Encoding.UTF8.GetString(rawData);
         }
 
-        private string TextToCache(string data, string path)
+        private string TextToCache(string path, string data)
         {
             var rawData = Encoding.UTF8.GetBytes(data);
             _ctx.ToCash.Invoke(rawData, path);

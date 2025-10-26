@@ -31,7 +31,7 @@ namespace Books.Story.Save
 
             public IObservable<Unit> SaveProgress;
             public IObservable<Unit> ClearProgress;
-            public ReactiveCommand<(string text, string textPath)> SaveText;
+            public ReactiveCommand<(string path, string text)> SaveText;
 
             public Action OnInitDone;
         }
@@ -51,12 +51,12 @@ namespace Books.Story.Save
                     LocationImagePath = _ctx.LocationImagePath.Value,
                     StoryProcess = _ctx.StoryProcess.Value,
                 };
-                _ctx.SaveText.Execute((JsonConvert.SerializeObject(saveData), GetStoryLoadPath()));
+                _ctx.SaveText.Execute((GetStoryLoadPath(), JsonConvert.SerializeObject(saveData)));
             }).AddTo(this);
 
             _ctx.ClearProgress.Subscribe(_ =>
             {
-                _ctx.SaveText.Execute((string.Empty, GetStoryLoadPath()));
+                _ctx.SaveText.Execute((GetStoryLoadPath(), string.Empty));
             }).AddTo(this);
 
             Init();
