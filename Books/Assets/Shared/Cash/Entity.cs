@@ -41,8 +41,7 @@ namespace Shared.Cash
 
             var getTextureRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)>().AddTo(this);
 
-            var onGetTextRequest = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-            var getTextRequest = new ReactiveCommand<string>().AddTo(this);
+            var getTextRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
 
             var getAudioRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
@@ -53,7 +52,6 @@ namespace Shared.Cash
 
                 GetTexture = getTextureRequest,
 
-                OnGetText = onGetTextRequest,
                 GetText = getTextRequest,
 
                 GetAudio = getAudioRequest,
@@ -77,7 +75,6 @@ namespace Shared.Cash
 
             new CashTexts(new CashTexts.Ctx
             {
-                OnGetTextRequest = onGetTextRequest,
                 GetTextRequest = getTextRequest,
 
                 OnGetText = _ctx.OnGetText,
