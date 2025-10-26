@@ -11,8 +11,7 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public IObservable<(byte[] data, string texturePath)> OnGetTextureRawRequest;
-            public ReactiveCommand<string> GetTextureRawRequest;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTextureRequest;
 
             public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
             public IObservable<(string fileName, string key)> GetTexture;
@@ -43,16 +42,10 @@ namespace Shared.Cash
             }
             else
             {
-                var textureRawRequestDone = false;
-                byte[] textureRawData = null;
-                var disposable = _ctx.OnGetTextureRawRequest.Where(data => fileName == data.texturePath).Subscribe(data =>
-                {
-                    textureRawData = data.data;
-                    textureRawRequestDone = true;
-                });
-                _ctx.GetTextureRawRequest.Execute(fileName);
-                while (!textureRawRequestDone) await UniTask.Yield();
-                disposable.Dispose();
+                var task = new ReactiveProperty<Func<UniTask<byte[]>>>().AddTo(this);
+                _ctx.GetTextureRequest.Execute((fileName, task));
+                var textureRawData = await task.Value.Invoke();
+                task.Dispose();
 
                 _ctx.OnGetTexture.Execute((TextureToCache(textureRawData, fileName, key), key));
             }

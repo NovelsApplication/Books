@@ -14,8 +14,7 @@ namespace Shared.Requests
             public ReactiveCommand<(byte[] data, string assetPath)> OnGetBundle;
             public IObservable<string> GetBundle;
 
-            public ReactiveCommand<(byte[] data, string texturePath)> OnGetTextureRaw;
-            public IObservable<string> GetTextureRaw;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTexture;
 
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
@@ -39,8 +38,7 @@ namespace Shared.Requests
 
             new TextureRawRequest(new TextureRawRequest.Ctx
             {
-                OnGetTextureRaw = _ctx.OnGetTextureRaw,
-                GetTextureRaw = _ctx.GetTextureRaw,
+                GetTexture = _ctx.GetTexture,
 
                 GetRequest = GetRequest,
             }).AddTo(this);

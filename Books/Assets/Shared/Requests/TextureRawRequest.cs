@@ -11,8 +11,7 @@ namespace Shared.Requests
     {
         public struct Ctx
         {
-            public ReactiveCommand<(byte[] data, string texturePath)> OnGetTextureRaw;
-            public IObservable<string> GetTextureRaw;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTexture;
 
             public Func<string, UnityWebRequest> GetRequest;
         }
@@ -23,17 +22,16 @@ namespace Shared.Requests
         {
             _ctx = ctx;
 
-            _ctx.GetTextureRaw.Subscribe(path => GetTexture(path)).AddTo(this);
+            _ctx.GetTexture.Subscribe(data => data.task.Value = async () => await GetTexture(data.path)).AddTo(this);
         }
 
-        private async void GetTexture(string localPath)
+        private async UniTask<byte[]> GetTexture(string localPath)
         {
             using var request = _ctx.GetRequest.Invoke(localPath);
 
-            Debug.Log($"Try load {localPath}");
             await request.SendWebRequest();
 
-            _ctx.OnGetTextureRaw.Execute((request.downloadHandler.data, localPath));
+            return request.downloadHandler.data;
         }
     }
 }
