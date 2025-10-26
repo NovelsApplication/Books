@@ -15,8 +15,7 @@ namespace Shared.Cash
 
             public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
-            public ReactiveCommand<(string text, string textPath)> OnLoadText;
-            public IObservable<string> LoadText;
+            public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
 
             public IObservable<(string text, string textPath)> SaveText;
 
@@ -33,20 +32,19 @@ namespace Shared.Cash
             _ctx = ctx;
 
             _ctx.GetText.Subscribe(data => data.task.Value = async () => await GetTextAsync(data.path)).AddTo(this);
-
-            _ctx.LoadText.Subscribe(fileName => LoadText(fileName)).AddTo(this);
+            _ctx.LoadText.Subscribe(data => data.task.Value = () => LoadText(data.path)).AddTo(this);
             _ctx.SaveText.Subscribe(data => TextToCache(data.text, data.textPath)).AddTo(this);
         }
 
-        private void LoadText(string path) 
+        private string LoadText(string path) 
         {
             if (_ctx.IsCashed.Invoke(path))
             {
-                _ctx.OnLoadText.Execute((TextFromCache(path), path));
+                return TextFromCache(path);
             }
             else 
             {
-                _ctx.OnLoadText.Execute((string.Empty, path));
+                return string.Empty;
             }
         }
 

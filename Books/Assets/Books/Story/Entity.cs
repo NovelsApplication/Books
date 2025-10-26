@@ -19,10 +19,7 @@ namespace Books.Story
             public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
-
-            public IObservable<(string text, string textPath)> OnLoadText;
-            public ReactiveCommand<string> LoadText;
-
+            public ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)> LoadText;
             public ReactiveCommand ClearProgress;
             public ReactiveCommand<(string text, string textPath)> SaveText;
 
@@ -79,7 +76,6 @@ namespace Books.Story
                 LocationImagePath = locationImagePath,
                 StoryProcess = storyProcess,
 
-                OnLoadText = _ctx.OnLoadText,
                 LoadText = _ctx.LoadText,
 
                 SaveProgress = saveProgress,
