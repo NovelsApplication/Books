@@ -41,7 +41,7 @@ namespace Shared.Cash
             }
             else
             {
-                var task = new ReactiveProperty<Func<UniTask<byte[]>>>().AddTo(this);
+                var task = new ReactiveProperty<Func<UniTask<byte[]>>>();
                 _ctx.GetTextureRequest.Execute((path, task));
                 var textureRawData = await task.Value.Invoke();
                 task.Dispose();
