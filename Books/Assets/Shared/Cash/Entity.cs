@@ -16,10 +16,7 @@ namespace Shared.Cash
             public IObservable<(string assetPath, string assetName)> GetBundle;
 
             public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
-
-            public ReactiveCommand<(string text, string textPath)> OnLoadText;
-            public IObservable<string> LoadText;
-
+            public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
             public IObservable<(string text, string textPath)> SaveText;
 
             public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
@@ -78,7 +75,6 @@ namespace Shared.Cash
 
                 GetText = _ctx.GetText,
 
-                OnLoadText = _ctx.OnLoadText,
                 LoadText = _ctx.LoadText,
 
                 SaveText = _ctx.SaveText,

@@ -30,10 +30,7 @@ namespace Books
             var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
 
             var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
-
-            var onLoadText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-            var loadText = new ReactiveCommand<string>().AddTo(this);
-
+            var loadText = new ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)>().AddTo(this);
             var saveText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
 
             var getTexture = new ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)>().AddTo(this);
@@ -47,7 +44,6 @@ namespace Books
 
                 GetText = getText,
 
-                OnLoadText = onLoadText,
                 LoadText = loadText,
 
                 SaveText = saveText,
@@ -134,7 +130,6 @@ namespace Books
                     OnGetBundle = onGetBundle,
                     GetBundle = getBundle,
                     GetText = getText,
-                    OnLoadText = onLoadText,
                     LoadText = loadText,
                     SaveText = saveText,
                     ClearProgress = clearStoryProgress,
