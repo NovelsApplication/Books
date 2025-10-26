@@ -28,9 +28,6 @@ namespace Shared.Cash
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
-            public ReactiveCommand<(string path, string fileName)> OnGetVideo;
-            public IObservable<string> GetVideo;
-
             public IObservable<Unit> ClearCash;
         }
 
@@ -51,9 +48,6 @@ namespace Shared.Cash
 
             var getAudioRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
-            var onGetVideoRequest = new ReactiveCommand<(byte[] data, string audioPath)>().AddTo(this);
-            var getVideoRequest = new ReactiveCommand<string>().AddTo(this);
-
             new Requests.Entity(new Requests.Entity.Ctx
             {
                 OnGetBundle = onGetBundleRequest,
@@ -66,9 +60,6 @@ namespace Shared.Cash
                 GetText = getTextRequest,
 
                 GetAudio = getAudioRequest,
-
-                OnGetVideo = onGetVideoRequest,
-                GetVideo = getVideoRequest,
             }).AddTo(this);
 
             PlayerPrefs.SetString("Cash", DateTime.UtcNow.ToString());
@@ -129,21 +120,6 @@ namespace Shared.Cash
                 IsCashed = fileName => IsCashed(fileName),
 
                 FromCash = fileName => FromCash(fileName),
-                ToCash = (data, fileName) => ArrayToCash(data, fileName),
-
-                ConvertPath = fileName => ConvertPath(fileName),
-            }).AddTo(this);
-
-            new CashVideo(new CashVideo.Ctx
-            {
-                OnGetVideoRequest = onGetVideoRequest,
-                GetVideoRequest = getVideoRequest,
-
-                OnGetVideo = _ctx.OnGetVideo,
-                GetVideo = _ctx.GetVideo,
-
-                IsCashed = fileName => IsCashed(fileName),
-
                 ToCash = (data, fileName) => ArrayToCash(data, fileName),
 
                 ConvertPath = fileName => ConvertPath(fileName),
