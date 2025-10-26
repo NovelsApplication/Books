@@ -16,8 +16,7 @@ namespace Shared.Requests
 
             public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTexture;
 
-            public ReactiveCommand<(string text, string textPath)> OnGetText;
-            public IObservable<string> GetText;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetAudio;
         }
@@ -45,7 +44,6 @@ namespace Shared.Requests
 
             new TextRequest(new TextRequest.Ctx
             {
-                OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
                 GetRequest = GetRequest,

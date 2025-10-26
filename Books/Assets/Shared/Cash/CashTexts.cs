@@ -11,8 +11,7 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public IObservable<(string text, string textPath)> OnGetTextRequest;
-            public ReactiveCommand<string> GetTextRequest;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetTextRequest;
 
             public ReactiveCommand<(string text, string textPath)> OnGetText;
             public IObservable<string> GetText;
@@ -59,16 +58,10 @@ namespace Shared.Cash
             }
             else
             {
-                var textRequestDone = false;
-                string text = null;
-                var disposable = _ctx.OnGetTextRequest.Where(data => fileName == data.textPath).Subscribe(data =>
-                {
-                    text = data.text;
-                    textRequestDone = true;
-                });
-                _ctx.GetTextRequest.Execute(fileName);
-                while (!textRequestDone) await UniTask.Yield();
-                disposable.Dispose();
+                var task = new ReactiveProperty<Func<UniTask<string>>>();
+                _ctx.GetTextRequest.Execute((fileName, task));
+                var text = await task.Value.Invoke();
+                task.Dispose();
 
                 _ctx.OnGetText.Execute((TextToCache(text, fileName), fileName)); 
             }
