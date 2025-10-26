@@ -20,8 +20,8 @@ namespace Books.Story
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
             public ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)> LoadText;
+            public ReactiveCommand<(string path, string text)> SaveText;
             public ReactiveCommand ClearProgress;
-            public ReactiveCommand<(string text, string textPath)> SaveText;
 
             public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 

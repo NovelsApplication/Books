@@ -31,7 +31,7 @@ namespace Books
 
             var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
             var loadText = new ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)>().AddTo(this);
-            var saveText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
+            var saveText = new ReactiveCommand<(string path, string text)>().AddTo(this);
 
             var getTexture = new ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)>().AddTo(this);
 
