@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
+using System;
 using UniRx;
 using UnityEngine;
 
@@ -14,18 +15,11 @@ namespace Books.Story
         {
             if (_music != null) _music.Stop();
 
-            AudioClip audioClip = null;
-            var audioClipDone = false;
             var audioClipPath = $"{_ctx.StoryPath}/Music/{body.Replace(" ", "_")}.mp3";
 
-            var onGetMusicDisp = _ctx.OnGetMusic.Where(data => data.fileName == audioClipPath).Subscribe(data =>
-            {
-                audioClip = data.clip;
-                audioClipDone = true;
-            });
-            _ctx.GetMusic.Execute(audioClipPath);
-            while (!audioClipDone) await UniTask.Yield();
-            onGetMusicDisp.Dispose();
+            var getMusicTask = new ReactiveProperty<Func<UniTask<AudioClip>>>().AddTo(this);
+            _ctx.GetMusic.Execute((audioClipPath, getMusicTask));
+            var audioClip = await getMusicTask.Value.Invoke();
 
             if (_music == null) 
             {

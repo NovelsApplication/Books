@@ -26,8 +26,7 @@ namespace Shared.Cash
             public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
             public IObservable<(string fileName, string key)> GetTexture;
 
-            public ReactiveCommand<(AudioClip clip, string fileName)> OnGetMusic;
-            public IObservable<string> GetMusic;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public ReactiveCommand<(string path, string fileName)> OnGetVideo;
             public IObservable<string> GetVideo;
@@ -128,8 +127,7 @@ namespace Shared.Cash
                 OnGetMusicRequest = onGetAudioRequest,
                 GetMusicRequest = getAudioRequest,
 
-                OnGetMusic = _ctx.OnGetMusic,
-                GetMusic = _ctx.GetMusic,
+                GetMusicAsync = _ctx.GetMusic,
 
                 IsCashed = fileName => IsCashed(fileName),
 

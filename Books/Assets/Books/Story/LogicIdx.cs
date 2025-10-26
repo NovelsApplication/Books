@@ -5,6 +5,8 @@ namespace Books.Story
         Await,
         Ожидание,
 
+        Гардерорб,
+
         Hero,
         Клавиатура,
 

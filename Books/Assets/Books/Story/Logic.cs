@@ -24,8 +24,7 @@ namespace Books.Story
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
 
-            public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
-            public ReactiveCommand<string> GetMusic;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public IObservable<(string path, string fileName)> OnGetVideo;
             public ReactiveCommand<string> GetVideo;

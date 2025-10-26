@@ -30,8 +30,7 @@ namespace Books.Story
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string fileName, string key)> GetTexture;
 
-            public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
-            public ReactiveCommand<string> GetMusic;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public IObservable<(string path, string fileName)> OnGetVideo;
             public ReactiveCommand<string> GetVideo;
@@ -110,7 +109,6 @@ namespace Books.Story
                 OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
 
-                OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
 
                 OnGetVideo = _ctx.OnGetVideo,
