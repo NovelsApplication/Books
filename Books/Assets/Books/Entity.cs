@@ -26,8 +26,7 @@ namespace Books
 
         private async UniTask AsyncProcess()
         {
-            var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
-            var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
+            var getBundle = new ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)>().AddTo(this);
 
             var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
             var loadText = new ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)>().AddTo(this);
@@ -39,7 +38,6 @@ namespace Books
 
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
-                OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
 
                 GetText = getText,
@@ -60,7 +58,6 @@ namespace Books
             {
                 Data = _ctx.Data.LoadingData,
 
-                OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
 
                 InitDone = () => loadingDone = true,
@@ -99,7 +96,6 @@ namespace Books
                         Data = _ctx.Data.MenuData,
                         ManifestPath = "Configs/StoryManifest.json",
                         IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-                        OnGetBundle = onGetBundle,
                         GetBundle = getBundle,
                         GetText = getText,
                         GetTexture = getTexture,
@@ -127,7 +123,6 @@ namespace Books
                 {
                     Data = _ctx.Data.StoriesData,
                     StoryPath = storyManifest.Value.StoryPath,
-                    OnGetBundle = onGetBundle,
                     GetBundle = getBundle,
                     GetText = getText,
                     LoadText = loadText,

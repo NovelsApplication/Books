@@ -45,8 +45,7 @@ namespace Books.Menu
             public string ManifestPath;
             public bool IsLightTheme;
 
-            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+            public ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
 
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
@@ -70,15 +69,10 @@ namespace Books.Menu
 
         private async void Init(Action<StoryManifest> onClick)
         {
-            var bundlesDone = false;
-            UnityEngine.Object bundle = null;
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
-            {
-                bundle = data.bundle;
-                bundlesDone = true;
-            }).AddTo(this);
-            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
-            while (!bundlesDone) await UniTask.Yield();
+            var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
+            var bundle = await task.Value.Invoke();
+            task.Dispose();
 
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();

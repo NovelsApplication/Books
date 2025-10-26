@@ -13,8 +13,7 @@ namespace Shared.Cash
         {
             public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetBundleRequest;
 
-            public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public IObservable<(string path, string name)> GetBundle;
+            public IObservable<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
 
             public Func<string, bool> IsCashed;
 
@@ -30,10 +29,10 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            _ctx.GetBundle.Subscribe(async data => await GetBundleAsync(data.path, data.name)).AddTo(this);
+            _ctx.GetBundle.Subscribe(data => data.task.Value = async () => await GetBundleAsync(data.path, data.name)).AddTo(this);
         }
 
-        private async UniTask GetBundleAsync(string path, string name)
+        private async UniTask<UnityEngine.Object> GetBundleAsync(string path, string name)
         {
             if (!_bundles.TryGetValue(path, out var bundle))
             {
@@ -54,7 +53,7 @@ namespace Shared.Cash
                 _bundles[path] = bundle;
             }
 
-            _ctx.OnGetBundle.Execute((await bundle.LoadAssetAsync(name), name));
+            return await bundle.LoadAssetAsync(name);
         }
 
         private async UniTask<AssetBundle> BundleFromCache(string path)
