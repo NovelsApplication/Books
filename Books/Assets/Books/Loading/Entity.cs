@@ -13,8 +13,7 @@ namespace Books.Loading
         {
             public Data Data;
 
-            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+            public ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
 
             public Action InitDone;
         }
@@ -25,13 +24,16 @@ namespace Books.Loading
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
-
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data => Init(data.bundle)).AddTo(this);
-            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
+            Init();
         }
 
-        private void Init(UnityEngine.Object bundleObject) 
+        private async void Init() 
         {
+            var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
+            var bundleObject = await task.Value.Invoke();
+            task.Dispose();
+
             var go = GameObject.Instantiate(bundleObject as GameObject);
             _screen = go.GetComponent<IScreen>();
 

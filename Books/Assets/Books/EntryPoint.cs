@@ -12,7 +12,7 @@ namespace Books
         private ReactiveCommand _clearCash;
         private Entity _entity;
 
-//#if UNITY_EDITOR
+#if UNITY_EDITOR
         private bool _showCheats;
         private void OnGUI()
         {
@@ -29,7 +29,7 @@ namespace Books
                 Debug.Log("Clear cash done!");
             }
         }
-//#endif
+#endif
 
         private void OnEnable()
         {

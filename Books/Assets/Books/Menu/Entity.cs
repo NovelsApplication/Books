@@ -45,14 +45,12 @@ namespace Books.Menu
             public string ManifestPath;
             public bool IsLightTheme;
 
-            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+            public ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
 
-            public IObservable<(string text, string textPath)> OnGetText;
-            public ReactiveCommand<string> GetText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
-            public ReactiveCommand<(string fileName, string key)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
 
@@ -71,15 +69,10 @@ namespace Books.Menu
 
         private async void Init(Action<StoryManifest> onClick)
         {
-            var bundlesDone = false;
-            UnityEngine.Object bundle = null;
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
-            {
-                bundle = data.bundle;
-                bundlesDone = true;
-            }).AddTo(this);
-            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
-            while (!bundlesDone) await UniTask.Yield();
+            var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
+            var bundle = await task.Value.Invoke();
+            task.Dispose();
 
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
@@ -87,49 +80,31 @@ namespace Books.Menu
             _screen.SetTheme(_ctx.IsLightTheme);
 
             var manifests = new List<StoryManifest>();
-            var manifestsDone = false;
-            var manifestPath = _ctx.ManifestPath;
-            var manifestText = string.Empty;
 
-            var manifestProcess = _ctx.OnGetText.Where(data => data.textPath == manifestPath).Subscribe(data =>
-            {
-                manifestText = data.text;
-                manifestsDone = true;
-            });
-
-            _ctx.GetText.Execute(manifestPath);
-            while (!manifestsDone) await UniTask.Yield();
-            manifestProcess.Dispose();
+            var manifestTask = new ReactiveProperty<Func<UniTask<string>>>();
+            _ctx.GetText.Execute((_ctx.ManifestPath, manifestTask));
+            var manifestText = await manifestTask.Value.Invoke();
+            manifestTask.Dispose();
 
             manifests = JsonConvert.DeserializeObject<List<StoryManifest>>(manifestText);
             _screen.Init(_ctx.Data.PopupData, manifests.Count);
 
             foreach (var storyManifest in manifests) 
             {
-                var storyDone = false;
                 var storyPath = $"{storyManifest.StoryPath}/Story.json";
-                var storyText = string.Empty;
 
-                _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data => 
-                {
-                    storyText = data.text;
-                    storyDone = true;
-                }).AddTo(this);
-                _ctx.GetText.Execute(storyPath);
-                while (!storyDone) await UniTask.Yield();
+                var storyTask = new ReactiveProperty<Func<UniTask<string>>>();
+                _ctx.GetText.Execute((storyPath, storyTask));
+                var storyText = await storyTask.Value.Invoke();
+                storyTask.Dispose();
 
-                var textureDone = false;
                 var texturePath = $"{storyManifest.StoryPath}/Poster.png";
-                Texture2D texture = null;
                 var textureKey = texturePath;
 
-                _ctx.OnGetTexture.Where(data => data.key == textureKey).Subscribe(data =>
-                {
-                    texture = data.texture;
-                    textureDone = true;
-                }).AddTo(this);
-                _ctx.GetTexture.Execute((texturePath, textureKey));
-                while (!textureDone) await UniTask.Yield();
+                var textureTask = new ReactiveProperty<Func<UniTask<Texture2D>>>().AddTo(this);
+                _ctx.GetTexture.Execute((texturePath, textureKey, textureTask));
+                var texture = await textureTask.Value.Invoke();
+                textureTask.Dispose();
 
                 await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
             }

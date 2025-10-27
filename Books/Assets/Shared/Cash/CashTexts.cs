@@ -11,16 +11,13 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public IObservable<(string text, string textPath)> OnGetTextRequest;
-            public ReactiveCommand<string> GetTextRequest;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetTextRequest;
 
-            public ReactiveCommand<(string text, string textPath)> OnGetText;
-            public IObservable<string> GetText;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
-            public ReactiveCommand<(string text, string textPath)> OnLoadText;
-            public IObservable<string> LoadText;
+            public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
 
-            public IObservable<(string text, string textPath)> SaveText;
+            public IObservable<(string path, string text)> SaveText;
 
             public Func<string, bool> IsCashed;
 
@@ -34,56 +31,50 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            _ctx.GetText.Subscribe(async fileName => await GetTextAsync(fileName)).AddTo(this);
-            _ctx.LoadText.Subscribe(fileName => LoadText(fileName)).AddTo(this);
-            _ctx.SaveText.Subscribe(data => TextToCache(data.text, data.textPath)).AddTo(this);
+            _ctx.GetText.Subscribe(data => data.task.Value = async () => await GetTextAsync(data.path)).AddTo(this);
+            _ctx.LoadText.Subscribe(data => data.task.Value = () => LoadText(data.path)).AddTo(this);
+            _ctx.SaveText.Subscribe(data => TextToCache(data.path, data.text)).AddTo(this);
         }
 
-        private void LoadText(string fileName) 
+        private string LoadText(string path) 
         {
-            if (_ctx.IsCashed.Invoke(fileName))
+            if (_ctx.IsCashed.Invoke(path))
             {
-                _ctx.OnLoadText.Execute((TextFromCache(fileName), fileName));
+                return TextFromCache(path);
             }
             else 
             {
-                _ctx.OnLoadText.Execute((string.Empty, fileName));
+                return string.Empty;
             }
         }
 
-        private async UniTask GetTextAsync(string fileName)
+        private async UniTask<string> GetTextAsync(string path)
         {
-            if (_ctx.IsCashed.Invoke(fileName))
+            if (_ctx.IsCashed.Invoke(path))
             { 
-                _ctx.OnGetText.Execute((TextFromCache(fileName), fileName)); 
+                return TextFromCache(path); 
             }
             else
             {
-                var textRequestDone = false;
-                string text = null;
-                var disposable = _ctx.OnGetTextRequest.Where(data => fileName == data.textPath).Subscribe(data =>
-                {
-                    text = data.text;
-                    textRequestDone = true;
-                });
-                _ctx.GetTextRequest.Execute(fileName);
-                while (!textRequestDone) await UniTask.Yield();
-                disposable.Dispose();
+                var task = new ReactiveProperty<Func<UniTask<string>>>();
+                _ctx.GetTextRequest.Execute((path, task));
+                var text = await task.Value.Invoke();
+                task.Dispose();
 
-                _ctx.OnGetText.Execute((TextToCache(text, fileName), fileName)); 
+                return TextToCache(path, text); 
             }
         }
 
-        private string TextFromCache(string fileName)
+        private string TextFromCache(string path)
         {
-            var rawData = _ctx.FromCash.Invoke(fileName);
+            var rawData = _ctx.FromCash.Invoke(path);
             return Encoding.UTF8.GetString(rawData);
         }
 
-        private string TextToCache(string data, string fileName)
+        private string TextToCache(string path, string data)
         {
             var rawData = Encoding.UTF8.GetBytes(data);
-            _ctx.ToCash.Invoke(rawData, fileName);
+            _ctx.ToCash.Invoke(rawData, path);
             return data;
         }
     }

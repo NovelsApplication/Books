@@ -21,11 +21,8 @@ namespace Shared.Cash
 
         public struct Ctx
         {
-            public IObservable<(AudioClip clip, string audioPath)> OnGetMusicRequest;
-            public ReactiveCommand<string> GetMusicRequest;
-
-            public ReactiveCommand<(AudioClip clip, string fileName)> OnGetMusic;
-            public IObservable<string> GetMusic;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusicRequest;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public Func<string, bool> IsCashed;
 
@@ -41,29 +38,28 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            _ctx.GetMusic.Subscribe(async fileName => await GetMusicAsync(fileName)).AddTo(this);
+            _ctx.GetMusic.Subscribe(data =>
+            {
+                data.task.Value = async () => await GetMusicAsync(data.path);
+            }).AddTo(this);
         }
 
-        private async UniTask GetMusicAsync(string fileName)
+        private async UniTask<AudioClip> GetMusicAsync(string path)
         {
-            if (_ctx.IsCashed.Invoke(fileName))
-            { 
-                _ctx.OnGetMusic.Execute((AudioClipFromCache(fileName), fileName)); 
+            if (_ctx.IsCashed.Invoke(path))
+            {
+                var result = AudioClipFromCache(path);
+                return result;
             }
             else
             {
-                var audioRequestDone = false;
-                AudioClip clip = null;
-                var disposable = _ctx.OnGetMusicRequest.Where(data => fileName == data.audioPath).Subscribe(data =>
-                {
-                    clip = data.clip;
-                    audioRequestDone = true;
-                });
-                _ctx.GetMusicRequest.Execute(fileName);
-                while (!audioRequestDone) await UniTask.Yield();
-                disposable.Dispose();
+                var task = new ReactiveProperty<Func<UniTask<AudioClip>>>();
+                _ctx.GetMusicRequest.Execute((path, task));
+                var clip = await task.Value.Invoke();
+                task.Dispose();
 
-                _ctx.OnGetMusic.Execute((AudioClipToCache(clip, fileName), fileName)); 
+                var result = AudioClipToCache(clip, path);
+                return result;
             }
         }
 
@@ -98,8 +94,6 @@ namespace Shared.Cash
             var file = _ctx.ConvertPath.Invoke(fileName);
             if (File.Exists(file))
                 File.Delete(file);
-
-            Debug.Log($"Save audio to: {file}");
 
             using (var stream = File.Open(file, FileMode.Create))
             {

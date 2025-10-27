@@ -11,11 +11,9 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public IObservable<(byte[] data, string texturePath)> OnGetTextureRawRequest;
-            public ReactiveCommand<string> GetTextureRawRequest;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTextureRequest;
 
-            public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
-            public IObservable<(string fileName, string key)> GetTexture;
+            public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
             public Func<string, bool> IsCashed;
 
@@ -32,29 +30,23 @@ namespace Shared.Cash
 
             _ctx = ctx;
 
-            _ctx.GetTexture.Subscribe(async data => await GetTextureAsync(data.fileName, data.key)).AddTo(this);
+            _ctx.GetTexture.Subscribe(data => data.task.Value = async () => await GetTextureAsync(data.path, data.key)).AddTo(this);
         }
 
-        private async UniTask GetTextureAsync(string fileName, string key)
+        private async UniTask<Texture2D> GetTextureAsync(string path, string key)
         {
-            if (_ctx.IsCashed.Invoke(fileName))
+            if (_ctx.IsCashed.Invoke(path))
             {
-                _ctx.OnGetTexture.Execute((TextureFromCache(fileName, key), key));
+                return TextureFromCache(path, key);
             }
             else
             {
-                var textureRawRequestDone = false;
-                byte[] textureRawData = null;
-                var disposable = _ctx.OnGetTextureRawRequest.Where(data => fileName == data.texturePath).Subscribe(data =>
-                {
-                    textureRawData = data.data;
-                    textureRawRequestDone = true;
-                });
-                _ctx.GetTextureRawRequest.Execute(fileName);
-                while (!textureRawRequestDone) await UniTask.Yield();
-                disposable.Dispose();
+                var task = new ReactiveProperty<Func<UniTask<byte[]>>>();
+                _ctx.GetTextureRequest.Execute((path, task));
+                var textureRawData = await task.Value.Invoke();
+                task.Dispose();
 
-                _ctx.OnGetTexture.Execute((TextureToCache(textureRawData, fileName, key), key));
+                return TextureToCache(textureRawData, path, key);
             }
         }
 

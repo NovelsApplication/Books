@@ -11,11 +11,9 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public IObservable<(byte[] data, string assetPath)> OnGetBundleRequest;
-            public ReactiveCommand<string> GetBundleRequest;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetBundleRequest;
 
-            public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public IObservable<(string assetPath, string assetName)> GetBundle;
+            public IObservable<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
 
             public Func<string, bool> IsCashed;
 
@@ -31,49 +29,43 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            _ctx.GetBundle.Subscribe(async data => await GetBundleAsync(data.assetPath, data.assetName)).AddTo(this);
+            _ctx.GetBundle.Subscribe(data => data.task.Value = async () => await GetBundleAsync(data.path, data.name)).AddTo(this);
         }
 
-        private async UniTask GetBundleAsync(string assetPath, string assetName)
+        private async UniTask<UnityEngine.Object> GetBundleAsync(string path, string name)
         {
-            if (!_bundles.TryGetValue(assetPath, out var bundle))
+            if (!_bundles.TryGetValue(path, out var bundle))
             {
-                if (_ctx.IsCashed.Invoke(assetPath))
+                if (_ctx.IsCashed.Invoke(path))
                 {
-                    bundle = await BundleFromCache(assetPath);
+                    bundle = await BundleFromCache(path);
                 }
                 else
                 {
-                    var bundleRequestDone = false;
-                    byte[] bundleData = null;
-                    var disposable = _ctx.OnGetBundleRequest.Where(data => assetPath == data.assetPath).Subscribe(data => 
-                    {
-                        bundleData = data.data;
-                        bundleRequestDone = true;
-                    });
-                    _ctx.GetBundleRequest.Execute(assetPath);
-                    while (!bundleRequestDone) await UniTask.Yield();
-                    disposable.Dispose();
+                    var task = new ReactiveProperty<Func<UniTask<byte[]>>>();
+                    _ctx.GetBundleRequest.Execute((path, task));
+                    var bundleData = await task.Value.Invoke();
+                    task.Dispose();
 
-                    bundle = await BundleToCache(bundleData, assetPath);
+                    bundle = await BundleToCache(path, bundleData);
                 }
 
-                _bundles[assetPath] = bundle;
+                _bundles[path] = bundle;
             }
 
-            _ctx.OnGetBundle.Execute((await bundle.LoadAssetAsync(assetName), assetName));
+            return await bundle.LoadAssetAsync(name);
         }
 
-        private async UniTask<AssetBundle> BundleFromCache(string fileName)
+        private async UniTask<AssetBundle> BundleFromCache(string path)
         {
-            var rawData = _ctx.FromCash.Invoke(fileName);
+            var rawData = _ctx.FromCash.Invoke(path);
             return await AssetBundle.LoadFromMemoryAsync(rawData);
         }
 
-        private async UniTask<AssetBundle> BundleToCache(byte[] data, string fileName)
+        private async UniTask<AssetBundle> BundleToCache(string path, byte[] data)
         {
-            _ctx.ToCash.Invoke(data, fileName);
-            return await BundleFromCache(fileName);
+            _ctx.ToCash.Invoke(data, path);
+            return await BundleFromCache(path);
         }
     }
 }

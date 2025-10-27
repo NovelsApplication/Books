@@ -11,8 +11,7 @@ namespace Shared.Requests
     {
         public struct Ctx
         {
-            public ReactiveCommand<(string text, string textPath)> OnGetText;
-            public IObservable<string> GetText;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public Func<string, UnityWebRequest> GetRequest;
         }
@@ -23,15 +22,15 @@ namespace Shared.Requests
         {
             _ctx = ctx;
 
-            _ctx.GetText.Subscribe(path => GetText(path)).AddTo(this);
+            _ctx.GetText.Subscribe(data => data.task.Value = async () => await GetText(data.path)).AddTo(this);
         }
 
-        private async void GetText(string localPath)
+        private async UniTask<string> GetText(string path)
         {
-            using var request = _ctx.GetRequest.Invoke(localPath);
+            using var request = _ctx.GetRequest.Invoke(path);
             await request.SendWebRequest();
 
-            _ctx.OnGetText.Execute((request.downloadHandler.text, localPath));
+            return request.downloadHandler.text;
         }
     }
 }

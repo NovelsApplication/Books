@@ -27,12 +27,11 @@ namespace Books.Story.Save
             public ReactiveProperty<string> LocationImagePath;
             public ReactiveProperty<List<int>> StoryProcess;
 
-            public IObservable<(string text, string textPath)> OnLoadText;
-            public ReactiveCommand<string> LoadText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)> LoadText;
 
             public IObservable<Unit> SaveProgress;
             public IObservable<Unit> ClearProgress;
-            public ReactiveCommand<(string text, string textPath)> SaveText;
+            public ReactiveCommand<(string path, string text)> SaveText;
 
             public Action OnInitDone;
         }
@@ -52,12 +51,12 @@ namespace Books.Story.Save
                     LocationImagePath = _ctx.LocationImagePath.Value,
                     StoryProcess = _ctx.StoryProcess.Value,
                 };
-                _ctx.SaveText.Execute((JsonConvert.SerializeObject(saveData), GetStoryLoadPath()));
+                _ctx.SaveText.Execute((GetStoryLoadPath(), JsonConvert.SerializeObject(saveData)));
             }).AddTo(this);
 
             _ctx.ClearProgress.Subscribe(_ =>
             {
-                _ctx.SaveText.Execute((string.Empty, GetStoryLoadPath()));
+                _ctx.SaveText.Execute((GetStoryLoadPath(), string.Empty));
             }).AddTo(this);
 
             Init();
@@ -68,24 +67,17 @@ namespace Books.Story.Save
             return $"{_ctx.StoryPath}/SaveStory.json";
         }
 
-        public async void Init()
+        public void Init()
         {
             _ctx.MainCharacterName.Value = string.Empty;
             _ctx.CharacterImagePath.Value = string.Empty;
             _ctx.LocationImagePath.Value = string.Empty;
             _ctx.StoryProcess.Value = new List<int> { 0 };
 
-            var storyLoadText = string.Empty;
-
-            var storyLoadDone = false;
             var storyLoadPath = GetStoryLoadPath();
-            _ctx.OnLoadText.Where(data => data.textPath == storyLoadPath).Subscribe(data =>
-            {
-                storyLoadText = data.text;
-                storyLoadDone = true;
-            }).AddTo(this);
-            _ctx.LoadText.Execute(storyLoadPath);
-            while (!storyLoadDone) await UniTask.Yield();
+            var loadTask = new ReactiveProperty<Func<string>>();
+            _ctx.LoadText.Execute((storyLoadPath, loadTask));
+            var storyLoadText = loadTask.Value.Invoke();
 
             if (!string.IsNullOrEmpty(storyLoadText)) 
             {
