@@ -11,20 +11,13 @@ namespace Shared.Requests
     {
         public struct Ctx
         {
-            public ReactiveCommand<(byte[] data, string assetPath)> OnGetBundle;
-            public IObservable<string> GetBundle;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetBundle;
 
-            public ReactiveCommand<(byte[] data, string texturePath)> OnGetTextureRaw;
-            public IObservable<string> GetTextureRaw;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)> GetTexture;
 
-            public ReactiveCommand<(string text, string textPath)> OnGetText;
-            public IObservable<string> GetText;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
-            public ReactiveCommand<(AudioClip clip, string clipPath)> OnGetAudio;
-            public IObservable<string> GetAudio;
-
-            public ReactiveCommand<(byte[] data, string videoPath)> OnGetVideo;
-            public IObservable<string> GetVideo;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetAudio;
         }
 
         private readonly Ctx _ctx;
@@ -35,7 +28,6 @@ namespace Shared.Requests
 
             new BundleRequest(new BundleRequest.Ctx
             {
-                OnGetBundle = _ctx.OnGetBundle,
                 GetBundle = _ctx.GetBundle,
 
                 GetRequest = GetRequest,
@@ -43,15 +35,13 @@ namespace Shared.Requests
 
             new TextureRawRequest(new TextureRawRequest.Ctx
             {
-                OnGetTextureRaw = _ctx.OnGetTextureRaw,
-                GetTextureRaw = _ctx.GetTextureRaw,
+                GetTexture = _ctx.GetTexture,
 
                 GetRequest = GetRequest,
             }).AddTo(this);
 
             new TextRequest(new TextRequest.Ctx
             {
-                OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
                 GetRequest = GetRequest,
@@ -59,18 +49,9 @@ namespace Shared.Requests
 
             new AudioRequest(new AudioRequest.Ctx
             {
-                OnGetAudio = _ctx.OnGetAudio,
                 GetAudio = _ctx.GetAudio,
 
                 GetRequest = GetRequestMultimedia,
-            }).AddTo(this);
-
-            new VideoRequest(new VideoRequest.Ctx
-            {
-                OnGetVideo = _ctx.OnGetVideo,
-                GetVideo = _ctx.GetVideo,
-
-                GetRequest = GetRequest,
             }).AddTo(this);
         }
 

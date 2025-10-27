@@ -26,47 +26,29 @@ namespace Books
 
         private async UniTask AsyncProcess()
         {
-            var onGetBundle = new ReactiveCommand<(UnityEngine.Object bundle, string assetName)>().AddTo(this);
-            var getBundle = new ReactiveCommand<(string assetPath, string assetName)>().AddTo(this);
+            var getBundle = new ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)>().AddTo(this);
 
-            var onGetText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-            var getText = new ReactiveCommand<string>().AddTo(this);
+            var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
+            var loadText = new ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)>().AddTo(this);
+            var saveText = new ReactiveCommand<(string path, string text)>().AddTo(this);
 
-            var onLoadText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-            var loadText = new ReactiveCommand<string>().AddTo(this);
+            var getTexture = new ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)>().AddTo(this);
 
-            var saveText = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-
-            var onGetTexture = new ReactiveCommand<(Texture2D texture, string key)>().AddTo(this);
-            var getTexture = new ReactiveCommand<(string fileName, string key)>().AddTo(this);
-
-            var onGetMusic = new ReactiveCommand<(AudioClip clip, string fileName)>().AddTo(this);
-            var getMusic = new ReactiveCommand<string>().AddTo(this);
-
-            var onGetVideo = new ReactiveCommand<(string path, string fileName)>().AddTo(this);
-            var getVideo = new ReactiveCommand<string>().AddTo(this);
+            var getMusic = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
-                OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
 
-                OnGetText = onGetText,
                 GetText = getText,
 
-                OnLoadText = onLoadText,
                 LoadText = loadText,
 
                 SaveText = saveText,
 
-                OnGetTexture = onGetTexture,
                 GetTexture = getTexture,
 
-                OnGetMusic = onGetMusic,
                 GetMusic = getMusic,
-
-                OnGetVideo = onGetVideo,
-                GetVideo = getVideo,
 
                 ClearCash = _ctx.ClearCash,
             }).AddTo(this);
@@ -76,7 +58,6 @@ namespace Books
             {
                 Data = _ctx.Data.LoadingData,
 
-                OnGetBundle = onGetBundle,
                 GetBundle = getBundle,
 
                 InitDone = () => loadingDone = true,
@@ -114,13 +95,9 @@ namespace Books
                     {
                         Data = _ctx.Data.MenuData,
                         ManifestPath = "Configs/StoryManifest.json",
-                        //IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-                        IsLightTheme = false,
-                        OnGetBundle = onGetBundle,
+                        IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
                         GetBundle = getBundle,
-                        OnGetText = onGetText,
                         GetText = getText,
-                        OnGetTexture = onGetTexture,
                         GetTexture = getTexture,
                         InitDone = () => mainDone = true,
                         ProcessLine = ProcessLine,
@@ -146,20 +123,13 @@ namespace Books
                 {
                     Data = _ctx.Data.StoriesData,
                     StoryPath = storyManifest.Value.StoryPath,
-                    OnGetBundle = onGetBundle,
                     GetBundle = getBundle,
-                    OnGetText = onGetText,
                     GetText = getText,
-                    OnLoadText = onLoadText,
                     LoadText = loadText,
                     SaveText = saveText,
                     ClearProgress = clearStoryProgress,
-                    OnGetTexture = onGetTexture,
                     GetTexture = getTexture,
-                    OnGetMusic = onGetMusic,
                     GetMusic = getMusic,
-                    OnGetVideo = onGetVideo,
-                    GetVideo = getVideo,
                     InitDone = () => storyInitDone = true,
                     StoryDone = isClearSave => 
                     { 

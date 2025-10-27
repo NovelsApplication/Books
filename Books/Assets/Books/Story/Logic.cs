@@ -16,19 +16,13 @@ namespace Books.Story
             public View.IScreen Screen;
             public string StoryPath;
 
-            public IObservable<(string text, string textPath)> OnGetText;
-            public ReactiveCommand<string> GetText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
 
             public ReactiveCommand SaveProgress;
 
-            public IObservable<(Texture2D texture, string key)> OnGetTexture;
-            public ReactiveCommand<(string fileName, string key)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
-            public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
-            public ReactiveCommand<string> GetMusic;
-
-            public IObservable<(string path, string fileName)> OnGetVideo;
-            public ReactiveCommand<string> GetVideo;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public Action<bool> StoryDone;
 
@@ -53,16 +47,12 @@ namespace Books.Story
         private async UniTask ShowStoryProcess(Action<bool> onDone)
         {
             var logics = GetDelegats<Func<string, string, string, UniTask<bool>>>();
-            var storyDone = false;
+
             var storyPath = $"{_ctx.StoryPath}/Story.json";
-            var storyText = string.Empty;
-            _ctx.OnGetText.Where(data => data.textPath == storyPath).Subscribe(data =>
-            {
-                storyText = data.text;
-                storyDone = true;
-            }).AddTo(this);
-            _ctx.GetText.Execute(storyPath);
-            while (!storyDone) await UniTask.Yield();
+            var storyTask = new ReactiveProperty<Func<UniTask<string>>>();
+            _ctx.GetText.Execute((storyPath, storyTask));
+            var storyText = await storyTask.Value.Invoke();
+            storyTask.Dispose();
 
             var story = new Ink.Runtime.Story(storyText);
             story.Continue();
@@ -86,34 +76,25 @@ namespace Books.Story
             _locationImage = null;
             if (!string.IsNullOrEmpty(_ctx.LocationImagePath.Value)) 
             {
-                var locationDone = false;
                 var locationKey = "location";
 
-                _ctx.OnGetTexture.Where(data => data.key == locationKey).Subscribe(data =>
-                {
-                    _locationImage = data.texture;
-                    locationDone = true;
-                }).AddTo(this);
-                _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey));
+                var task = new ReactiveProperty<Func<UniTask<Texture2D>>>();
+                _ctx.GetTexture.Execute((_ctx.LocationImagePath.Value, locationKey, task));
+                _locationImage = await task.Value.Invoke();
+                task.Dispose();
 
-                while (!locationDone) await UniTask.Yield();
-
-                await _ctx.Screen.ShowLocation(_locationImage, null);
+                await _ctx.Screen.ShowLocation(_locationImage);
             }
 
             _characterImage = null;
             if (!string.IsNullOrEmpty(_ctx.CharacterImagePath.Value))
             {
-                var characterDone = false;
                 var characterKey = "char";
 
-                _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
-                {
-                    _characterImage = data.texture;
-                    characterDone = true;
-                }).AddTo(this);
-                _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
-                while (!characterDone) await UniTask.Yield();
+                var task = new ReactiveProperty<Func<UniTask<Texture2D>>>();
+                _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey, task));
+                _characterImage = await task.Value.Invoke();
+                task.Dispose();
             }
 
             while (!IsDisposed)
@@ -136,17 +117,13 @@ namespace Books.Story
                 _characterImage = null;
                 if (!string.IsNullOrEmpty(lineData.Value.attributes)) 
                 {
-                    var characterDone = false;
                     _ctx.CharacterImagePath.Value = $"{_ctx.StoryPath}/Characters/{lineData.Value.attributes.Replace(" ", "_")}.png";
                     var characterKey = "char";
 
-                    _ctx.OnGetTexture.Where(data => data.key == characterKey).Subscribe(data =>
-                    {
-                        _characterImage = data.texture;
-                        characterDone = true;
-                    }).AddTo(this);
-                    _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey));
-                    while (!characterDone) await UniTask.Yield();
+                    var task = new ReactiveProperty<Func<UniTask<Texture2D>>>();
+                    _ctx.GetTexture.Execute((_ctx.CharacterImagePath.Value, characterKey, task));
+                    _characterImage = await task.Value.Invoke();
+                    task.Dispose();
                 }
 
                 var buttons = story.currentChoices.Select(c => (c.text, c.index)).ToArray();

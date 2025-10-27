@@ -12,25 +12,14 @@ namespace Shared.Cash
     {
         public struct Ctx
         {
-            public ReactiveCommand<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public IObservable<(string assetPath, string assetName)> GetBundle;
+            public IObservable<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
+            public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
+            public IObservable<(string path, string text)> SaveText;
 
-            public ReactiveCommand<(string text, string textPath)> OnGetText;
-            public IObservable<string> GetText;
+            public IObservable<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
-            public ReactiveCommand<(string text, string textPath)> OnLoadText;
-            public IObservable<string> LoadText;
-
-            public IObservable<(string text, string textPath)> SaveText;
-
-            public ReactiveCommand<(Texture2D texture, string key)> OnGetTexture;
-            public IObservable<(string fileName, string key)> GetTexture;
-
-            public ReactiveCommand<(AudioClip clip, string fileName)> OnGetMusic;
-            public IObservable<string> GetMusic;
-
-            public ReactiveCommand<(string path, string fileName)> OnGetVideo;
-            public IObservable<string> GetVideo;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public IObservable<Unit> ClearCash;
         }
@@ -41,47 +30,31 @@ namespace Shared.Cash
         {
             _ctx = ctx;
 
-            var onGetBundleRequest = new ReactiveCommand<(byte[] data, string assetPath)>().AddTo(this);
-            var getBundleRequest = new ReactiveCommand<string>().AddTo(this);
+            var getBundleRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)>().AddTo(this);
 
-            var onGetTextureRawRequest = new ReactiveCommand<(byte[] data, string texturePath)>().AddTo(this);
-            var getTextureRawRequest = new ReactiveCommand<string>().AddTo(this);
+            var getTextureRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<byte[]>>> task)>().AddTo(this);
 
-            var onGetTextRequest = new ReactiveCommand<(string text, string textPath)>().AddTo(this);
-            var getTextRequest = new ReactiveCommand<string>().AddTo(this);
+            var getTextRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
 
-            var onGetAudioRequest = new ReactiveCommand<(AudioClip clip, string audioPath)>().AddTo(this);
-            var getAudioRequest = new ReactiveCommand<string>().AddTo(this);
-
-            var onGetVideoRequest = new ReactiveCommand<(byte[] data, string audioPath)>().AddTo(this);
-            var getVideoRequest = new ReactiveCommand<string>().AddTo(this);
+            var getAudioRequest = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)>().AddTo(this);
 
             new Requests.Entity(new Requests.Entity.Ctx
             {
-                OnGetBundle = onGetBundleRequest,
                 GetBundle = getBundleRequest,
 
-                OnGetTextureRaw = onGetTextureRawRequest,
-                GetTextureRaw = getTextureRawRequest,
+                GetTexture = getTextureRequest,
 
-                OnGetText = onGetTextRequest,
                 GetText = getTextRequest,
 
-                OnGetAudio = onGetAudioRequest,
                 GetAudio = getAudioRequest,
-
-                OnGetVideo = onGetVideoRequest,
-                GetVideo = getVideoRequest,
             }).AddTo(this);
 
             PlayerPrefs.SetString("Cash", DateTime.UtcNow.ToString());
 
             new CashBundles(new CashBundles.Ctx
             {
-                OnGetBundleRequest = onGetBundleRequest,
                 GetBundleRequest = getBundleRequest,
 
-                OnGetBundle = _ctx.OnGetBundle,
                 GetBundle = _ctx.GetBundle,
 
                 IsCashed = fileName => IsCashed(fileName),
@@ -92,13 +65,10 @@ namespace Shared.Cash
 
             new CashTexts(new CashTexts.Ctx
             {
-                OnGetTextRequest = onGetTextRequest,
                 GetTextRequest = getTextRequest,
 
-                OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
-                OnLoadText = _ctx.OnLoadText,
                 LoadText = _ctx.LoadText,
 
                 SaveText = _ctx.SaveText,
@@ -111,10 +81,8 @@ namespace Shared.Cash
 
             new CashTextures(new CashTextures.Ctx
             {
-                OnGetTextureRawRequest = onGetTextureRawRequest,
-                GetTextureRawRequest = getTextureRawRequest,
+                GetTextureRequest = getTextureRequest,
 
-                OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
 
                 IsCashed = fileName => IsCashed(fileName),
@@ -125,10 +93,8 @@ namespace Shared.Cash
 
             new CashMusic(new CashMusic.Ctx
             {
-                OnGetMusicRequest = onGetAudioRequest,
                 GetMusicRequest = getAudioRequest,
 
-                OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
 
                 IsCashed = fileName => IsCashed(fileName),
@@ -139,33 +105,12 @@ namespace Shared.Cash
                 ConvertPath = fileName => ConvertPath(fileName),
             }).AddTo(this);
 
-            new CashVideo(new CashVideo.Ctx
-            {
-                OnGetVideoRequest = onGetVideoRequest,
-                GetVideoRequest = getVideoRequest,
-
-                OnGetVideo = _ctx.OnGetVideo,
-                GetVideo = _ctx.GetVideo,
-
-                IsCashed = fileName => IsCashed(fileName),
-
-                ToCash = (data, fileName) => ArrayToCash(data, fileName),
-
-                ConvertPath = fileName => ConvertPath(fileName),
-            }).AddTo(this);
-
             _ctx.ClearCash.Subscribe(_ => ClearCash()).AddTo(this);
         }
 
         private bool IsCashed(string fileName)
         {
-            return false;
-
             var result = File.Exists(ConvertPath(fileName));
-
-#if UNITY_EDITOR
-            //result = false;
-#endif
 
             return result;
         }

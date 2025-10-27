@@ -11,8 +11,7 @@ namespace Shared.Requests
     {
         public struct Ctx
         {
-            public ReactiveCommand<(AudioClip audio, string audioPath)> OnGetAudio;
-            public IObservable<string> GetAudio;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetAudio;
 
             public Func<string, UnityWebRequest> GetRequest;
         }
@@ -23,12 +22,15 @@ namespace Shared.Requests
         {
             _ctx = ctx;
 
-            _ctx.GetAudio.Subscribe(path => GetAudio(path)).AddTo(this);
+            _ctx.GetAudio.Subscribe(data =>
+            {
+                data.task.Value = async () => await GetAudio(data.path);
+            }).AddTo(this);
         }
 
-        private async void GetAudio(string localPath)
+        private async UniTask<AudioClip> GetAudio(string path)
         {
-            using var request = _ctx.GetRequest.Invoke(localPath);
+            using var request = _ctx.GetRequest.Invoke(path);
             var dh = (DownloadHandlerAudioClip)request.downloadHandler;
             dh.compressed = false;
             dh.streamAudio = false;
@@ -38,7 +40,7 @@ namespace Shared.Requests
             dh.audioClip.LoadAudioData();
             while (dh.audioClip.loadState != AudioDataLoadState.Loaded) await UniTask.Yield();
 
-            _ctx.OnGetAudio.Execute((dh.audioClip, localPath));
+            return dh.audioClip;
         }
     }
 }

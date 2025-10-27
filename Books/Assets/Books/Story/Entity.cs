@@ -15,26 +15,16 @@ namespace Books.Story
             public Data Data;
             public string StoryPath;
 
-            public IObservable<(UnityEngine.Object bundle, string assetName)> OnGetBundle;
-            public ReactiveCommand<(string assetPath, string assetName)> GetBundle;
+            public ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
 
-            public IObservable<(string text, string textPath)> OnGetText;
-            public ReactiveCommand<string> GetText;
-
-            public IObservable<(string text, string textPath)> OnLoadText;
-            public ReactiveCommand<string> LoadText;
-
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)> LoadText;
+            public ReactiveCommand<(string path, string text)> SaveText;
             public ReactiveCommand ClearProgress;
-            public ReactiveCommand<(string text, string textPath)> SaveText;
 
-            public IObservable<(Texture2D texture, string key)> OnGetTexture;
-            public ReactiveCommand<(string fileName, string key)> GetTexture;
+            public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
 
-            public IObservable<(AudioClip clip, string fileName)> OnGetMusic;
-            public ReactiveCommand<string> GetMusic;
-
-            public IObservable<(string path, string fileName)> OnGetVideo;
-            public ReactiveCommand<string> GetVideo;
+            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<AudioClip>>> task)> GetMusic;
 
             public Action InitDone;
             public Action<bool> StoryDone;
@@ -54,15 +44,10 @@ namespace Books.Story
 
         private async void Init()
         {
-            var bundlesDone = false;
-            UnityEngine.Object bundle = null;
-            _ctx.OnGetBundle.Where(data => data.assetName == _ctx.Data.ScreenName).Subscribe(data =>
-            {
-                bundle = data.bundle;
-                bundlesDone = true;
-            }).AddTo(this);
-            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName));
-            while (!bundlesDone) await UniTask.Yield();
+            var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
+            _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
+            var bundle = await task.Value.Invoke();
+            task.Dispose();
 
             var go = GameObject.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
@@ -84,7 +69,6 @@ namespace Books.Story
                 LocationImagePath = locationImagePath,
                 StoryProcess = storyProcess,
 
-                OnLoadText = _ctx.OnLoadText,
                 LoadText = _ctx.LoadText,
 
                 SaveProgress = saveProgress,
@@ -101,19 +85,13 @@ namespace Books.Story
                 Screen = _screen,
                 StoryPath = _ctx.StoryPath,
 
-                OnGetText = _ctx.OnGetText,
                 GetText = _ctx.GetText,
 
                 SaveProgress = saveProgress,
 
-                OnGetTexture = _ctx.OnGetTexture,
                 GetTexture = _ctx.GetTexture,
 
-                OnGetMusic = _ctx.OnGetMusic,
                 GetMusic = _ctx.GetMusic,
-
-                OnGetVideo = _ctx.OnGetVideo,
-                GetVideo = _ctx.GetVideo,
 
                 StoryDone = _ctx.StoryDone,
 

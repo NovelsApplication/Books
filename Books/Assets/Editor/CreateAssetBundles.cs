@@ -5,7 +5,7 @@ using UnityEngine;
 public class CreateAssetBundles
 {
     [MenuItem("Assets/Build AssetBundles")]
-    static void BuildAllAssetBundles()
+    private static void BuildAllAssetBundles()
     {
         var remotePath = "Assets/StreamingAssets/Remote";
         if (!Directory.Exists(remotePath))
