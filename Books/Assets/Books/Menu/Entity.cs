@@ -51,7 +51,7 @@ namespace Books.Menu
 
             public IObservable<(Texture2D texture, string key)> OnGetTexture;
             public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
-
+            
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
 
             public Action InitDone;
