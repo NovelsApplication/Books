@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.60f1
-CRC: 3854934798
+CRC: 406929458
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 699ad569d1933b8d2789753cb6e82a48
+    Hash: 886ad6203903b0c0e3fa7391a346a3d3
   TypeTreeHash:
     serializedVersion: 2
     Hash: 0a5416fbab07178efbc7e796e8636e5a
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: e71767172f7d3835caf685132c84486e
+    Hash: e7f8526ac6e7f59ce181cb1b5eb398d5
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -191,11 +191,15 @@ SerializeReferenceClassIdentifiers:
 Assets:
 - Assets/Remote/Main/Popups/ContentPrefabs/Settings/SettingsPopUp.prefab
 - Assets/Remote/Main/Menu/Images/Particles/8.png
+- Assets/Remote/Main/Wardrobe/WardrobeCanvas.prefab
 - Assets/Remote/Main/Menu/Images/Particles/9.png
 - Assets/Remote/Main/Menu/Images/Menu/UserIcon.png
 - "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (1).png"
 - Assets/Remote/Main/Menu/Images/Particles/6.png
+- "Assets/Remote/Main/Wardrobe/Images/\u0410\u0437\u0438\u0430\u0442\u0441\u043A\u0430\u044F
+  .png"
+- Assets/Remote/Main/Menu/WardrobeCanvas.prefab
 - Assets/Remote/Main/Menu/Images/Menu/Background1.png
 - Assets/Remote/Main/Menu/Images/Menu/SettingsIcon.png
 - Assets/Remote/Main/Menu/Images/Particles/1.png
@@ -215,11 +219,13 @@ Assets:
 - Assets/Remote/Main/Menu/Images/LightBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png
-- Assets/Remote/Main/Menu/Images/photo_2025-09-19_20-05-13.jpg
+- Assets/Remote/Main/Menu/Refs/photo_2025-09-19_20-05-13.jpg
 - Assets/Remote/Main/Menu/Images/Menu/Background4.png
 - Assets/Remote/Main/Menu/Images/Particles/12.png
 - Assets/Remote/Main/Menu/Images/PopUp/HeartDefault.png
 - Assets/Remote/Main/Menu/Images/PopUp/1 (1).png
+- "Assets/Remote/Main/Wardrobe/Images/\u0414\u0438\u0441\u043A\u043E\u0442\u0435\u043A\u0430
+  (\u0447\u0435\u0440\u043D\u043E-\u043A\u0440\u0430\u0441\u043D\u044B\u0439).png"
 - "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (4).png"
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
@@ -234,14 +240,16 @@ Assets:
 - Assets/Remote/Main/Menu/Images/PopUp/DialogsIcon.png
 - Assets/Remote/Main/Menu/Images/PopUp/ExampleStat.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/ForYou.png
+- Assets/Remote/Main/Wardrobe/Images/IconBack.png
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Particles/2.png
-- Assets/Remote/Main/Popups/ContentPrefabs/photo_2025-09-07_18-22-21.jpg
+- Assets/Remote/Main/Menu/Refs/photo_2025-09-07_18-22-21.jpg
 - "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png
 - Assets/Remote/Main/Menu/Images/Menu/LightSmallShadow.png
 - Assets/Remote/Main/Menu/Images/Particles/5.png
 - Assets/Remote/Main/Menu/Images/Particles/13.png
+- Assets/Remote/Main/Wardrobe/Images/WardrobeBackground.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (7).png"
 - Assets/Remote/Main/Menu/Images/Particles/3.png
@@ -250,11 +258,16 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Bubble.png
 - "Assets/Remote/Main/Menu/Images/Menu/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F.png"
+- "Assets/Remote/Main/Wardrobe/Images/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (16).png"
 - Assets/Remote/Main/Popups/UniversalPopUpRoot.prefab
 - Assets/Remote/Main/Story/StoryCanvas.prefab
 - Assets/Remote/Main/Menu/Images/Particles/14.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Done.png
+- Assets/Remote/Main/Wardrobe/Images/DarkSettings.png
 - Assets/Remote/Main/Menu/Images/PopUp/animIcon.png
+- "Assets/Remote/Main/Wardrobe/Images/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
+  \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (17).png"
 - Assets/Remote/Main/Menu/Images/Menu/TagBackground.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0414\u0438\u0437\u0430\u0439\u043D \u0431\u0435\u0437
   \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F (5).png"
@@ -274,21 +287,25 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Menu/referenceShadow.jpg
 - Assets/Remote/Main/Menu/Images/PopUp/PopUpBackground.png
 - Assets/Remote/Main/Popups/ContentPrefabs/ScreenBookPopUp.prefab
+- Assets/Remote/Main/Wardrobe/Images/LihgthSettings.png
 - Assets/Remote/Main/Menu/Images/PopUp/StatsBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/1 (2).png
 - Assets/Remote/Main/Menu/Images/Menu/AuthorIcon.png
 - Assets/Remote/Main/Menu/Images/Particles/10.png
+- Assets/Remote/Main/Wardrobe/Images/Reference.jpg
 - Assets/Remote/Main/Menu/Images/PopUp/ExamplePoster2.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/All.png
 - Assets/Remote/Main/Menu/Images/PopUp/PlayButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/LightBookShadow.png
 - Assets/Remote/Main/Menu/Images/Menu/TagsBackground.png
 - Assets/Remote/Main/Menu/Images/Menu/DarkSmallShadow.png
-- "Assets/Remote/Main/Menu/Images/\u041A\u0430\u043A \u0443 \u041A\u0420\u0440.png"
+- "Assets/Remote/Main/Menu/Refs/\u041A\u0430\u043A \u0443 \u041A\u0420\u0440.png"
+- Assets/Remote/Main/Wardrobe/Images/ExitIcon.png
 - Assets/Remote/Main/Menu/Images/Menu/Background3.png
 - Assets/Remote/Main/Popups/ContentPrefabs/TwoButtonWarning.prefab
 - Assets/Remote/Main/Menu/Images/Particles/11.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Free.png
+- "Assets/Remote/Main/Wardrobe/Images/\u0418\u043A\u043E\u043D\u043A\u0438\u0413\u0430\u0440\u0434\u0435\u0440\u043E\u0431.png"
 - Assets/Remote/Main/Menu/Images/PopUp/RefreshIcon.png
 - Assets/Remote/Main/Popups/ContentPrefabs/OneButtonWarning/LightOneButtonWarning.prefab
 - Assets/Remote/Main/Popups/ContentPrefabs/TextField/TextFieldPopup.prefab

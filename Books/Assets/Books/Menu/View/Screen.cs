@@ -202,9 +202,6 @@ namespace Books.Menu.View
                 OnReadButtonClick = () => {
                     _universalPopUpRoot.HideImmediate();
                     onClick.Invoke(); 
-                },
-                GoToFreeTag = () => {
-                    _tagsContainer.SetTagSelected(Entity.MainTags.Free);
                 }
             };
             

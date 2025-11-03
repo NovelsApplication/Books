@@ -1684,8 +1684,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 854, y: -1976.8333}
-  m_SizeDelta: {x: 1708, y: 0}
+  m_AnchoredPosition: {x: 434, y: -767.1062}
+  m_SizeDelta: {x: 868, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2075987015156365248
 CanvasRenderer:
@@ -2101,7 +2101,7 @@ MonoBehaviour:
   _descriptionArea: {fileID: 1518665990867559072}
   _readButton: {fileID: 6150683939779233875}
   _closeButton: {fileID: 6161557489723572617}
-  _testButton: {fileID: 8921956901437765402}
+  _wardrobeButton: {fileID: 8921956901437765402}
 --- !u!1 &6130256081012664045
 GameObject:
   m_ObjectHideFlags: 0
@@ -3214,8 +3214,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 854, y: -1749.1421}
-  m_SizeDelta: {x: 1708, y: 0}
+  m_AnchoredPosition: {x: 434, y: -210.28}
+  m_SizeDelta: {x: 868, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3058144827606641463
 CanvasRenderer:

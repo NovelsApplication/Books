@@ -27,7 +27,6 @@ namespace Books
         private async UniTask AsyncProcess()
         {
             var getBundle = new ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)>().AddTo(this);
-
             var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
             var loadText = new ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)>().AddTo(this);
             var saveText = new ReactiveCommand<(string path, string text)>().AddTo(this);
