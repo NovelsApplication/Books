@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Shared.Disposable;
 using System;
 using System.Collections.Generic;
-using Books.Menu.MenuPopup;
 using UniRx;
 using UnityEngine;
 

@@ -27,6 +27,7 @@ namespace Books
         private async UniTask AsyncProcess()
         {
             var getBundle = new ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)>().AddTo(this);
+            var getAllAssetNames = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string[]>>>)>().AddTo(this);
             var getText = new ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string>>> task)>().AddTo(this);
             var loadText = new ReactiveCommand<(string path, ReactiveProperty<Func<string>> task)>().AddTo(this);
             var saveText = new ReactiveCommand<(string path, string text)>().AddTo(this);
@@ -38,6 +39,8 @@ namespace Books
             var cash = new Shared.Cash.Entity(new Shared.Cash.Entity.Ctx 
             {
                 GetBundle = getBundle,
+                
+                GetAllAssetNames = getAllAssetNames,
 
                 GetText = getText,
 
