@@ -13,6 +13,7 @@ namespace Shared.Cash
         public struct Ctx
         {
             public IObservable<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
+            public IObservable<(string path, ReactiveProperty<Func<UniTask<string[]>>> namesTask)> GetAllAssetNames;
             public IObservable<(string path, ReactiveProperty<Func<UniTask<string>>> task)> GetText;
             public IObservable<(string path, ReactiveProperty<Func<string>> task)> LoadText;
             public IObservable<(string path, string text)> SaveText;
@@ -56,7 +57,8 @@ namespace Shared.Cash
                 GetBundleRequest = getBundleRequest,
 
                 GetBundle = _ctx.GetBundle,
-
+                GetAllAssetNames = _ctx.GetAllAssetNames,
+                
                 IsCashed = fileName => IsCashed(fileName),
 
                 FromCash = fileName => FromCash(fileName),
