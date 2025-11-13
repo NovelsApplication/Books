@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 
 namespace Books.Wardrobe.PathStrategies
@@ -6,7 +7,8 @@ namespace Books.Wardrobe.PathStrategies
     public class LocationPathStrategy
     {
         private readonly EnumDisplayNameResolver _resolver;
-        public ItemType ItemType => ItemType.Locations;
+        
+        public ItemType ItemType => ItemType.Location;
 
         public LocationPathStrategy(EnumDisplayNameResolver resolver)
         {
@@ -23,16 +25,12 @@ namespace Books.Wardrobe.PathStrategies
 
             if (metadata.ItemName == null)
             {
-                Debug.LogErrorFormat($"Asset must has name");
+                Debug.LogErrorFormat("Asset must has name");
                 return String.Empty;
             }
 
-            string locationType = String.Empty;
-            if (metadata.EnvironmentType == EnvironmentType.Land) locationType = "Суша";
-            else if (metadata.EnvironmentType == EnvironmentType.Water) locationType = "Вода";
-            else if (metadata.EnvironmentType == EnvironmentType.Universal) locationType = "Универсальные";
-            
-            string lightMode = metadata.LightMode == LightMode.Light ? "Светлые" : "Тёмные";
+            string locationType = _resolver.GetDisplayName(metadata.EnvironmentType);
+            string lightMode = _resolver.GetDisplayName(metadata.LightMode);
 
             string formatFolder;
             string fileNameWithExt;
@@ -60,11 +58,22 @@ namespace Books.Wardrobe.PathStrategies
                 Debug.LogErrorFormat("Cannot parse empty location path!");
                 return default;
             }
+
+            int environmentTypeInx = 2;
+            int lightModeInx = 3;
             
             string[] parts = relativePath.Split("/");
+            
+            EnvironmentType environmentType = _resolver
+                .GetEnumFromDisplayName<EnvironmentType>(parts[environmentTypeInx]);
+            LightMode lightMode = _resolver
+                .GetEnumFromDisplayName<LightMode>(parts[lightModeInx]);
+            string name = Path.GetFileNameWithoutExtension(relativePath);
 
-            //////////////
-            return default;
+            AssetMetadata metadata = new AssetMetadata(itemName: name, itemType: ItemType, 
+                environmentType: environmentType, lightMode: lightMode);
+
+            return metadata;
         }
 
         private string CombineToFullPath(string[] pathParts)

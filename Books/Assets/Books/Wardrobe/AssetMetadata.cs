@@ -4,7 +4,6 @@ namespace Books.Wardrobe
     public struct AssetMetadata
     {
         public readonly string ItemName;
-        public readonly string ItemCategoryName;
         public readonly ItemType ItemType;
         public readonly EnvironmentType EnvironmentType;
         public readonly LightMode LightMode;
@@ -13,17 +12,15 @@ namespace Books.Wardrobe
         public readonly int ColorVariant;
 
         public AssetMetadata(
-            string itemName, 
-            string itemCategoryName, 
-            ItemType itemType, 
-            EnvironmentType environmentType, 
-            LightMode lightMode, 
-            Character character, 
-            int suitLayer, 
-            int colorVariant)
+            string itemName = null, 
+            ItemType itemType = ItemType.None, 
+            EnvironmentType environmentType = Wardrobe.EnvironmentType.None, 
+            LightMode lightMode = LightMode.None, 
+            Character character = Character.None, 
+            int suitLayer = default, 
+            int colorVariant = default)
         {
             ItemName = itemName;
-            ItemCategoryName = itemCategoryName;
             ItemType = itemType;
             EnvironmentType = environmentType;
             LightMode = lightMode;
@@ -40,7 +37,7 @@ namespace Books.Wardrobe
         [DisplayName("Причёски")] Hairstyles = 2,
         [DisplayName("Одежда")] Clothing = 3,
         [DisplayName("Внешность")] Appearance = 4,
-        [DisplayName("Локации")] Locations = 5,
+        [DisplayName("Локации")] Location = 5,
         [DisplayName("Персонажи")] Character = 6, 
     }
     

@@ -40,7 +40,7 @@ namespace Books.Wardrobe
             foreach (T enumVal in Enum.GetValues(typeof(T)))
             {
                 string strVal = GetDisplayName(enumVal);
-                if (strVal == displayName)
+                if (displayName.Equals(strVal))
                 {
                     return enumVal;
                 }
