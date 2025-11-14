@@ -59,7 +59,7 @@ namespace Books.Wardrobe
     public enum Character
     {
         None = 0,
-        Main = 1,
+        [DisplayName("ГГ")] Main = 1,
         Other = 2,
     }
 }
