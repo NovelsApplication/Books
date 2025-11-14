@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Books.Wardrobe.PathStrategies
@@ -15,7 +16,7 @@ namespace Books.Wardrobe.PathStrategies
             _resolver = resolver;
         }
         
-        public string BuildPath(AssetMetadata metadata, string storyPath, bool loadVideo = false)
+        public string BuildPath(AssetMetadata metadata, bool loadVideo = false)
         {
             if (ItemType != metadata.ItemType)
             {
@@ -46,9 +47,15 @@ namespace Books.Wardrobe.PathStrategies
                 fileNameWithExt = metadata.ItemName + ".png";
             }
 
-            string[] parts = { storyPath, "Локации", locationType, lightMode, formatFolder, fileNameWithExt};
+            string[] parts = {"Локации", locationType, lightMode, formatFolder, fileNameWithExt};
 
-            return CombineToFullPath(parts);
+            if (Array.Exists(parts, String.IsNullOrEmpty))
+            {
+                Debug.LogErrorFormat("Build: The path must not contain empty values!");
+                return String.Empty;
+            }
+            
+            return CombineToRelativePath(parts);
         }
 
         public AssetMetadata ParsePath(string relativePath)
@@ -76,12 +83,12 @@ namespace Books.Wardrobe.PathStrategies
             return metadata;
         }
 
-        private string CombineToFullPath(string[] pathParts)
+        private string CombineToRelativePath(string[] pathParts)
         {
             if (pathParts == null || pathParts.Length == 0)
-                return string.Empty;
+                return String.Empty;
 
-            return string.Join("/", pathParts);
+            return String.Join('/', pathParts);
         }
     }
 }

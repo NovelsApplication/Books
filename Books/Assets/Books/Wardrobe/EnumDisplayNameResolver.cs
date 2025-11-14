@@ -46,7 +46,7 @@ namespace Books.Wardrobe
                 }
             }
 
-            Debug.LogErrorFormat($"There if NOT enumVal for display name - {displayName}");
+            Debug.LogErrorFormat($"There is NOT enumVal for display name - {displayName}");
             return default;
         }
     }
