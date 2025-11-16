@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 8449432717069820510}
   - component: {fileID: 8488695717233818624}
   - component: {fileID: 5111517902698973346}
+  - component: {fileID: -1140937856314002365}
   m_Layer: 5
   m_Name: WardrobeCanvas
   m_TagString: Untagged
@@ -478,6 +479,33 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &-1140937856314002365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682124507906387289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11931aa0c6aa489fa1358b28c7171c35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _background: {fileID: 0}
+  _characterNameLabel: {fileID: 0}
+  _favoriteWardrobeButtonImage: {fileID: 0}
+  _fullAccessButtonImage: {fileID: 0}
+  _rightCharacterSelecterImage: {fileID: 0}
+  _leftCharacterSelecterImage: {fileID: 0}
+  _colorsMenuButtonImage: {fileID: 0}
+  _categoryLabelImage: {fileID: 0}
+  _skinColorIcon: {fileID: 0}
+  _hairIcon: {fileID: 0}
+  _clothesIcon: {fileID: 0}
+  _accessoriesIcon: {fileID: 0}
+  _itemsMenuBackground: {fileID: 0}
+  _completeButtonImage: {fileID: 0}
+  _exitButtonImage: {fileID: 0}
 --- !u!1 &1074112151273123223
 GameObject:
   m_ObjectHideFlags: 0

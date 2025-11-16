@@ -68,6 +68,16 @@ namespace Books
             while (!loadingDone) await UniTask.Yield();
 
             loading.ShowImmediate();
+            
+            var wardrobe = new Wardrobe.Entity(new Wardrobe.Entity.Ctx
+            {
+                Data = _ctx.Data.WardrobeData,
+                GetBundle = getBundle,
+                GetTexture = getTexture,
+                GetAllAssetNames = getAllAssetNames,
+                IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+                TestData = new Wardrobe.Entity.TestData("Гардероб")
+            }).AddTo(this);
 
             Menu.Entity.StoryManifest? storyManifest = null;
 
@@ -101,6 +111,7 @@ namespace Books
                         GetBundle = getBundle,
                         GetText = getText,
                         GetTexture = getTexture,
+                        OpenWardrobe = async (pathStory) => await wardrobe.Open(pathStory),
                         InitDone = () => mainDone = true,
                         ProcessLine = ProcessLine,
                     }, story => { storyManifest = story; }).AddTo(this);
