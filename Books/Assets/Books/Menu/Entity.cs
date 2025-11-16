@@ -53,6 +53,8 @@ namespace Books.Menu
             
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
 
+            public Action<string> OpenWardrobe;
+
             public Action InitDone;
         }
 
@@ -91,7 +93,6 @@ namespace Books.Menu
             foreach (var storyManifest in manifests) 
             {
                 var storyPath = $"{storyManifest.StoryPath}/Story.json";
-
                 var storyTask = new ReactiveProperty<Func<UniTask<string>>>();
                 _ctx.GetText.Execute((storyPath, storyTask));
                 var storyText = await storyTask.Value.Invoke();
@@ -109,7 +110,9 @@ namespace Books.Menu
             }
             
             _screen.OnAllBooksAdded();
-
+            
+            _ctx.OpenWardrobe.Invoke("Water");
+            
             _ctx.InitDone.Invoke();
         }
 

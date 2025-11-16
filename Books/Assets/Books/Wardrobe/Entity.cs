@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.IO;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
 using Cysharp.Threading.Tasks;
@@ -44,26 +44,26 @@ namespace Books.Wardrobe
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
-            Init();
-
             _resolver = new EnumDisplayNameResolver();
             _locationPathStrategy = new LocationPathStrategy(_resolver);
+            
+            Init();
         }
 
         private async void Init()
         {
             var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
-            
             var bundle = await task.Value.Invoke();
             task.Dispose();
 
-            _screen = UnityEngine.Object.Instantiate(bundle as GameObject)
-                .GetComponent<IScreen>();
-            _screen.HideImmediate();
+            var go = UnityEngine.Object.Instantiate(bundle as GameObject);
+            _screen = go.GetComponent<IScreen>();
+            
+            //_screen.HideImmediate();
         }
 
-        public async void Open(string storyPath, string storyLocationImagePath = "")
+        public async UniTask Open(string storyPath, string storyLocationImagePath = "")
         {
             var namesTask = new ReactiveProperty<Func<UniTask<string[]>>>();
             _ctx.GetAllAssetNames.Execute(("main", namesTask));
@@ -71,9 +71,26 @@ namespace Books.Wardrobe
             string[] allAssetNames = await namesTask.Value.Invoke();
             namesTask.Dispose();
 
-            //TODO: Добавить проверку корректности и наличия путей, как в кэше
             if (storyLocationImagePath == "") // если мы открываем из главного меню
             {
+                string wardrobeBackPath = _locationPathStrategy.BuildPath(new AssetMetadata(
+                    _ctx.TestData.LocationName, ItemType.Location, EnvironmentType.Land, LightMode.Light));
+                
+                string wardrobeFullPath = RootPath(storyPath) + wardrobeBackPath;
+                if (!CheckValidPath(wardrobeFullPath))
+                    return;
+
+                var pictureTask = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
+                _ctx.GetBundle.Execute(("main", wardrobeFullPath, pictureTask));
+                var obj = await pictureTask.Value.Invoke();
+                pictureTask.Dispose();
+                
+                Sprite sprite = obj as Sprite;
+                if (sprite == null) Debug.Log("Спрайт ноль");
+                else
+                {
+                    Debug.Log(sprite.name);
+                }
                 
             }
             else // если мы открываем из истории
@@ -84,13 +101,13 @@ namespace Books.Wardrobe
             _screen.ShowImmediate();
         }
 
-        private string RootPath(string storyPath) => $"Main/{storyPath}/Визуал/";
+        private string RootPath(string storyPath) => $"Assets/Remote/Main/{storyPath}/Визуал/";
 
         private string RelativePath(string fullPath, string storyPath)
         {
             string rootPart = RootPath(storyPath);
             
-            if (!fullPath.StartsWith(rootPart))
+            if (fullPath.StartsWith(rootPart))
             {
                 string relativePath = fullPath.Substring(rootPart.Length);
                 return relativePath.TrimStart('/');
@@ -102,6 +119,9 @@ namespace Books.Wardrobe
 
         private bool CheckValidPath(string fullPath)
         {
+            if (!String.IsNullOrEmpty(fullPath) && File.Exists(fullPath))
+                return true;
+
             return false;
         }
     }
