@@ -85,8 +85,8 @@ namespace Books.Wardrobe
                 var obj = await pictureTask.Value.Invoke();
                 pictureTask.Dispose();
                 
-                Sprite sprite = obj as Sprite;
-                if (sprite == null) Debug.Log("Спрайт ноль");
+                Texture2D sprite = obj as Texture2D;
+                if (sprite == null) Debug.Log("Текстура равна NULL");
                 else
                 {
                     Debug.Log(sprite.name);
