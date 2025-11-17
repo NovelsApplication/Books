@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace Books.Wardrobe
@@ -18,19 +19,22 @@ namespace Books.Wardrobe
                 Debug.Log($"Display name for enum ({enumVal.ToString()} is {cashedObj.strVal} finded in Cash!)");
                 return cashedObj.strVal;
             }
-            
-            Type type = enumVal.GetType();
-            DisplayNameAttribute[] attributes = (DisplayNameAttribute[]) type.GetCustomAttributes(false);
 
-            if (attributes.Length == 0)
+            Type type = enumVal.GetType();
+            
+            FieldInfo fieldInfo = type.GetField(enumVal.ToString());
+            var attribute = (DisplayNameAttribute) Attribute.GetCustomAttribute
+                (fieldInfo, typeof(DisplayNameAttribute));
+
+            if (attribute == null)
             {
-                Debug.LogErrorFormat("");
+                Debug.LogErrorFormat("I can't get a custom attribute");
                 return String.Empty;
             }
 
-            string strVal = attributes[0].Name;
+            string strVal = attribute.Name;
             _cash.Add((enumVal, strVal));
-            Debug.Log($"Object with enumVal -({enumVal} and strVal - {strVal} added in Cash!)");
+            Debug.Log($"Object with params: enumVal={enumVal} , strVal={strVal} added in Cash!");
             
             return strVal;
         }
