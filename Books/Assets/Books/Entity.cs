@@ -76,7 +76,7 @@ namespace Books
                 GetTexture = getTexture,
                 GetAllAssetNames = getAllAssetNames,
                 IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-                TestData = new Wardrobe.Entity.TestData("Гардероб")
+                TestData = new Wardrobe.Entity.TestData("Гардероб", new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png", "Персонажи/ГГ/Одежда/Суша/Модный топ/1.png", "Персонажи/ГГ/Одежда/Универсал/Жемчужное бельё/1.png"})
             }).AddTo(this);
 
             Menu.Entity.StoryManifest? storyManifest = null;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
@@ -6,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using UniRx;
 using UnityEngine;
+using Screen = UnityEngine.Screen;
 
 namespace Books.Wardrobe
 {
@@ -14,10 +16,12 @@ namespace Books.Wardrobe
         public struct TestData
         {
             public string LocationName;
+            public string[] Clothes;
 
-            public TestData(string locationName)
+            public TestData(string locationName, string[] clothes)
             {
                 LocationName = locationName;
+                Clothes = clothes;
             }
         }
         
@@ -40,68 +44,101 @@ namespace Books.Wardrobe
         
         private readonly EnumDisplayNameResolver _resolver;
         private readonly LocationPathStrategy _locationPathStrategy;
+        private readonly ClothesPathStrategy _clothesPathStrategy;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
             _resolver = new EnumDisplayNameResolver();
             _locationPathStrategy = new LocationPathStrategy(_resolver);
-            
-            Init();
+            _clothesPathStrategy = new ClothesPathStrategy(_resolver);
         }
 
-        private async void Init()
+        public async UniTask Open(string storyPath, string locationPath = "")
         {
             var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
+            
             var bundle = await task.Value.Invoke();
             task.Dispose();
 
             var go = UnityEngine.Object.Instantiate(bundle as GameObject);
             _screen = go.GetComponent<IScreen>();
+            _screen.HideImmediate();
             
-            //_screen.HideImmediate();
-        }
+            var loadTask = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
 
-        public async UniTask Open(string storyPath, string storyLocationImagePath = "")
-        {
-            var namesTask = new ReactiveProperty<Func<UniTask<string[]>>>();
-            _ctx.GetAllAssetNames.Execute(("main", namesTask));
-
-            string[] allAssetNames = await namesTask.Value.Invoke();
-            namesTask.Dispose();
-
-            if (storyLocationImagePath == "") // если мы открываем из главного меню
+            if (locationPath == "") // если мы открываем из главного меню
             {
-                string wardrobeBackPath = _locationPathStrategy.BuildPath(new AssetMetadata(
-                    _ctx.TestData.LocationName, ItemType.Location, EnvironmentType.Land, LightMode.Light));
-                
-                string wardrobeFullPath = RootPath(storyPath) + wardrobeBackPath;
-                if (!CheckValidPath(wardrobeFullPath))
-                    return;
+                List<ScreenModel.AssetModel> assetModels = new List<ScreenModel.AssetModel>();
 
-                var pictureTask = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
-                _ctx.GetBundle.Execute(("main", wardrobeFullPath, pictureTask));
-                var obj = await pictureTask.Value.Invoke();
-                pictureTask.Dispose();
-                
-                Texture2D sprite = obj as Texture2D;
-                if (sprite == null) Debug.Log("Текстура равна NULL");
-                else
+                string defaultLightBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(new AssetMetadata(
+                    itemName: _ctx.TestData.LocationName, itemType: ItemType.Location, environmentType: EnvironmentType.Land,  lightMode: LightMode.Light));
+                var defaultLightBackTexture = await LoadRequest<Texture2D>(loadTask, defaultLightBackgroundPath);
+
+                string defaultDarkBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(new AssetMetadata(
+                    itemName: _ctx.TestData.LocationName, itemType: ItemType.Location, environmentType: EnvironmentType.Land,  lightMode: LightMode.Dark));
+                var defaultDarkBackTexture = await LoadRequest<Texture2D>(loadTask, defaultDarkBackgroundPath);
+
+                foreach (var path in _ctx.TestData.Clothes)
                 {
-                    Debug.Log(sprite.name);
+                    AssetMetadata assetMetadata = _clothesPathStrategy.ParsePath(path);
+                    
+                    string fullPath = RootPath(storyPath) + path;
+                    var sprite = await LoadRequest<Sprite>(loadTask, fullPath);
+                    
+                    if (sprite != null && assetMetadata.ItemType != ItemType.None)
+                        assetModels.Add(new ScreenModel.AssetModel(sprite, assetMetadata));
                 }
-                
+
+                ScreenModel screenModel = new ScreenModel(
+                    environmentType: EnvironmentType.Land,
+                    mainBackTexture: defaultLightBackTexture,
+                    assets: assetModels.ToArray(),
+                    additionalBackTexture: defaultDarkBackTexture,
+                    targetCharacterType: Character.Main,
+                    characterName: "Максим");
             }
             else // если мы открываем из истории
             {
-                
+                string fullLocationPath = RootPath(storyPath) + locationPath;
+                if (!CheckValidPath(fullLocationPath))
+                {
+                    Debug.LogErrorFormat("Некорректный путь текущей локации. Невозможно открыть гардероб!");
+                    return;
+                }
+
+                AssetMetadata backTextureMetadata = _locationPathStrategy.ParsePath(locationPath);
+                var backTexture = await LoadRequest<Texture2D>(loadTask, fullLocationPath);
             }
+            
+            loadTask.Dispose();
             
             _screen.ShowImmediate();
         }
 
-        private string RootPath(string storyPath) => $"Assets/Remote/Main/{storyPath}/Визуал/";
+        private async UniTask<T> LoadRequest<T>(ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task, string path) where T: UnityEngine.Object
+        {
+            if (!CheckValidPath(path))
+            {
+                return null;
+            }
+            
+            _ctx.GetBundle.Execute(("main", path, task));
+            var obj = await task.Value.Invoke();
+                
+            T concreteObj = obj as T;
+            if (concreteObj == null)
+            {
+                Debug.Log("Загружаемый объект равен NULL");
+                return null;
+            }
+            else
+            {
+                Debug.Log("Загружен - " + concreteObj.name);
+                return concreteObj;
+            }
+        }
 
         private string RelativePath(string fullPath, string storyPath)
         {
@@ -124,5 +161,7 @@ namespace Books.Wardrobe
 
             return false;
         }
+
+        private string RootPath(string storyPath) => $"Assets/Remote/Main/{storyPath}/Визуал/";
     }
 }

@@ -7,26 +7,29 @@ namespace Books.Wardrobe
         public readonly ItemType ItemType;
         public readonly EnvironmentType EnvironmentType;
         public readonly LightMode LightMode;
-        public readonly Character Character;
+        public readonly string FileName;
+        public readonly string CharacterName;
         public readonly int SuitLayer;
-        public readonly int ColorVariant;
+        public readonly string ColorName;
 
         public AssetMetadata(
             string itemName = null, 
+            string fileName = null,
             ItemType itemType = ItemType.None, 
             EnvironmentType environmentType = Wardrobe.EnvironmentType.None, 
             LightMode lightMode = LightMode.None, 
-            Character character = Character.None, 
+            string characterName = null,
             int suitLayer = default, 
-            int colorVariant = default)
+            string colorName = null)
         {
             ItemName = itemName;
+            FileName = fileName ?? ItemName;
             ItemType = itemType;
             EnvironmentType = environmentType;
             LightMode = lightMode;
-            Character = character;
+            CharacterName = characterName;
             SuitLayer = suitLayer;
-            ColorVariant = colorVariant;
+            ColorName = colorName;
         }
     }
 

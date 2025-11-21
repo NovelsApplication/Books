@@ -1,14 +1,11 @@
-﻿
-
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Books.Wardrobe.View
 {
     public interface IScreen
     {
-        public void UpdateVisual(WardrobeVisualData visual);
+        public void BindModel(ScreenModel model);
         
         public void ShowImmediate();
         public void HideImmediate();
@@ -32,27 +29,16 @@ namespace Books.Wardrobe.View
         [SerializeField] private Image _completeButtonImage;
         [SerializeField] private Image _exitButtonImage;
 
-        private Dictionary<string, RawImage> _nameToObjectMap;
-
-        public void UpdateVisual(WardrobeVisualData visual)
+        private ScreenModel _model;
+        
+        public void BindModel(ScreenModel model)
         {
+            if (model == null)
+                return;
+
+            _model = model;
             
-            
-            /*_background.texture = visual.Background;
-            _characterNameLabel.sprite = visual.CharacterNameLabel;
-            _favoriteWardrobeButtonImage.sprite = visual.FavoriteWardrobeButtonImage;
-            _fullAccessButtonImage.sprite = visual.FullAccessButtonImage;
-            _rightCharacterSelecterImage.sprite = visual.RightCharacterSelecterImage;
-            _leftCharacterSelecterImage.sprite = visual.LeftCharacterSelecterImage;
-            _colorsMenuButtonImage.sprite = visual.ColorsMenuButtonImage;
-            _categoryLabelImage.sprite = visual.CategoryLabelImage;
-            _skinColorIcon.sprite = visual.SkinColorIcon;
-            _hairIcon.sprite = visual.HairIcon;
-            _clothesIcon.sprite = visual.ClothesIcon;
-            _accessoriesIcon.sprite = visual.AccessoriesIcon;
-            _itemsMenuBackground.sprite = visual.ItemsMenuBackground;
-            _completeButtonImage.sprite = visual.CompleteButtonImage;
-            _exitButtonImage.sprite = visual.ExitButtonImage;*/
+            SetVisual(model);
         }
 
         public void ShowImmediate()
@@ -64,24 +50,43 @@ namespace Books.Wardrobe.View
         {
             gameObject.SetActive(false);
         }
-    }
-    
-    public struct WardrobeVisualData
-    {
-        public Texture Background;
-        public Sprite CharacterNameLabel;
-        public Sprite FavoriteWardrobeButtonImage;
-        public Sprite FullAccessButtonImage;
-        public Sprite RightCharacterSelecterImage;
-        public Sprite LeftCharacterSelecterImage;
-        public Sprite ColorsMenuButtonImage;
-        public Sprite CategoryLabelImage;
-        public Sprite SkinColorIcon;
-        public Sprite HairIcon;
-        public Sprite ClothesIcon;
-        public Sprite AccessoriesIcon;
-        public Sprite ItemsMenuBackground;
-        public Sprite CompleteButtonImage;
-        public Sprite ExitButtonImage;
+
+        private void SetVisual(ScreenModel model)
+        {
+            _background.texture = model.MainBackTexture;
+            
+            _characterNameLabel.sprite = model.Visual.CharacterNameLabel;
+            _favoriteWardrobeButtonImage.sprite = model.Visual.FavoriteWardrobeButtonImage;
+            _fullAccessButtonImage.sprite = model.Visual.FullAccessButtonImage;
+            _rightCharacterSelecterImage.sprite = model.Visual.RightCharacterSelecterImage;
+            _leftCharacterSelecterImage.sprite = model.Visual.LeftCharacterSelecterImage;
+            _colorsMenuButtonImage.sprite = model.Visual.ColorsMenuButtonImage;
+            _categoryLabelImage.sprite = model.Visual.CategoryLabelImage;
+            _skinColorIcon.sprite = model.Visual.SkinColorIcon;
+            _hairIcon.sprite = model.Visual.HairIcon;
+            _clothesIcon.sprite = model.Visual.ClothesIcon;
+            _accessoriesIcon.sprite = model.Visual.AccessoriesIcon;
+            _itemsMenuBackground.sprite = model.Visual.ItemsMenuBackground;
+            _completeButtonImage.sprite = model.Visual.CompleteButtonImage;
+            _exitButtonImage.sprite = model.Visual.ExitButtonImage;
+        }
+        
+        public struct Visual
+        {
+            public Sprite CharacterNameLabel;
+            public Sprite FavoriteWardrobeButtonImage;
+            public Sprite FullAccessButtonImage;
+            public Sprite RightCharacterSelecterImage;
+            public Sprite LeftCharacterSelecterImage;
+            public Sprite ColorsMenuButtonImage;
+            public Sprite CategoryLabelImage;
+            public Sprite SkinColorIcon;
+            public Sprite HairIcon;
+            public Sprite ClothesIcon;
+            public Sprite AccessoriesIcon;
+            public Sprite ItemsMenuBackground;
+            public Sprite CompleteButtonImage;
+            public Sprite ExitButtonImage;
+        }
     }
 }
