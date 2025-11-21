@@ -98,6 +98,8 @@ namespace Books.Wardrobe
                     additionalBackTexture: defaultDarkBackTexture,
                     targetCharacterType: Character.Main,
                     characterName: "Максим");
+                
+                _screen.BindModel(screenModel);
             }
             else // если мы открываем из истории
             {
@@ -113,8 +115,6 @@ namespace Books.Wardrobe
             }
             
             loadTask.Dispose();
-            
-            _screen.ShowImmediate();
         }
 
         private async UniTask<T> LoadRequest<T>(ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task, string path) where T: UnityEngine.Object
