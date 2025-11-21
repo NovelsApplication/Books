@@ -459,6 +459,7 @@ GameObject:
   - component: {fileID: 8488695717233818624}
   - component: {fileID: 5111517902698973346}
   - component: {fileID: -1140937856314002365}
+  - component: {fileID: 4346707882916850972}
   m_Layer: 5
   m_Name: WardrobeCanvas
   m_TagString: Untagged
@@ -568,21 +569,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11931aa0c6aa489fa1358b28c7171c35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _background: {fileID: 0}
-  _characterNameLabel: {fileID: 0}
-  _favoriteWardrobeButtonImage: {fileID: 0}
-  _fullAccessButtonImage: {fileID: 0}
-  _rightCharacterSelecterImage: {fileID: 0}
-  _leftCharacterSelecterImage: {fileID: 0}
-  _colorsMenuButtonImage: {fileID: 0}
-  _categoryLabelImage: {fileID: 0}
-  _skinColorIcon: {fileID: 0}
-  _hairIcon: {fileID: 0}
-  _clothesIcon: {fileID: 0}
-  _accessoriesIcon: {fileID: 0}
-  _itemsMenuBackground: {fileID: 0}
-  _completeButtonImage: {fileID: 0}
-  _exitButtonImage: {fileID: 0}
+  _visualComponent: {fileID: 4346707882916850972}
+--- !u!114 &4346707882916850972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682124507906387289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf5bd8c6bae411dbee7f341038fce92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterNameLabel: {fileID: 4275151348526488367}
+  _favoriteWardrobeButtonImage: {fileID: 6255147182898243420}
+  _fullAccessButtonImage: {fileID: 5239982189324416183}
+  _rightCharacterSelecterImage: {fileID: 5359086417173382217}
+  _leftCharacterSelecterImage: {fileID: 2838423232758770579}
+  _colorsMenuButtonImage: {fileID: 823981557277885889}
+  _categoryLabelImage: {fileID: 6273435109179232877}
+  _skinColorIcon: {fileID: 2640118219086358341}
+  _hairIcon: {fileID: 8071712032809275890}
+  _clothesIcon: {fileID: 9142711543411358350}
+  _accessoriesIcon: {fileID: 4824019809664957728}
+  _itemsMenuBackground: {fileID: 4078686061069780297}
+  _applyButtonImage: {fileID: 4156148172068263131}
+  _exitButtonImage: {fileID: 1840473600900108440}
 --- !u!1 &749116986870313905
 GameObject:
   m_ObjectHideFlags: 0
