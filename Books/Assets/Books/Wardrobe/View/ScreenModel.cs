@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Books.Wardrobe.AssetsMeta;
+using Books.Wardrobe.PathStrategies;
 using UnityEngine;
 
 namespace Books.Wardrobe.View
@@ -8,7 +10,7 @@ namespace Books.Wardrobe.View
         public EnvironmentType EnvironmentType { get; }
         public Texture2D MainBackTexture { get; }
         public Texture2D AdditionalBackTexture { get; }
-        public Screen.Visual Visual { get; }
+        public ScreenVisual.Visual Visual { get; }
         public Character CharacterType { get; }
         public string CharacterName { get; }
 
@@ -38,9 +40,9 @@ namespace Books.Wardrobe.View
         public class AssetModel
         {
             public Sprite Sprite { get; }
-            public AssetMetadata Info { get; }
+            public BaseAssetMetadata Info { get; }
 
-            public AssetModel(Sprite sprite, AssetMetadata metadata)
+            public AssetModel(Sprite sprite, BaseAssetMetadata metadata)
             {
                 Sprite = sprite;
                 Info = metadata;

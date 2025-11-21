@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Books.Wardrobe.AssetsMeta;
 using UnityEngine;
 
 namespace Books.Wardrobe.PathStrategies
@@ -15,17 +16,11 @@ namespace Books.Wardrobe.PathStrategies
             _resolver = resolver;
         }
         
-        public string BuildPath(AssetMetadata metadata, bool loadVideo = false)
+        public string BuildPath(LocationMetadata metadata, bool loadVideo = false)
         {
             if (ItemType != metadata.ItemType)
             {
                 Debug.LogErrorFormat($"Cannot build path. The metadata item type does not match the target => {ItemType}");
-                return String.Empty;
-            }
-
-            if (metadata.ItemName == null)
-            {
-                Debug.LogErrorFormat("Asset must has name");
                 return String.Empty;
             }
 
@@ -57,7 +52,7 @@ namespace Books.Wardrobe.PathStrategies
             return CombineToRelativePath(parts);
         }
 
-        public AssetMetadata ParsePath(string relativePath)
+        public LocationMetadata ParsePath(string relativePath)
         {
             if (string.IsNullOrEmpty(relativePath))
             {
@@ -74,10 +69,9 @@ namespace Books.Wardrobe.PathStrategies
                 .GetEnumFromDisplayName<EnvironmentType>(parts[environmentTypeInx]);
             LightMode lightMode = _resolver
                 .GetEnumFromDisplayName<LightMode>(parts[lightModeInx]);
-            string name = Path.GetFileNameWithoutExtension(relativePath);
+            string locationName = Path.GetFileNameWithoutExtension(relativePath);
 
-            AssetMetadata metadata = new AssetMetadata(itemName: name, itemType: ItemType, 
-                environmentType: environmentType, lightMode: lightMode);
+            LocationMetadata metadata = new LocationMetadata(locationName, environmentType, lightMode);
 
             return metadata;
         }

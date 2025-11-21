@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Books.Wardrobe.AssetsMeta;
 using UnityEngine;
 
 namespace Books.Wardrobe.PathStrategies
@@ -15,7 +16,7 @@ namespace Books.Wardrobe.PathStrategies
             _resolver = resolver;
         }
         
-        public string BuildPath(AssetMetadata metadata)
+        public string BuildPath(ClothesMetadata metadata)
         {
             if (ItemType != metadata.ItemType)
             {
@@ -23,14 +24,8 @@ namespace Books.Wardrobe.PathStrategies
                 return String.Empty;
             }
 
-            if (metadata.ItemName == null)
-            {
-                Debug.LogErrorFormat("Asset must has name");
-                return String.Empty;
-            }
-
             string environmentType = _resolver.GetDisplayName(metadata.EnvironmentType);
-            string characterFolderName = metadata.CharacterName;
+            string characterFolderName = metadata.TargetCharacterName;
             string fileNameWithExt = metadata.FileName + ".png";
 
             string[] parts = {"Персонажи", characterFolderName, "Одежда", environmentType, metadata.ItemName, fileNameWithExt};
@@ -44,7 +39,7 @@ namespace Books.Wardrobe.PathStrategies
             return CombineToRelativePath(parts);
         }
 
-        public AssetMetadata ParsePath(string relativePath)
+        public ClothesMetadata ParsePath(string relativePath)
         {
             if (string.IsNullOrEmpty(relativePath))
             {
@@ -63,11 +58,11 @@ namespace Books.Wardrobe.PathStrategies
             string targetCharacterName = parts[characterNameInx];
             string suitName = parts[suitNameInx];
             string fileName = Path.GetFileNameWithoutExtension(relativePath);
+            string colorName = fileName;
 
-            AssetMetadata metadata = new AssetMetadata(fileName:fileName, itemName: suitName, itemType: ItemType, 
-                environmentType: environmentType, characterName: targetCharacterName, 
-                colorName: fileName, suitLayer: 4);
-
+            ClothesMetadata metadata = new ClothesMetadata(ItemType, suitName, fileName, environmentType, 
+                4, targetCharacterName, colorName);
+            
             return metadata;
         }
 

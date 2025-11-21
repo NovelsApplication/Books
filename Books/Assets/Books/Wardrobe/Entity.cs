@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Books.Wardrobe.AssetsMeta;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
 using Cysharp.Threading.Tasks;
@@ -72,17 +73,17 @@ namespace Books.Wardrobe
             {
                 List<ScreenModel.AssetModel> assetModels = new List<ScreenModel.AssetModel>();
 
-                string defaultLightBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(new AssetMetadata(
-                    itemName: _ctx.TestData.LocationName, itemType: ItemType.Location, environmentType: EnvironmentType.Land,  lightMode: LightMode.Light));
+                string defaultLightBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(
+                    new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light));
                 var defaultLightBackTexture = await LoadRequest<Texture2D>(loadTask, defaultLightBackgroundPath);
 
-                string defaultDarkBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(new AssetMetadata(
-                    itemName: _ctx.TestData.LocationName, itemType: ItemType.Location, environmentType: EnvironmentType.Land,  lightMode: LightMode.Dark));
+                string defaultDarkBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(
+                    new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Dark));
                 var defaultDarkBackTexture = await LoadRequest<Texture2D>(loadTask, defaultDarkBackgroundPath);
 
                 foreach (var path in _ctx.TestData.Clothes)
                 {
-                    AssetMetadata assetMetadata = _clothesPathStrategy.ParsePath(path);
+                    BaseAssetMetadata assetMetadata = _clothesPathStrategy.ParsePath(path);
                     
                     string fullPath = RootPath(storyPath) + path;
                     var sprite = await LoadRequest<Sprite>(loadTask, fullPath);
@@ -110,7 +111,7 @@ namespace Books.Wardrobe
                     return;
                 }
 
-                AssetMetadata backTextureMetadata = _locationPathStrategy.ParsePath(locationPath);
+                LocationMetadata backTextureMetadata = _locationPathStrategy.ParsePath(locationPath);
                 var backTexture = await LoadRequest<Texture2D>(loadTask, fullLocationPath);
             }
             
