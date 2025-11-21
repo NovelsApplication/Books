@@ -38,7 +38,9 @@ namespace Books.Wardrobe.View
 
             _model = model;
             
-            SetVisual(model);
+            //SetVisual(model);
+            
+            
         }
 
         public void ShowImmediate()
