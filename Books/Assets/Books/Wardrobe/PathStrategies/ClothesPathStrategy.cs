@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace Books.Wardrobe.PathStrategies
 {
-    public class LocationPathStrategy
+    public class ClothesPathStrategy
     {
         private readonly EnumDisplayNameResolver _resolver;
         
-        public ItemType ItemType => ItemType.Location;
+        public ItemType ItemType => ItemType.Clothing;
 
-        public LocationPathStrategy(EnumDisplayNameResolver resolver)
+        public ClothesPathStrategy(EnumDisplayNameResolver resolver)
         {
             _resolver = resolver;
         }
         
-        public string BuildPath(AssetMetadata metadata, bool loadVideo = false)
+        public string BuildPath(AssetMetadata metadata)
         {
             if (ItemType != metadata.ItemType)
             {
@@ -29,24 +29,11 @@ namespace Books.Wardrobe.PathStrategies
                 return String.Empty;
             }
 
-            string locationType = _resolver.GetDisplayName(metadata.EnvironmentType);
-            string lightMode = _resolver.GetDisplayName(metadata.LightMode);
+            string environmentType = _resolver.GetDisplayName(metadata.EnvironmentType);
+            string characterFolderName = metadata.CharacterName;
+            string fileNameWithExt = metadata.FileName + ".png";
 
-            string formatFolder;
-            string fileNameWithExt;
-
-            if (loadVideo)
-            {
-                formatFolder = "Живые";
-                fileNameWithExt = metadata.ItemName + ".mp4";
-            }
-            else
-            {
-                formatFolder = "Статичные";
-                fileNameWithExt = metadata.ItemName + ".png";
-            }
-
-            string[] parts = {"Локации", locationType, lightMode, formatFolder, fileNameWithExt};
+            string[] parts = {"Персонажи", characterFolderName, "Одежда", environmentType, metadata.ItemName, fileNameWithExt};
 
             if (Array.Exists(parts, String.IsNullOrEmpty))
             {
@@ -61,23 +48,25 @@ namespace Books.Wardrobe.PathStrategies
         {
             if (string.IsNullOrEmpty(relativePath))
             {
-                Debug.LogErrorFormat("Cannot parse empty location path!");
+                Debug.LogErrorFormat("Cannot parse empty clothe path!");
                 return default;
             }
 
             string[] parts = relativePath.Split("/");
             
-            int environmentTypeInx = 1;
-            int lightModeInx = 2;
+            int characterNameInx = 1;
+            int environmentTypeInx = 3;
+            int suitNameInx = 4;
             
             EnvironmentType environmentType = _resolver
                 .GetEnumFromDisplayName<EnvironmentType>(parts[environmentTypeInx]);
-            LightMode lightMode = _resolver
-                .GetEnumFromDisplayName<LightMode>(parts[lightModeInx]);
-            string name = Path.GetFileNameWithoutExtension(relativePath);
+            string targetCharacterName = parts[characterNameInx];
+            string suitName = parts[suitNameInx];
+            string fileName = Path.GetFileNameWithoutExtension(relativePath);
 
-            AssetMetadata metadata = new AssetMetadata(itemName: name, itemType: ItemType, 
-                environmentType: environmentType, lightMode: lightMode);
+            AssetMetadata metadata = new AssetMetadata(fileName:fileName, itemName: suitName, itemType: ItemType, 
+                environmentType: environmentType, characterName: targetCharacterName, 
+                colorName: fileName, suitLayer: 4);
 
             return metadata;
         }
