@@ -9,7 +9,8 @@ namespace Books.Wardrobe.AssetsMeta
         public LocationMetadata(
             string locationName,
             EnvironmentType environmentType,
-            LightMode lightMode) : base(ItemType.Location, locationName, locationName, environmentType)
+            LightMode lightMode) 
+            : base(ItemType.Location, locationName, environmentType)
         {
             LightMode = lightMode;
         }

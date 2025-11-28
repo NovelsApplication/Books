@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Books.Wardrobe.ViewModel;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Books.Wardrobe.View

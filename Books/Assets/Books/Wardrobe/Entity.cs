@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Books.Wardrobe.AssetsMeta;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
+using Books.Wardrobe.ViewModel;
 using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using UniRx;
 using UnityEngine;
-using Screen = UnityEngine.Screen;
 
 namespace Books.Wardrobe
 {
@@ -44,15 +45,15 @@ namespace Books.Wardrobe
         private IScreen _screen;
         
         private readonly EnumDisplayNameResolver _resolver;
-        private readonly LocationPathStrategy _locationPathStrategy;
-        private readonly ClothesPathStrategy _clothesPathStrategy;
+        private readonly LocationPathParser _locationPathParser;
+        private readonly ClothesPathParser _clothesPathParser;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
             _resolver = new EnumDisplayNameResolver();
-            _locationPathStrategy = new LocationPathStrategy(_resolver);
-            _clothesPathStrategy = new ClothesPathStrategy(_resolver);
+            _locationPathParser = new LocationPathParser(_resolver);
+            _clothesPathParser = new ClothesPathParser(_resolver);
         }
 
         public async UniTask Open(string storyPath, string locationPath = "")
@@ -71,37 +72,67 @@ namespace Books.Wardrobe
 
             if (locationPath == "") // если мы открываем из главного меню
             {
-                List<ScreenModel.AssetModel> assetModels = new List<ScreenModel.AssetModel>();
+                
+                // Локации
+                
+                
+                LocationMetadata lightBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
+                string lightBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata);
+                Texture2D lightBackTexture = await LoadRequest<Texture2D>(loadTask, lightBackPath);
 
-                string defaultLightBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(
-                    new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light));
-                var defaultLightBackTexture = await LoadRequest<Texture2D>(loadTask, defaultLightBackgroundPath);
+                LocationAssetModel lightBackModel = new LocationAssetModel(lightBackMetadata, lightBackTexture, null);
 
-                string defaultDarkBackgroundPath = RootPath(storyPath) + _locationPathStrategy.BuildPath(
-                    new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Dark));
-                var defaultDarkBackTexture = await LoadRequest<Texture2D>(loadTask, defaultDarkBackgroundPath);
+                LocationMetadata darkBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
+                string darkBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata);
+                Texture2D darkBackTexture = await LoadRequest<Texture2D>(loadTask, darkBackPath);
 
+                LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
+                
+                // Одежда
+                
+                Dictionary<string, ClothesAssetModel> assetModels = new ();
+                
                 foreach (var path in _ctx.TestData.Clothes)
                 {
-                    BaseAssetMetadata assetMetadata = _clothesPathStrategy.ParsePath(path);
+                    ClothesMetadata meta = _clothesPathParser.ParsePath(path);
+                    string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
+                    string fileName = Path.GetFileName(path);
+                    string colorsFolderName = "Кружочки";
+
+                    ClothesAssetModel assetModel;
                     
-                    string fullPath = RootPath(storyPath) + path;
-                    var sprite = await LoadRequest<Sprite>(loadTask, fullPath);
+                    if (assetModels.ContainsKey(meta.ItemName))
+                    {
+                        assetModel = assetModels[meta.ItemName];
+                    }
+                    else
+                    {
+                        string glowingSpritePath = RootPath(storyPath) + relativeRootFolderPath + "Свечение.png";
+                        Sprite glowingSprite = await LoadRequest<Sprite>(loadTask, glowingSpritePath);
+                        
+                        assetModel = new ClothesAssetModel(meta, glowingSprite);
+                        assetModels.Add(key: meta.ItemName, value: assetModel);
+                    }
                     
-                    if (sprite != null && assetMetadata.ItemType != ItemType.None)
-                        assetModels.Add(new ScreenModel.AssetModel(sprite, assetMetadata));
+                    string itemSpritePath = RootPath(storyPath) + path;
+                    var itemSprite = await LoadRequest<Sprite>(loadTask, itemSpritePath);
+                    
+                    string colorSpritePath = RootPath(storyPath) + relativeRootFolderPath + colorsFolderName + "/" + fileName;
+                    var colorSprite = await LoadRequest<Sprite>(loadTask, colorSpritePath);
+                    
+                    assetModel.AddItem(itemSprite, colorSprite);
                 }
 
                 ScreenModel screenModel = new ScreenModel(
-                    environmentType: EnvironmentType.Land,
-                    mainBackTexture: defaultLightBackTexture,
-                    assets: assetModels.ToArray(),
-                    additionalBackTexture: defaultDarkBackTexture,
-                    targetCharacterType: Character.Main,
-                    characterName: "Максим");
+                    EnvironmentType.Land,
+                    lightBackModel,
+                    assetModels.Select(o => o.Value).ToArray(),
+                    "Максим",
+                    darkBackModel);
                 
                 _screen.BindModel(screenModel);
             }
+            
             else // если мы открываем из истории
             {
                 string fullLocationPath = RootPath(storyPath) + locationPath;
@@ -111,7 +142,7 @@ namespace Books.Wardrobe
                     return;
                 }
 
-                LocationMetadata backTextureMetadata = _locationPathStrategy.ParsePath(locationPath);
+                LocationMetadata backTextureMetadata = _locationPathParser.ParsePath(locationPath);
                 var backTexture = await LoadRequest<Texture2D>(loadTask, fullLocationPath);
             }
             
