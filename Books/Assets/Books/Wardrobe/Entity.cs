@@ -33,10 +33,7 @@ namespace Books.Wardrobe
             public Data Data;
             
             public ReactiveCommand<(string path, string name, ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task)> GetBundle;
-            public ReactiveCommand<(string path, ReactiveProperty<Func<UniTask<string[]>>> namesTask)> GetAllAssetNames;
-            
             public ReactiveCommand<(string path, string key, ReactiveProperty<Func<UniTask<Texture2D>>> task)> GetTexture;
-            public IObservable<(Texture2D texture, string key)> OnGetTexture;
 
             public bool IsLightTheme;
         }
@@ -77,17 +74,16 @@ namespace Books.Wardrobe
                 
                 
                 LocationMetadata lightBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
-                string lightBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata);
+                string lightBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata) + _ctx.TestData.LocationName + ".png";
                 Texture2D lightBackTexture = await LoadRequest<Texture2D>(loadTask, lightBackPath);
-
-                LocationAssetModel lightBackModel = new LocationAssetModel(lightBackMetadata, lightBackTexture, null);
-
-                LocationMetadata darkBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
-                string darkBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata);
-                Texture2D darkBackTexture = await LoadRequest<Texture2D>(loadTask, darkBackPath);
-
-                LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
                 
+                LocationAssetModel lightBackModel = new LocationAssetModel(lightBackMetadata, lightBackTexture, null);
+                
+                LocationMetadata darkBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
+                string darkBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata) + _ctx.TestData.LocationName + ".png";
+                Texture2D darkBackTexture = await LoadRequest<Texture2D>(loadTask, darkBackPath);
+                
+                LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
                 // Одежда
                 
                 Dictionary<string, ClothesAssetModel> assetModels = new ();

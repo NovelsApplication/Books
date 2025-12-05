@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Books.Wardrobe.PathStrategies;
+﻿using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
 
 namespace Books.Wardrobe.ViewModel

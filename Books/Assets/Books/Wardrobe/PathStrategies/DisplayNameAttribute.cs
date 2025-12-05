@@ -38,11 +38,4 @@ namespace Books.Wardrobe.PathStrategies
         [DisplayName("Тёмные")] Dark = 1,
         [DisplayName("Светлые")] Light = 2,
     }
-
-    public enum Character
-    {
-        None = 0,
-        [DisplayName("ГГ")] Main = 1,
-        Other = 2,
-    }
 }

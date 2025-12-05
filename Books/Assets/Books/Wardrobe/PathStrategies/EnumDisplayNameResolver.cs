@@ -43,6 +43,11 @@ namespace Books.Wardrobe.PathStrategies
         {
             foreach (T enumVal in Enum.GetValues(typeof(T)))
             {
+                if (EqualityComparer<T>.Default.Equals(enumVal, default(T)))
+                {
+                    continue;
+                }
+                
                 string strVal = GetDisplayName(enumVal);
                 if (displayName.Equals(strVal))
                 {
