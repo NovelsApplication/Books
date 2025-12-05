@@ -65,7 +65,7 @@ namespace Books.Wardrobe
             _screen = go.GetComponent<IScreen>();
             _screen.HideImmediate();
             
-            var loadTask = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
+            var textureTask = new ReactiveProperty<Func<UniTask<Texture2D>>>();
 
             if (locationPath == "") // если мы открываем из главного меню
             {
@@ -74,14 +74,14 @@ namespace Books.Wardrobe
                 
                 
                 LocationMetadata lightBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
-                string lightBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata) + _ctx.TestData.LocationName + ".png";
-                Texture2D lightBackTexture = await LoadRequest<Texture2D>(loadTask, lightBackPath);
+                string lightBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata) + _ctx.TestData.LocationName + ".png";
+                Texture2D lightBackTexture = await LoadTexture(textureTask, lightBackPath);
                 
                 LocationAssetModel lightBackModel = new LocationAssetModel(lightBackMetadata, lightBackTexture, null);
                 
                 LocationMetadata darkBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
-                string darkBackPath = RootPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata) + _ctx.TestData.LocationName + ".png";
-                Texture2D darkBackTexture = await LoadRequest<Texture2D>(loadTask, darkBackPath);
+                string darkBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata) + _ctx.TestData.LocationName + ".png";
+                Texture2D darkBackTexture = await LoadTexture(textureTask, darkBackPath);
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
                 // Одежда
@@ -103,18 +103,21 @@ namespace Books.Wardrobe
                     }
                     else
                     {
-                        string glowingSpritePath = RootPath(storyPath) + relativeRootFolderPath + "Свечение.png";
-                        Sprite glowingSprite = await LoadRequest<Sprite>(loadTask, glowingSpritePath);
+                        string glowingTexturePath = RootContentPath(storyPath) + relativeRootFolderPath + "Свечение.png";
+                        Texture2D glowingTexture = await LoadTexture(textureTask, glowingTexturePath);
+                        Sprite glowingSprite = CreateSprite(glowingTexture);
                         
                         assetModel = new ClothesAssetModel(meta, glowingSprite);
                         assetModels.Add(key: meta.ItemName, value: assetModel);
                     }
                     
-                    string itemSpritePath = RootPath(storyPath) + path;
-                    var itemSprite = await LoadRequest<Sprite>(loadTask, itemSpritePath);
+                    string itemSpritePath = RootContentPath(storyPath) + path;
+                    var itemTexture = await LoadTexture(textureTask, itemSpritePath);
+                    Sprite itemSprite = CreateSprite(itemTexture);
                     
-                    string colorSpritePath = RootPath(storyPath) + relativeRootFolderPath + colorsFolderName + "/" + fileName;
-                    var colorSprite = await LoadRequest<Sprite>(loadTask, colorSpritePath);
+                    string colorSpritePath = RootContentPath(storyPath) + relativeRootFolderPath + colorsFolderName + "/" + fileName;
+                    var colorTexture = await LoadTexture(textureTask, colorSpritePath);
+                    Sprite colorSprite = CreateSprite(colorTexture);
                     
                     assetModel.AddItem(itemSprite, colorSprite);
                 }
@@ -131,46 +134,50 @@ namespace Books.Wardrobe
             
             else // если мы открываем из истории
             {
-                string fullLocationPath = RootPath(storyPath) + locationPath;
-                if (!CheckValidPath(fullLocationPath))
-                {
-                    Debug.LogErrorFormat("Некорректный путь текущей локации. Невозможно открыть гардероб!");
-                    return;
-                }
+                string fullLocationPath = RootContentPath(storyPath) + locationPath;
 
                 LocationMetadata backTextureMetadata = _locationPathParser.ParsePath(locationPath);
-                var backTexture = await LoadRequest<Texture2D>(loadTask, fullLocationPath);
+                var backTexture = await LoadTexture(textureTask, fullLocationPath);
             }
             
-            loadTask.Dispose();
+            textureTask.Dispose();
         }
 
-        private async UniTask<T> LoadRequest<T>(ReactiveProperty<Func<UniTask<UnityEngine.Object>>> task, string path) where T: UnityEngine.Object
+        private async UniTask<Texture2D> LoadTexture(ReactiveProperty<Func<UniTask<Texture2D>>> textureTask, string path)
         {
-            if (!CheckValidPath(path))
+            if (String.IsNullOrEmpty(path))
             {
                 return null;
             }
             
-            _ctx.GetBundle.Execute(("main", path, task));
-            var obj = await task.Value.Invoke();
-                
-            T concreteObj = obj as T;
-            if (concreteObj == null)
+            string key = path;
+            _ctx.GetTexture.Execute((path, key, textureTask));
+            
+            return await textureTask.Value.Invoke();
+        }
+        
+        private Sprite CreateSprite(Texture2D texture)
+        {
+            Rect rect = new Rect(0, 0, texture.width, texture.height);
+            Vector2 pivot = new Vector2(0.5f, 0.5f);
+
+            Sprite sprite = Sprite.Create(texture, rect, pivot, 100f);
+            
+            if (sprite == null)
             {
-                Debug.Log("Загружаемый объект равен NULL");
+                Debug.Log($"Не удалось создать спрайт для текстуры : {texture.name}");
                 return null;
             }
             else
             {
-                Debug.Log("Загружен - " + concreteObj.name);
-                return concreteObj;
+                Debug.Log($"Спрайт для объекта - {texture.name} создан" );
+                return sprite;
             }
         }
 
         private string RelativePath(string fullPath, string storyPath)
         {
-            string rootPart = RootPath(storyPath);
+            string rootPart = RootContentPath(storyPath);
             
             if (fullPath.StartsWith(rootPart))
             {
@@ -182,14 +189,6 @@ namespace Books.Wardrobe
             return null;
         }
 
-        private bool CheckValidPath(string fullPath)
-        {
-            if (!String.IsNullOrEmpty(fullPath) && File.Exists(fullPath))
-                return true;
-
-            return false;
-        }
-
-        private string RootPath(string storyPath) => $"Assets/Remote/Main/{storyPath}/Визуал/";
+        private string RootContentPath(string storyPath) => $"{storyPath}/Визуал/";
     }
 }
