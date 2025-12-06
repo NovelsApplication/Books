@@ -29,7 +29,7 @@ namespace Books.Menu.MenuPopup.Contents.Implementations
             _closeButton.onClick.AddListener(() => Root.Hide().Forget());
 
             _wardrobeButton.onClick.RemoveAllListeners();
-            //_wardrobeButton.onClick.AddListener(ContentData.OpenWardrobe.Invoke);
+            _wardrobeButton.onClick.AddListener(ContentData.OpenWardrobe.Invoke);
         }   
                          
         protected override void OnClearContent()

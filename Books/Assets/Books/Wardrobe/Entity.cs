@@ -17,12 +17,10 @@ namespace Books.Wardrobe
     {
         public struct TestData
         {
-            public string LocationName;
             public string[] Clothes;
 
-            public TestData(string locationName, string[] clothes)
+            public TestData(string[] clothes)
             {
-                LocationName = locationName;
                 Clothes = clothes;
             }
         }
@@ -53,8 +51,10 @@ namespace Books.Wardrobe
             _clothesPathParser = new ClothesPathParser(_resolver);
         }
 
-        public async UniTask Open(string storyPath, string locationPath = "")
+        public async UniTask Open(Menu.Entity.StoryManifest storyManifest, string locationPath = "")
         {
+            string storyPath = storyManifest.StoryPath;
+            
             var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
             
@@ -72,18 +72,18 @@ namespace Books.Wardrobe
                 
                 // Локации
                 
-                
-                LocationMetadata lightBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
-                string lightBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata) + _ctx.TestData.LocationName + ".png";
+                LocationMetadata lightBackMetadata = new LocationMetadata("Гардероб суша день", EnvironmentType.Land, LightMode.Light);
+                string lightBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata) + "Гардероб суша день" + ".png";
                 Texture2D lightBackTexture = await LoadTexture(textureTask, lightBackPath);
                 
                 LocationAssetModel lightBackModel = new LocationAssetModel(lightBackMetadata, lightBackTexture, null);
                 
-                LocationMetadata darkBackMetadata = new LocationMetadata(_ctx.TestData.LocationName, EnvironmentType.Land, LightMode.Light);
-                string darkBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata) + _ctx.TestData.LocationName + ".png";
+                LocationMetadata darkBackMetadata = new LocationMetadata("Гардероб суша ночь", EnvironmentType.Land, LightMode.Dark);
+                string darkBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkBackMetadata) + "Гардероб суша ночь" + ".png";
                 Texture2D darkBackTexture = await LoadTexture(textureTask, darkBackPath);
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
+
                 // Одежда
                 
                 Dictionary<string, ClothesAssetModel> assetModels = new ();
@@ -141,6 +141,8 @@ namespace Books.Wardrobe
             }
             
             textureTask.Dispose();
+            
+            _screen.ShowImmediate();
         }
 
         private async UniTask<Texture2D> LoadTexture(ReactiveProperty<Func<UniTask<Texture2D>>> textureTask, string path)

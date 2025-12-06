@@ -53,7 +53,7 @@ namespace Books.Menu
             
             public Func<string, (string header, string attributes, string body)?> ProcessLine;
 
-            public Action<string> OpenWardrobe;
+            public Action<StoryManifest> OpenWardrobe;
 
             public Action InitDone;
         }
@@ -105,14 +105,12 @@ namespace Books.Menu
                 _ctx.GetTexture.Execute((texturePath, textureKey, textureTask));
                 var texture = await textureTask.Value.Invoke();
                 textureTask.Dispose();
-
-                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), _ctx.ProcessLine);
+                
+                await _screen.AddBookAsync(storyText, texture, storyManifest, () => onClick.Invoke(storyManifest), () => _ctx.OpenWardrobe.Invoke(storyManifest), _ctx.ProcessLine);
             }
             
             _screen.OnAllBooksAdded();
-            
-            _ctx.OpenWardrobe.Invoke("Water");
-            
+
             _ctx.InitDone.Invoke();
         }
 

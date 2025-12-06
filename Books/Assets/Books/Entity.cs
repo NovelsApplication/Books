@@ -75,8 +75,8 @@ namespace Books
                 GetBundle = getBundle,
                 GetTexture = getTexture,
                 IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
-                //TestData = new Wardrobe.Entity.TestData("Гардероб суша день", new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png", "Персонажи/ГГ/Одежда/Суша/Модный топ/1.png", "Персонажи/ГГ/Одежда/Универсал/Жемчужное бельё/1.png"})
-                TestData = new Wardrobe.Entity.TestData("Гардероб суша день", new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png"})
+                //TestData = new Wardrobe.Entity.TestData(new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png", "Персонажи/ГГ/Одежда/Суша/Модный топ/1.png", "Персонажи/ГГ/Одежда/Универсал/Жемчужное бельё/1.png"})
+                TestData = new Wardrobe.Entity.TestData(new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png"})
             }).AddTo(this);
 
             Menu.Entity.StoryManifest? storyManifest = null;
@@ -111,7 +111,7 @@ namespace Books
                         GetBundle = getBundle,
                         GetText = getText,
                         GetTexture = getTexture,
-                        OpenWardrobe = async (pathStory) => await wardrobe.Open(pathStory),
+                        OpenWardrobe = async (manifest) => await wardrobe.Open(manifest),
                         InitDone = () => mainDone = true,
                         ProcessLine = ProcessLine,
                     }, story => { storyManifest = story; }).AddTo(this);

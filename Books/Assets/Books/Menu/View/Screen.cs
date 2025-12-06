@@ -18,7 +18,7 @@ namespace Books.Menu.View
         public void SetTheme(bool isLightTheme);
         public void ShowImmediate();
         public void HideImmediate();
-        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine);
+        public UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Action openWardrobe, Func<string, (string header, string attributes, string body)?> processLine);
         public void OnAllBooksAdded();
         public void Release();
     }
@@ -84,7 +84,7 @@ namespace Books.Menu.View
             }
         }
 
-        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Func<string, (string header, string attributes, string body)?> processLine) 
+        public async UniTask AddBookAsync(string storyText, Texture2D poster, Entity.StoryManifest storyManifest, Action onClick, Action openWardrobe,Func<string, (string header, string attributes, string body)?> processLine) 
         {
             var story = new Ink.Runtime.Story(storyText);
 
@@ -121,7 +121,7 @@ namespace Books.Menu.View
             screenBook.SetImage(poster);
             screenBook.SetButton(() => 
             {
-                OpenScreenBookPopUp(poster, storyHeader, description, onClick);
+                OpenScreenBookPopUp(poster, storyHeader, description, onClick, openWardrobe);
             });
             _screenBookSnapController.FollowElement(screenBook.GetComponent<RectTransform>());
             _objects.Push(screenBook.gameObject);
@@ -139,7 +139,7 @@ namespace Books.Menu.View
             screenLittleBook.SetMainTags(mainTags);
             screenLittleBook.SetButton(() =>
             {
-                OpenScreenBookPopUp(poster, storyHeader, description, onClick);
+                OpenScreenBookPopUp(poster, storyHeader, description, onClick, openWardrobe);
             });
             if (screenLittleBook.TryGetComponent(out MainTagFilterHandler tagFilterHandler))
             {
@@ -193,7 +193,7 @@ namespace Books.Menu.View
             _backgroundAnimation.InitializeParticles();
         }
 
-        private void OpenScreenBookPopUp(Texture2D texture, string header, string description, Action onClick)
+        private void OpenScreenBookPopUp(Texture2D texture, string header, string description, Action onClick, Action openWardrobe)
         {
             var data = new ScreenBookPopUpContent.Data {
                 Texture = texture,
@@ -202,7 +202,8 @@ namespace Books.Menu.View
                 OnReadButtonClick = () => {
                     _universalPopUpRoot.HideImmediate();
                     onClick.Invoke(); 
-                }
+                },
+                OpenWardrobe = openWardrobe
             };
             
             var popup = UniversalPopup.OpenPopup(

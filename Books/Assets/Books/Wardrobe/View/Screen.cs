@@ -28,7 +28,7 @@ namespace Books.Wardrobe.View
 
             _model = model;
             
-            _visualComponent.UpdateVisual(model.Visual);
+            //_visualComponent.UpdateVisual(model.Visual);
             
             
         }
