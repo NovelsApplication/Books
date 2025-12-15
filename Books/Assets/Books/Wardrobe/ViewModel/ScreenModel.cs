@@ -1,33 +1,67 @@
-﻿using Books.Wardrobe.PathStrategies;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
 
 namespace Books.Wardrobe.ViewModel
 {
     public class ScreenModel
     {
+        public readonly int MaxLayerNumber = 10;
+        
         public EnvironmentType EnvironmentType { get; }
         public LocationAssetModel DefaultBackLocationModel { get; }
         public LocationAssetModel AdditionalBackLocationModel { get; }
         public ScreenVisual.Visual Visual { get; }
         public string CharacterName { get; }
         
-        private ClothesAssetModel[] _clothesAssetModels;
+        private ClothingAssetModel[] _clothingAssetModels;
+        private Dictionary<CategoryType, AssetsCategory> _categories = new (4);
+        private AssetsCategory _currentCategory;
 
         public ScreenModel
         (
             EnvironmentType environmentType,
             LocationAssetModel defaultBackLocationModel,
-            ClothesAssetModel[] clothesAssetModels,
+            ClothingAssetModel[] clothingAssetModels,
             //Screen.Visual visual,
             string characterName, 
             LocationAssetModel additionalBackLocationModel = null) 
         {
             EnvironmentType = environmentType;
             DefaultBackLocationModel = defaultBackLocationModel;
-            _clothesAssetModels = clothesAssetModels;
+            _clothingAssetModels = clothingAssetModels;
             //Visual = visual;
             AdditionalBackLocationModel = additionalBackLocationModel;
             CharacterName = characterName;
+            
+            Initial();
+        }
+
+        private void Initial()
+        {
+            SetActiveCategory(CategoryType.Suit);
+            
+            
+        }
+
+        public void SetActiveCategory(CategoryType categoryType)
+        {
+            if (categoryType == CategoryType.None)
+                return;
+            
+            if (!_categories.ContainsKey(categoryType))
+            {
+                _categories.Add(categoryType, new AssetsCategory(
+                    _clothingAssetModels.Where(e => e.Metadata.CategoryType == categoryType).ToArray()));
+            }
+            else
+            {
+                return;
+            }
+
+            _currentCategory = _categories[categoryType];
         }
     }
 }

@@ -41,14 +41,14 @@ namespace Books.Wardrobe
         
         private readonly EnumDisplayNameResolver _resolver;
         private readonly LocationPathParser _locationPathParser;
-        private readonly ClothesPathParser _clothesPathParser;
+        private readonly SuitPathParser _suitPathParser;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
             _resolver = new EnumDisplayNameResolver();
             _locationPathParser = new LocationPathParser(_resolver);
-            _clothesPathParser = new ClothesPathParser(_resolver);
+            _suitPathParser = new SuitPathParser(_resolver);
         }
 
         public async UniTask Open(Menu.Entity.StoryManifest storyManifest, string locationPath = "")
@@ -83,19 +83,21 @@ namespace Books.Wardrobe
                 Texture2D darkBackTexture = await LoadTexture(textureTask, darkBackPath);
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
-
+                
+                
+                int startSize = _ctx.TestData.Clothes.Length;
+                Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
+                
                 // Одежда
-                
-                Dictionary<string, ClothesAssetModel> assetModels = new ();
-                
+
                 foreach (var path in _ctx.TestData.Clothes)
                 {
-                    ClothesMetadata meta = _clothesPathParser.ParsePath(path);
+                    ClothingMetadata meta = _suitPathParser.ParsePath(path);
                     string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
                     string fileName = Path.GetFileName(path);
                     string colorsFolderName = "Кружочки";
 
-                    ClothesAssetModel assetModel;
+                    ClothingAssetModel assetModel;
                     
                     if (assetModels.ContainsKey(meta.ItemName))
                     {
@@ -107,7 +109,7 @@ namespace Books.Wardrobe
                         Texture2D glowingTexture = await LoadTexture(textureTask, glowingTexturePath);
                         Sprite glowingSprite = CreateSprite(glowingTexture);
                         
-                        assetModel = new ClothesAssetModel(meta, glowingSprite);
+                        assetModel = new ClothingAssetModel(meta, glowingSprite);
                         assetModels.Add(key: meta.ItemName, value: assetModel);
                     }
                     

@@ -18,10 +18,19 @@ namespace Books.Wardrobe.PathStrategies
         None = 0,
         [DisplayName("Аксессуары")] Accessories = 1,
         [DisplayName("Причёски")] Hairstyles = 2,
-        [DisplayName("Одежда")] Clothing = 3,
+        [DisplayName("Одежда")] Suit = 3,
         [DisplayName("Внешность")] Appearance = 4,
         [DisplayName("Локации")] Location = 5,
         [DisplayName("Персонажи")] Character = 6, 
+    }
+
+    public enum CategoryType
+    {
+        None = 0,
+        Suit = 1,
+        Hairstyles = 2,
+        Appearance = 3,
+        Accessories = 4,
     }
     
     public enum EnvironmentType
