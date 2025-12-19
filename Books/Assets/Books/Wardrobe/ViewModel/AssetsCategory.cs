@@ -37,12 +37,6 @@ namespace Books.Wardrobe.ViewModel
 
         public void AddItem(ClothingAssetModel model)
         {
-            // if (model.Metadata.ItemType != CategoryType)
-            // {
-            //     Debug.LogErrorFormat($"невозможно добавить объект {model.Name} в категорию для предметов с типом - {CategoryType.ToString()}");
-            //     return;
-            // }
-            
             _items.Add(model);
             _itemCount += 1;
             

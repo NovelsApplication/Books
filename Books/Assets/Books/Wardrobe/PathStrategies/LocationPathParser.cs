@@ -68,6 +68,6 @@ namespace Books.Wardrobe.PathStrategies
             return BuildRootFolderPath(metadata.EnvironmentType, metadata.LightMode, loadVideo);
         }
 
-        private string CombineToRelativePath(string[] pathParts) => String.Join('/', pathParts);
+        private string CombineToRelativePath(string[] pathParts) => string.Join('/', pathParts);
     }
 }

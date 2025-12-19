@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
@@ -15,8 +14,10 @@ namespace Books.Wardrobe.ViewModel
         public LocationAssetModel AdditionalBackLocationModel { get; }
         public ScreenVisual.Visual Visual { get; }
         public string CharacterName { get; }
+
+        public AssetsCategory CurrentCategory => _currentCategory;
         
-        private ClothingAssetModel[] _clothingAssetModels;
+        private ClothingAssetModel[] _allAssetsModels;
         private Dictionary<CategoryType, AssetsCategory> _categories = new (4);
         private AssetsCategory _currentCategory;
 
@@ -31,7 +32,7 @@ namespace Books.Wardrobe.ViewModel
         {
             EnvironmentType = environmentType;
             DefaultBackLocationModel = defaultBackLocationModel;
-            _clothingAssetModels = clothingAssetModels;
+            _allAssetsModels = clothingAssetModels;
             //Visual = visual;
             AdditionalBackLocationModel = additionalBackLocationModel;
             CharacterName = characterName;
@@ -41,7 +42,7 @@ namespace Books.Wardrobe.ViewModel
 
         private void Initial()
         {
-            SetActiveCategory(CategoryType.Suit);
+            SetActiveCategory(CategoryType.Suit); // в скрине
             
             
         }
@@ -54,7 +55,7 @@ namespace Books.Wardrobe.ViewModel
             if (!_categories.ContainsKey(categoryType))
             {
                 _categories.Add(categoryType, new AssetsCategory(
-                    _clothingAssetModels.Where(e => e.Metadata.CategoryType == categoryType).ToArray()));
+                    _allAssetsModels.Where(e => e.Metadata.CategoryType == categoryType).ToArray()));
             }
             else
             {
@@ -63,5 +64,8 @@ namespace Books.Wardrobe.ViewModel
 
             _currentCategory = _categories[categoryType];
         }
+
+        public ClothingAssetModel NextItem() => _currentCategory.NextItem();
+        public ClothingAssetModel PreviousItem() => _currentCategory.PreviousItem();
     }
 }

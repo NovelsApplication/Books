@@ -496,10 +496,11 @@ MonoBehaviour:
   _mainBack: {fileID: 4542155519013623640}
   _additionalBack: {fileID: 6237745304309828414}
   _visualComponent: {fileID: 4346707882916850972}
-  _behaviorCategory: {fileID: 2539145753026129604}
-  _hairCategory: {fileID: 1381310155269412742}
-  _clothesCategory: {fileID: 5382656022351625126}
-  _accessoriasCategory: {fileID: 591076183651061519}
+  _categoryHeads:
+  - {fileID: 2539145753026129604}
+  - {fileID: 1381310155269412742}
+  - {fileID: 5382656022351625126}
+  - {fileID: 591076183651061519}
   _layerPrefab: {fileID: 8846583089162156034}
   _nextItemSelector: {fileID: 360513935653416574}
   _previousItemSelector: {fileID: 559322440392305547}
@@ -1221,7 +1222,7 @@ GameObject:
   - component: {fileID: 9038536763900884621}
   - component: {fileID: 591076183651061519}
   m_Layer: 5
-  m_Name: CategoryHeadView_Button
+  m_Name: CategoryHead_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2910,7 +2911,7 @@ GameObject:
   - component: {fileID: 3244973897368322515}
   - component: {fileID: 5382656022351625126}
   m_Layer: 5
-  m_Name: CategoryHeadView_Button
+  m_Name: CategoryHead_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5664,7 +5665,7 @@ GameObject:
   - component: {fileID: 6418574165366413757}
   - component: {fileID: 1381310155269412742}
   m_Layer: 5
-  m_Name: CategoryHeadView_Button
+  m_Name: CategoryHead_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

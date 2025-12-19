@@ -1,5 +1,4 @@
-﻿using Books.Wardrobe.PathStrategies;
-using Books.Wardrobe.ViewModel;
+﻿using Books.Wardrobe.ViewModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,10 +21,12 @@ namespace Books.Wardrobe.View
         
         [SerializeField] private ScreenVisual _visualComponent;
 
-        [SerializeField] private CategoryHead _behaviorCategory;
-        [SerializeField] private CategoryHead _hairCategory;
-        [SerializeField] private CategoryHead _clothesCategory;
-        [SerializeField] private CategoryHead _accessoriasCategory;
+        // [SerializeField] private CategoryHead _behaviorCategory;
+        // [SerializeField] private CategoryHead _hairCategory;
+        // [SerializeField] private CategoryHead _suitsCategory;
+        // [SerializeField] private CategoryHead _accessoriasCategory;
+
+        [SerializeField] private CategoryHead[] _categoryHeads;
 
         [SerializeField] private Layer _layerPrefab;
 
@@ -39,7 +40,10 @@ namespace Books.Wardrobe.View
         public void BindModel(ScreenModel model)
         {
             if (model == null)
+            {
+                Debug.LogError("Model is null!!!");
                 return;
+            }
             
             _model = model;
             
@@ -58,10 +62,11 @@ namespace Books.Wardrobe.View
                 _layers[i] = layerInstance;
             }
             
-            
+            _nextItemSelector.onClick.AddListener(() => VisualizeItem(model.NextItem()));
+            _previousItemSelector.onClick.AddListener(() => VisualizeItem(model.PreviousItem()));
         }
 
-        private void OnChangeCategory(AssetsCategory category)
+        private void VisualizeItem(ClothingAssetModel itemModel)
         {
             
         }

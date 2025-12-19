@@ -9,7 +9,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private Image _darkElementImage;
         [SerializeField] private Image _glowingElementImage;
 
-        public void VisualizeItem(Sprite itemSprite, Sprite glowingSprite = null)
+        public void Set(Sprite itemSprite, Sprite glowingSprite = null)
         {
             _mainImage.sprite = itemSprite;
             _darkElementImage.sprite = itemSprite;
@@ -17,7 +17,12 @@ namespace Books.Wardrobe.View
             if (glowingSprite != null)
                 _glowingElementImage.sprite = glowingSprite;
         }
-        
-        
+
+        public void HideItem()
+        {
+            _mainImage.sprite = default;
+            _darkElementImage.sprite = default;
+            _glowingElementImage.sprite = default;
+        }
     }
 }

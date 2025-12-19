@@ -17,7 +17,7 @@ namespace Books.Wardrobe.View
 
         public event Action<CategoryType> OnSelectCategory; 
         
-        private void SelectCategory()
+        public void SelectCategory()
         {
             SetSelect(true);
             OnSelectCategory?.Invoke(_categoryType);
