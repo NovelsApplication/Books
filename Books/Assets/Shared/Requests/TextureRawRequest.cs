@@ -26,11 +26,25 @@ namespace Shared.Requests
 
         private async UniTask<byte[]> GetTexture(string localPath)
         {
-            using var request = _ctx.GetRequest.Invoke(localPath);
+            try
+            {
+                using var request = _ctx.GetRequest.Invoke(localPath);
 
-            await request.SendWebRequest();
+                await request.SendWebRequest();
 
-            return request.downloadHandler.data;
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    return request.downloadHandler.data;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (UnityWebRequestException)
+            {
+                return null;
+            }
         }
     }
 }

@@ -46,6 +46,11 @@ namespace Shared.Cash
                 var textureRawData = await task.Value.Invoke();
                 task.Dispose();
 
+                if (textureRawData == null)
+                {
+                    return null;
+                }
+
                 return TextureToCache(textureRawData, path, key);
             }
         }

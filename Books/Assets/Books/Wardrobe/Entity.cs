@@ -18,10 +18,12 @@ namespace Books.Wardrobe
         public struct TestData
         {
             public string[] Clothes;
+            public string[] Hairstyles;
 
-            public TestData(string[] clothes)
+            public TestData(string[] clothes, string[] hairstyles)
             {
                 Clothes = clothes;
+                Hairstyles = hairstyles;
             }
         }
         
@@ -42,6 +44,7 @@ namespace Books.Wardrobe
         private readonly EnumDisplayNameResolver _resolver;
         private readonly LocationPathParser _locationPathParser;
         private readonly SuitPathParser _suitPathParser;
+        private readonly HairstylePathParser _hairstylePathParser;
 
         public Entity(Ctx ctx)
         {
@@ -49,6 +52,7 @@ namespace Books.Wardrobe
             _resolver = new EnumDisplayNameResolver();
             _locationPathParser = new LocationPathParser(_resolver);
             _suitPathParser = new SuitPathParser(_resolver);
+            _hairstylePathParser = new HairstylePathParser(_resolver);
         }
 
         public async UniTask Open(Menu.Entity.StoryManifest storyManifest, string locationPath = "")
@@ -83,10 +87,12 @@ namespace Books.Wardrobe
                 Texture2D darkBackTexture = await LoadTexture(textureTask, darkBackPath);
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
-                
-                
+
                 int startSize = _ctx.TestData.Clothes.Length;
                 Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
+                
+                string colorsFolderName = "Кружочки";
+                string hairColorsFolderName = "Цвета волос";
                 
                 // Одежда
 
@@ -95,7 +101,6 @@ namespace Books.Wardrobe
                     ClothingMetadata meta = _suitPathParser.ParsePath(path);
                     string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
                     string fileName = Path.GetFileName(path);
-                    string colorsFolderName = "Кружочки";
 
                     ClothingAssetModel assetModel;
                     
@@ -124,6 +129,41 @@ namespace Books.Wardrobe
                     assetModel.AddItem(itemSprite, colorSprite);
                 }
 
+                // Причёски
+
+                foreach (var path in _ctx.TestData.Hairstyles)
+                {
+                    ClothingMetadata meta = _hairstylePathParser.ParsePath(path);
+                    string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
+                    string fileName = Path.GetFileName(path);
+
+                    ClothingAssetModel assetModel;
+                    
+                    if (assetModels.ContainsKey(meta.ItemName))
+                    {
+                        assetModel = assetModels[meta.ItemName];
+                    }
+                    else
+                    {
+                        string glowingTexturePath = RootContentPath(storyPath) + relativeRootFolderPath + "Свечение.png";
+                        Texture2D glowingTexture = await LoadTexture(textureTask, glowingTexturePath);
+                        Sprite glowingSprite = CreateSprite(glowingTexture);
+                        
+                        assetModel = new ClothingAssetModel(meta, glowingSprite);
+                        assetModels.Add(key: meta.ItemName, value: assetModel);
+                    }
+                    
+                    string itemSpritePath = RootContentPath(storyPath) + path;
+                    var itemTexture = await LoadTexture(textureTask, itemSpritePath);
+                    Sprite itemSprite = CreateSprite(itemTexture);
+
+                    string colorSpritePath = RootContentPath(storyPath) + "Персонажи" + "/" + meta.TargetCharacterName + "/" + hairColorsFolderName + "/" + fileName;
+                    var colorTexture = await LoadTexture(textureTask, colorSpritePath);
+                    Sprite colorSprite = CreateSprite(colorTexture);
+                    
+                    assetModel.AddItem(itemSprite, colorSprite);
+                }
+                
                 ScreenModel screenModel = new ScreenModel(
                     EnvironmentType.Land,
                     lightBackModel,
@@ -162,6 +202,9 @@ namespace Books.Wardrobe
         
         private Sprite CreateSprite(Texture2D texture)
         {
+            if (texture == null)
+                return null;
+            
             Rect rect = new Rect(0, 0, texture.width, texture.height);
             Vector2 pivot = new Vector2(0.5f, 0.5f);
 
