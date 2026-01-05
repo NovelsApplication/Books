@@ -19,11 +19,13 @@ namespace Books.Wardrobe
         {
             public string[] Clothes;
             public string[] Hairstyles;
+            public string[] Accessories;
 
-            public TestData(string[] clothes, string[] hairstyles)
+            public TestData(string[] clothes, string[] hairstyles, string[] accessories)
             {
                 Clothes = clothes;
                 Hairstyles = hairstyles;
+                Accessories = accessories;
             }
         }
         
@@ -45,6 +47,7 @@ namespace Books.Wardrobe
         private readonly LocationPathParser _locationPathParser;
         private readonly SuitPathParser _suitPathParser;
         private readonly HairstylePathParser _hairstylePathParser;
+        private readonly AccessoriesPathParser _accessoriesPathParser;
 
         public Entity(Ctx ctx)
         {
@@ -53,6 +56,7 @@ namespace Books.Wardrobe
             _locationPathParser = new LocationPathParser(_resolver);
             _suitPathParser = new SuitPathParser(_resolver);
             _hairstylePathParser = new HairstylePathParser(_resolver);
+            _accessoriesPathParser = new AccessoriesPathParser(_resolver);
         }
 
         public async UniTask Open(Menu.Entity.StoryManifest storyManifest, string locationPath = "")
@@ -163,6 +167,43 @@ namespace Books.Wardrobe
                     
                     assetModel.AddItem(itemSprite, colorSprite);
                 }
+                
+                //Аксессуары
+
+                foreach (var path in _ctx.TestData.Accessories)
+                {
+                    ClothingMetadata meta = _accessoriesPathParser.ParsePath(path);
+                    string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
+                    string fileName = Path.GetFileName(path);
+
+                    ClothingAssetModel assetModel;
+                        
+                    if (assetModels.ContainsKey(meta.ItemName))
+                    {
+                        assetModel = assetModels[meta.ItemName];
+                    }
+                    else
+                    {
+                        string glowingTexturePath = RootContentPath(storyPath) + relativeRootFolderPath + "Свечение.png";
+                        Texture2D glowingTexture = await LoadTexture(textureTask, glowingTexturePath);
+                        Sprite glowingSprite = CreateSprite(glowingTexture);
+                            
+                        assetModel = new ClothingAssetModel(meta, glowingSprite);
+                        assetModels.Add(key: meta.ItemName, value: assetModel);
+                    }
+                        
+                    string itemSpritePath = RootContentPath(storyPath) + path;
+                    var itemTexture = await LoadTexture(textureTask, itemSpritePath);
+                    Sprite itemSprite = CreateSprite(itemTexture);
+
+                    string colorSpritePath = RootContentPath(storyPath) + relativeRootFolderPath + colorsFolderName + "/" + fileName;
+                    var colorTexture = await LoadTexture(textureTask, colorSpritePath);
+                    Sprite colorSprite = CreateSprite(colorTexture);
+                        
+                    assetModel.AddItem(itemSprite, colorSprite);
+                }
+                
+                //--------------------------------//
                 
                 ScreenModel screenModel = new ScreenModel(
                     EnvironmentType.Land,
