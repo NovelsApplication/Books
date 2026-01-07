@@ -48,13 +48,15 @@ namespace Books.Wardrobe.View
             _characterNameTMP.text = model.CharacterName;
             _mainBack.texture = model.DefaultBackLocationModel.LocationImage;
             _additionalBack.texture = model.AdditionalBackLocationModel.LocationImage;
-            
-            
+
+
+            _layerPrefab.gameObject.SetActive(false);
             _layers = new Layer[model.MaxLayerNumber + 1];
             
             for (int i = 0; i <= model.MaxLayerNumber; i++)
             {
                 var layerInstance = Object.Instantiate(_layerPrefab, _layerPrefab.transform.parent);
+                layerInstance.HideItem();
                 layerInstance.gameObject.SetActive(true);
                 _layers[i] = layerInstance;
             }
@@ -74,7 +76,6 @@ namespace Books.Wardrobe.View
             }
             
             SetActiveCategory(CategoryType.Suit);
-            
             
             _nextItemSelector.onClick.AddListener(NextItem);
             _previousItemSelector.onClick.AddListener(PreviousItem);
@@ -118,7 +119,7 @@ namespace Books.Wardrobe.View
             if (suitLayer >= 0 && suitLayer < _layers.Length)
             {
                 var (itemSprite, colorSprite) = itemModel.GetItem(0);
-                _layers[suitLayer].Set(itemSprite, itemModel.GlowingSprite);
+                _layers[suitLayer].ShowItem(itemSprite, itemModel.GlowingSprite);
             }
             
             if (targetCategoryType == _activeCategoryHead.CategoryType)

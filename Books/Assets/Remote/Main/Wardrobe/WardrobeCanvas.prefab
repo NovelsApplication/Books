@@ -1192,7 +1192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d89a781445447be9ef627017b064fbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainImage: {fileID: 1494776005222400376}
+  _itemImage: {fileID: 1494776005222400376}
   _darkElementImage: {fileID: 7518890133396406172}
   _glowingElementImage: {fileID: 2223756551118666374}
 --- !u!1 &1719621809095532153
@@ -3330,7 +3330,7 @@ GameObject:
   - component: {fileID: 5731385444036051448}
   - component: {fileID: 7518890133396406172}
   m_Layer: 5
-  m_Name: Dark
+  m_Name: Dark_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3383,7 +3383,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d40a2d7a8c591cc4792a97bb5bfdcd73, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3927,7 +3927,7 @@ GameObject:
   - component: {fileID: 493045568370808282}
   - component: {fileID: 2223756551118666374}
   m_Layer: 5
-  m_Name: GlowingElement
+  m_Name: Glowing_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4408,7 +4408,7 @@ GameObject:
   - component: {fileID: 8492504705819321575}
   - component: {fileID: 1494776005222400376}
   m_Layer: 5
-  m_Name: Base
+  m_Name: Item_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

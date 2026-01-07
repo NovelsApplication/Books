@@ -247,7 +247,7 @@ namespace Books.Wardrobe
                 _screen.BindModel(screenModel);
 
                 var category = screenModel.GetCategory(CategoryType.Appearance);
-                category.SetElementActive(1);
+                category.SetElementActive(0);
             }
             
             else // если мы открываем из истории
