@@ -20,12 +20,14 @@ namespace Books.Wardrobe
             public string[] Clothes;
             public string[] Hairstyles;
             public string[] Accessories;
+            public string[] Appearance;
 
-            public TestData(string[] clothes, string[] hairstyles, string[] accessories)
+            public TestData(string[] clothes, string[] hairstyles, string[] accessories, string[] appearance)
             {
                 Clothes = clothes;
                 Hairstyles = hairstyles;
                 Accessories = accessories;
+                Appearance = appearance;
             }
         }
         
@@ -43,20 +45,23 @@ namespace Books.Wardrobe
         private Ctx _ctx;
         private IScreen _screen;
         
-        private readonly EnumDisplayNameResolver _resolver;
+        private readonly EnumDisplayNameResolver _enumResolver;
         private readonly LocationPathParser _locationPathParser;
         private readonly SuitPathParser _suitPathParser;
         private readonly HairstylePathParser _hairstylePathParser;
         private readonly AccessoriesPathParser _accessoriesPathParser;
+        private readonly AppearancePathParser _appearancePathParser;
 
         public Entity(Ctx ctx)
         {
             _ctx = ctx;
-            _resolver = new EnumDisplayNameResolver();
-            _locationPathParser = new LocationPathParser(_resolver);
-            _suitPathParser = new SuitPathParser(_resolver);
-            _hairstylePathParser = new HairstylePathParser(_resolver);
-            _accessoriesPathParser = new AccessoriesPathParser(_resolver);
+            
+            _enumResolver = new EnumDisplayNameResolver();
+            _locationPathParser = new LocationPathParser(_enumResolver);
+            _suitPathParser = new SuitPathParser(_enumResolver);
+            _hairstylePathParser = new HairstylePathParser(_enumResolver);
+            _accessoriesPathParser = new AccessoriesPathParser(_enumResolver);
+            _appearancePathParser = new AppearancePathParser(_enumResolver);
         }
 
         public async UniTask Open(Menu.Entity.StoryManifest storyManifest, string locationPath = "")
@@ -201,6 +206,33 @@ namespace Books.Wardrobe
                     Sprite colorSprite = CreateSprite(colorTexture);
                         
                     assetModel.AddItem(itemSprite, colorSprite);
+                }
+                
+                //Внешность
+
+                foreach (var path in _ctx.TestData.Appearance)
+                {
+                    ClothingMetadata meta = _appearancePathParser.ParsePath(path);
+                    string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
+                    string fileName = Path.GetFileName(path);
+
+                    ClothingAssetModel assetModel;
+                    
+                    if (assetModels.ContainsKey(meta.ItemName))
+                    {
+                        assetModel = assetModels[meta.ItemName];
+                    }
+                    else
+                    {
+                        assetModel = new ClothingAssetModel(meta);
+                        assetModels.Add(key: meta.ItemName, value: assetModel);
+                    }
+                    
+                    string itemSpritePath = RootContentPath(storyPath) + path;
+                    var itemTexture = await LoadTexture(textureTask, itemSpritePath);
+                    Sprite itemSprite = CreateSprite(itemTexture);
+                    
+                    assetModel.AddItem(itemSprite);
                 }
                 
                 //--------------------------------//

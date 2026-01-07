@@ -25,7 +25,7 @@ namespace Books.Wardrobe.PathStrategies
         {
             if (string.IsNullOrEmpty(relativePath))
             {
-                Debug.LogErrorFormat("Cannot parse empty clothe path!");
+                Debug.LogErrorFormat("Cannot parse empty hairstyle path!");
                 return default;
             }
 

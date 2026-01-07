@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Books.Wardrobe.PathStrategies
 {
-    public class SuitPathParser
+    public class AppearancePathParser
     {
         private readonly EnumDisplayNameResolver _resolver;
         
-        public ItemType ItemType => ItemType.Suit;
+        public ItemType ItemType => ItemType.Appearance;
 
-        public SuitPathParser(EnumDisplayNameResolver resolver)
+        public AppearancePathParser(EnumDisplayNameResolver resolver)
         {
             _resolver = resolver;
         }
@@ -19,31 +19,27 @@ namespace Books.Wardrobe.PathStrategies
         {
             if (string.IsNullOrEmpty(relativePath))
             {
-                Debug.LogErrorFormat("Cannot parse empty suit path!");
+                Debug.LogErrorFormat("Cannot parse empty appearance path!");
                 return default;
             }
 
             string[] parts = relativePath.Split("/");
             
             int characterNameInx = 1;
-            int environmentTypeInx = 3;
-            int suitNameInx = 4;
+            int itemNameInx = 3;
             
-            EnvironmentType environmentType = _resolver
-                .GetEnumFromDisplayName<EnvironmentType>(parts[environmentTypeInx]);
             string targetCharacterName = parts[characterNameInx];
-            string suitName = parts[suitNameInx];
+            string itemName = parts[itemNameInx];
 
-            ClothingMetadata metadata = new ClothingMetadata(ItemType, CategoryType.Suit, suitName, 
-                environmentType, 4, targetCharacterName);
+            ClothingMetadata metadata = new ClothingMetadata(ItemType, CategoryType.Appearance, itemName, 
+                EnvironmentType.Universal, 1, targetCharacterName);
             
             return metadata;
         }
 
-        public string BuildRootFolderPath(string targetCharName, EnvironmentType environmentType, string suitName)
+        public string BuildRootFolderPath(string itemName, string targetCharName)
         {
-            string environmentTypeStr = _resolver.GetDisplayName(environmentType);
-            string[] parts = {"Персонажи", targetCharName, "Одежда", environmentTypeStr, suitName};
+            string[] parts = {"Персонажи", targetCharName, "Внешность", itemName};
             
             if (Array.Exists(parts, String.IsNullOrEmpty))
             {
@@ -62,7 +58,7 @@ namespace Books.Wardrobe.PathStrategies
                 return String.Empty;
             }
 
-            return BuildRootFolderPath(metadata.TargetCharacterName, metadata.EnvironmentType, metadata.ItemName);
+            return BuildRootFolderPath(metadata.ItemName, metadata.TargetCharacterName);
         }
 
         private string CombineToRelativePath(string[] pathParts) => String.Join('/', pathParts);
