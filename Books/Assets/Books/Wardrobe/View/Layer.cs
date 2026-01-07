@@ -15,7 +15,13 @@ namespace Books.Wardrobe.View
             _darkElementImage.sprite = itemSprite;
             
             if (glowingSprite != null)
+            {
                 _glowingElementImage.sprite = glowingSprite;
+            }
+            else
+            {
+                _glowingElementImage.sprite = default;
+            }
         }
 
         public void HideItem()
@@ -23,6 +29,15 @@ namespace Books.Wardrobe.View
             _mainImage.sprite = default;
             _darkElementImage.sprite = default;
             _glowingElementImage.sprite = default;
+            
+            //_mainImage.gameObject.SetActive(false);
+            //_darkElementImage.gameObject.SetActive(false);
+            //_glowingElementImage.gameObject.SetActive(false);
+        }
+
+        public void ShowDark(bool flag)
+        {
+            _darkElementImage.gameObject.SetActive(flag);
         }
     }
 }

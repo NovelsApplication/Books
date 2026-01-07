@@ -1,59 +1,78 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using UniRx;
 
 namespace Books.Wardrobe.ViewModel
 {
     public class AssetsCategory
     {
-        public ClothingAssetModel CurrentItemModel => _currentItemModel;
-        public int CurrentItemIndex => _currentItemIndex;
-        public int ItemCount => _itemCount;
+        public IReadOnlyReactiveProperty<ClothingAssetModel> CurrentItemModel => _currentItemModel;
+        public IReadOnlyReactiveProperty<int> CurrentItemIndex => _currentItemIndex;
+        public IReadOnlyReactiveProperty<int> ItemsCount => _itemsCount;
         
-        private ClothingAssetModel _currentItemModel;
-        private int _currentItemIndex = 0;
-        private int _itemCount;
-        private List<ClothingAssetModel> _items = new List<ClothingAssetModel>();
+        private readonly ReactiveProperty<ClothingAssetModel> _currentItemModel = new ReactiveProperty<ClothingAssetModel>();
+        private readonly ReactiveProperty<int> _currentItemIndex = new ReactiveProperty<int>();
+        private readonly ReactiveProperty<int> _itemsCount = new ReactiveProperty<int>();
+        
+        private readonly List<ClothingAssetModel> _items = new List<ClothingAssetModel>();
         
         public AssetsCategory(ClothingAssetModel[] clothes = null)
         {
-            if (clothes != null)
+            if (clothes != null && clothes.Length != 0)
             {
                 _items.AddRange(clothes);
-                _currentItemModel = _items[_currentItemIndex];
-                _itemCount = _items.Count;
+                _currentItemModel.Value = _items[_currentItemIndex.Value];
+                _itemsCount.Value = _items.Count;
             }
         }
 
-        public ClothingAssetModel NextItem()
+        public void NextItem()
         {
-            _currentItemIndex = (_currentItemIndex + 1) % _itemCount;
-            return GetItem(_currentItemIndex);
+            _currentItemIndex.Value = (_currentItemIndex.Value + 1) % _itemsCount.Value;
+            SetElementActive(_currentItemIndex.Value);
         }
         
-        public ClothingAssetModel PreviousItem()
+        public void PreviousItem()
         {
-            _currentItemIndex = (3 + _currentItemIndex - 1) % _itemCount;
-            return GetItem(_currentItemIndex);
+            _currentItemIndex.Value = (_itemsCount.Value + _currentItemIndex.Value - 1) % _itemsCount.Value;
+            SetElementActive(_currentItemIndex.Value);
         }
-
+        
         public void AddItem(ClothingAssetModel model)
         {
             _items.Add(model);
-            _itemCount += 1;
+            _itemsCount.Value += 1;
             
-            if (_currentItemModel == null) 
-                _currentItemModel = _items[_currentItemIndex];
+            if (_currentItemModel.Value == null) 
+                _currentItemModel.Value = _items[_currentItemIndex.Value];
         }
 
-        public ClothingAssetModel GetItem(int index)
+        public bool SetElementActive(int index)
         {
-            if (index > _itemCount || index < 0)
-                return null;
+            if (index >= _itemsCount.Value || index < 0 || _items.Count == 0)
+                return false;
             
             ClothingAssetModel itemModel = _items[index];
-            _currentItemModel = itemModel;
-            _currentItemIndex = index;
+            _currentItemModel.Value = itemModel;
+            _currentItemIndex.Value = index;
 
-            return _currentItemModel; 
+            return true;
+        }
+
+        public int GetIndexOf(Func<ClothingAssetModel, bool> predicate)
+        {
+            int index = _items.FindIndex(m => predicate(m));
+            return index;
+        }
+
+        public int[] GetCategoryLayers()
+        {
+            if (_items.Count == 0)
+                return Array.Empty<int>();
+                
+            return _items.Select(item => item.Metadata.SuitLayer)
+                .Distinct().OrderBy(layer => layer).ToArray();
         }
     }
 }

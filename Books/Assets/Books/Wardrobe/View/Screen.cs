@@ -1,5 +1,8 @@
-﻿using Books.Wardrobe.ViewModel;
+﻿using System.Linq;
+using Books.Wardrobe.PathStrategies;
+using Books.Wardrobe.ViewModel;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,25 +21,20 @@ namespace Books.Wardrobe.View
         [SerializeField] private TextMeshProUGUI _characterNameTMP;
         [SerializeField] private RawImage _mainBack;
         [SerializeField] private RawImage _additionalBack;
-        
         [SerializeField] private ScreenVisual _visualComponent;
-
-        // [SerializeField] private CategoryHead _behaviorCategory;
-        // [SerializeField] private CategoryHead _hairCategory;
-        // [SerializeField] private CategoryHead _suitsCategory;
-        // [SerializeField] private CategoryHead _accessoriasCategory;
-
         [SerializeField] private CategoryHead[] _categoryHeads;
-
         [SerializeField] private Layer _layerPrefab;
-
         [SerializeField] private Button _nextItemSelector;
         [SerializeField] private Button _previousItemSelector;
         [SerializeField] private TextMeshProUGUI _itemNameIMP;
 
         private Layer[] _layers;
+        private CategoryHead _activeCategoryHead;
+        private AssetsCategory _categoryModel;
         private ScreenModel _model;
-        
+
+        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+
         public void BindModel(ScreenModel model)
         {
             if (model == null)
@@ -51,7 +49,6 @@ namespace Books.Wardrobe.View
             _mainBack.texture = model.DefaultBackLocationModel.LocationImage;
             _additionalBack.texture = model.AdditionalBackLocationModel.LocationImage;
             
-            //_visualComponent.UpdateVisual(model.Visual);
             
             _layers = new Layer[model.MaxLayerNumber + 1];
             
@@ -61,14 +58,101 @@ namespace Books.Wardrobe.View
                 layerInstance.gameObject.SetActive(true);
                 _layers[i] = layerInstance;
             }
+
             
-            _nextItemSelector.onClick.AddListener(() => VisualizeItem(model.NextItem()));
-            _previousItemSelector.onClick.AddListener(() => VisualizeItem(model.PreviousItem()));
+            foreach (var categoryHead in _categoryHeads)
+            {
+                AssetsCategory category = _model.GetCategory(categoryHead.CategoryType);
+                //Реактивное изменение текущей шмотки
+                _disposable.Add(category.CurrentItemModel.Subscribe(VisualizeItem));
+                
+                categoryHead.InitCategory(category);
+                categoryHead.SetSelect(false);
+                
+                Button btn = categoryHead.GetComponent<Button>();
+                btn.onClick.AddListener(() => SetActiveCategory(categoryHead.CategoryType));
+            }
+            
+            SetActiveCategory(CategoryType.Suit);
+            
+            
+            _nextItemSelector.onClick.AddListener(NextItem);
+            _previousItemSelector.onClick.AddListener(PreviousItem);
+        }
+
+        public void SetActiveCategory(CategoryType categoryType)
+        {
+            if (categoryType == CategoryType.None)
+                return;
+
+            if (_activeCategoryHead != null)
+                _activeCategoryHead.SetSelect(false);
+            
+            CategoryHead categoryHead = _categoryHeads.First(c => c.CategoryType == categoryType);
+            _activeCategoryHead = categoryHead;
+            _activeCategoryHead.SetSelect(true);
+            
+            _categoryModel = _model.GetCategory(categoryType);
+            _itemNameIMP.text = _categoryModel.CurrentItemModel.Value.Name;
         }
 
         private void VisualizeItem(ClothingAssetModel itemModel)
         {
+            if (itemModel == null || _activeCategoryHead == null) 
+                return;
+
+            CategoryType targetCategoryType = itemModel.Metadata.CategoryType;
+            AssetsCategory targetCategory = _model.GetCategory(targetCategoryType);
             
+            int[] categoryLayers = targetCategory.GetCategoryLayers();
+            
+            foreach (int layer in categoryLayers)
+            {
+                if (layer >= 0 && layer < _layers.Length)
+                {
+                    _layers[layer].HideItem();
+                }
+            }
+            
+            int suitLayer = itemModel.Metadata.SuitLayer;
+            if (suitLayer >= 0 && suitLayer < _layers.Length)
+            {
+                var (itemSprite, colorSprite) = itemModel.GetItem(0);
+                _layers[suitLayer].Set(itemSprite, itemModel.GlowingSprite);
+            }
+            
+            if (targetCategoryType == _activeCategoryHead.CategoryType)
+                _itemNameIMP.text = itemModel.Name;
+        }
+
+        private void NextItem()
+        {
+            if (_categoryModel == null)
+            {
+                Debug.LogError("Active category model is null");
+                return;
+            }
+                
+            _categoryModel.NextItem();
+        }
+        
+        private void PreviousItem()
+        {
+            if (_categoryModel == null)
+            {
+                Debug.LogError("Active category model is null");
+                return;
+            }
+                
+            _categoryModel.PreviousItem();
+        }
+
+        public void UnBindModel()
+        {
+            _disposable.Dispose();
+            _model = null;
+            _activeCategoryHead = null;
+            _categoryModel = null;
         }
 
         public void ShowImmediate()

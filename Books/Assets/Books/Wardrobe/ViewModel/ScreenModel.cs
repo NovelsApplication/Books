@@ -7,19 +7,16 @@ namespace Books.Wardrobe.ViewModel
 {
     public class ScreenModel
     {
-        public readonly int MaxLayerNumber = 10;
+        public readonly int MaxLayerNumber = 8;
         
         public EnvironmentType EnvironmentType { get; }
         public LocationAssetModel DefaultBackLocationModel { get; }
         public LocationAssetModel AdditionalBackLocationModel { get; }
         public ScreenVisual.Visual Visual { get; }
         public string CharacterName { get; }
-
-        public AssetsCategory CurrentCategory => _currentCategory;
         
         private ClothingAssetModel[] _allAssetsModels;
         private Dictionary<CategoryType, AssetsCategory> _categories = new (4);
-        private AssetsCategory _currentCategory;
 
         public ScreenModel
         (
@@ -36,36 +33,17 @@ namespace Books.Wardrobe.ViewModel
             //Visual = visual;
             AdditionalBackLocationModel = additionalBackLocationModel;
             CharacterName = characterName;
-            
-            Initial();
         }
 
-        private void Initial()
-        {
-            SetActiveCategory(CategoryType.Suit); // в скрине
-            
-            
-        }
-
-        public void SetActiveCategory(CategoryType categoryType)
-        {
-            if (categoryType == CategoryType.None)
-                return;
-            
-            if (!_categories.ContainsKey(categoryType))
+        public AssetsCategory GetCategory(CategoryType type)
+        { 
+            if (!_categories.ContainsKey(type))
             {
-                _categories.Add(categoryType, new AssetsCategory(
-                    _allAssetsModels.Where(e => e.Metadata.CategoryType == categoryType).ToArray()));
+                _categories.Add(type, new AssetsCategory(
+                    _allAssetsModels.Where(e => e.Metadata.CategoryType == type).ToArray()));
             }
-            else
-            {
-                return;
-            }
-
-            _currentCategory = _categories[categoryType];
+            
+            return _categories[type];
         }
-
-        public ClothingAssetModel NextItem() => _currentCategory.NextItem();
-        public ClothingAssetModel PreviousItem() => _currentCategory.PreviousItem();
     }
 }
