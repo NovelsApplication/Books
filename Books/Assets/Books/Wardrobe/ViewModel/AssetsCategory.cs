@@ -23,26 +23,28 @@ namespace Books.Wardrobe.ViewModel
             {
                 _items.AddRange(clothes);
                 _currentItemModel.Value = _items[_currentItemIndex.Value];
-                _itemsCount.Value = _items.Count;
+                _itemsCount.Value = _items.Count(m => !m.IsEmptyModel);
             }
         }
 
         public void NextItem()
         {
-            _currentItemIndex.Value = (_currentItemIndex.Value + 1) % _itemsCount.Value;
+            _currentItemIndex.Value = (_currentItemIndex.Value + 1) % _items.Count;
             SetElementActive(_currentItemIndex.Value);
         }
         
         public void PreviousItem()
         {
-            _currentItemIndex.Value = (_itemsCount.Value + _currentItemIndex.Value - 1) % _itemsCount.Value;
+            _currentItemIndex.Value = (_items.Count + _currentItemIndex.Value - 1) % _items.Count;
             SetElementActive(_currentItemIndex.Value);
         }
         
         public void AddItem(ClothingAssetModel model)
         {
             _items.Add(model);
-            _itemsCount.Value += 1;
+            
+            if (!model.IsEmptyModel)
+                _itemsCount.Value += 1;
             
             if (_currentItemModel.Value == null) 
                 _currentItemModel.Value = _items[_currentItemIndex.Value];
@@ -50,7 +52,7 @@ namespace Books.Wardrobe.ViewModel
 
         public bool SetElementActive(int index)
         {
-            if (index >= _itemsCount.Value || index < 0 || _items.Count == 0)
+            if (index >= _items.Count || index < 0 || _items.Count == 0)
                 return false;
             
             ClothingAssetModel itemModel = _items[index];

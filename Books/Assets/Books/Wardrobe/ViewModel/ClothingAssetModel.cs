@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Books.Wardrobe.AssetsMeta;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace Books.Wardrobe.ViewModel
         
         public string Name => Metadata.ItemName;
         public int ItemsCount => _clothes.Count;
+        public bool IsEmptyModel => _clothes.Count == 0;
 
         private List<ColorVariant> _clothes = new ();
 

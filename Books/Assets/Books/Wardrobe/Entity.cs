@@ -96,8 +96,9 @@ namespace Books.Wardrobe
                 Texture2D darkBackTexture = await LoadTexture(textureTask, darkBackPath);
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
-
-                int startSize = _ctx.TestData.Clothes.Length;
+                
+                
+                int startSize = _ctx.TestData.Clothes.Length + _ctx.TestData.Accessories.Length + _ctx.TestData.Hairstyles.Length;
                 Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
                 
                 string colorsFolderName = "Кружочки";
@@ -105,6 +106,15 @@ namespace Books.Wardrobe
                 
                 // Одежда
 
+                ClothingMetadata emptySuitMeta = new ClothingMetadata(
+                    ItemType.Suit, CategoryType.Suit,
+                    "Без одежды",
+                    EnvironmentType.Universal,
+                    4, "");
+
+                ClothingAssetModel emptySuitModel = new ClothingAssetModel(emptySuitMeta);
+                assetModels.Add(emptySuitModel.Name, emptySuitModel);
+                
                 foreach (var path in _ctx.TestData.Clothes)
                 {
                     ClothingMetadata meta = _suitPathParser.ParsePath(path);
@@ -174,7 +184,16 @@ namespace Books.Wardrobe
                 }
                 
                 //Аксессуары
+                
+                ClothingMetadata emptyAccessoriesMeta = new ClothingMetadata(
+                    ItemType.Accessories, CategoryType.Accessories,
+                    "Без аксессуаров",
+                    EnvironmentType.Universal,
+                    0, "");
 
+                ClothingAssetModel emptyAccessoriesModel = new ClothingAssetModel(emptyAccessoriesMeta);
+                assetModels.Add(emptyAccessoriesModel.Name, emptyAccessoriesModel);
+                
                 foreach (var path in _ctx.TestData.Accessories)
                 {
                     ClothingMetadata meta = _accessoriesPathParser.ParsePath(path);
@@ -246,8 +265,8 @@ namespace Books.Wardrobe
                 
                 _screen.BindModel(screenModel);
 
-                var appearanceCategory = screenModel.GetCategory(CategoryType.Appearance);
-                appearanceCategory.SetElementActive(0);
+                screenModel.GetCategory(CategoryType.Appearance).SetElementActive(1);
+                screenModel.GetCategory(CategoryType.Suit).SetElementActive(1);
             }
             
             else // если мы открываем из истории

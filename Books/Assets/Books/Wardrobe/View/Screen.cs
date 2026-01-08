@@ -48,8 +48,7 @@ namespace Books.Wardrobe.View
             _characterNameTMP.text = model.CharacterName;
             _mainBack.texture = model.DefaultBackLocationModel.LocationImage;
             _additionalBack.texture = model.AdditionalBackLocationModel.LocationImage;
-
-
+            
             _layerPrefab.gameObject.SetActive(false);
             _layers = new Layer[model.MaxLayerNumber + 1];
             
@@ -60,7 +59,6 @@ namespace Books.Wardrobe.View
                 layerInstance.gameObject.SetActive(true);
                 _layers[i] = layerInstance;
             }
-
             
             foreach (var categoryHead in _categoryHeads)
             {
