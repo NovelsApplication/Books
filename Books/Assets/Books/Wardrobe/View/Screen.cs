@@ -99,7 +99,7 @@ namespace Books.Wardrobe.View
 
         private void VisualizeItem(ClothingAssetModel itemModel)
         {
-            if (itemModel == null || _activeCategoryHead == null) 
+            if (itemModel == null) 
                 return;
 
             CategoryType targetCategoryType = itemModel.Metadata.CategoryType;
@@ -122,7 +122,7 @@ namespace Books.Wardrobe.View
                 _layers[suitLayer].ShowItem(itemSprite, itemModel.GlowingSprite);
             }
             
-            if (targetCategoryType == _activeCategoryHead.CategoryType)
+            if (_activeCategoryHead != null && targetCategoryType == _activeCategoryHead.CategoryType)
                 _itemNameIMP.text = itemModel.Name;
         }
 
