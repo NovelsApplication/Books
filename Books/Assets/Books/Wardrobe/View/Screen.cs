@@ -4,6 +4,7 @@ using Books.Wardrobe.ViewModel;
 using TMPro;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Books.Wardrobe.View
@@ -27,6 +28,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private Button _nextItemSelector;
         [SerializeField] private Button _previousItemSelector;
         [SerializeField] private TextMeshProUGUI _itemNameIMP;
+        [SerializeField] private CharacterUpdate_Animation _characterUpdateAnimation;
 
         private Layer[] _layers;
         private CategoryHead _activeCategoryHead;
@@ -131,8 +133,11 @@ namespace Books.Wardrobe.View
                 Debug.LogError("Active category model is null");
                 return;
             }
-                
+
+            CanvasGroup clone = _characterUpdateAnimation.CreateClone();
+            
             _categoryModel.NextItem();
+            OnSelectItem(clone);
         }
         
         private void PreviousItem()
@@ -142,8 +147,23 @@ namespace Books.Wardrobe.View
                 Debug.LogError("Active category model is null");
                 return;
             }
-                
+
+            CanvasGroup clone = _characterUpdateAnimation.CreateClone();
+            
             _categoryModel.PreviousItem();
+            OnSelectItem(clone);
+        }
+
+        private async void OnSelectItem(CanvasGroup clone)
+        {
+            _nextItemSelector.onClick.RemoveAllListeners();
+            _previousItemSelector.onClick.RemoveAllListeners();
+            
+            await _characterUpdateAnimation.Play(clone);
+            Debug.Log("Анимация завершена");
+            
+            _nextItemSelector.onClick.AddListener(NextItem);
+            _previousItemSelector.onClick.AddListener(PreviousItem);
         }
 
         public void UnBindModel()
