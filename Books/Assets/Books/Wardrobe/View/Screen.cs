@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.ViewModel;
 using TMPro;
@@ -6,6 +7,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Books.Wardrobe.View
 {
@@ -29,6 +31,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private Button _previousItemSelector;
         [SerializeField] private TextMeshProUGUI _itemNameIMP;
         [SerializeField] private CharacterUpdate_Animation _characterUpdateAnimation;
+        [SerializeField] private ColorMenu _colorMenu;
 
         private Layer[] _layers;
         private CategoryHead _activeCategoryHead;
@@ -94,7 +97,8 @@ namespace Books.Wardrobe.View
             _activeCategoryHead.SetSelect(true);
             
             _categoryModel = _model.GetCategory(categoryType);
-            _itemNameIMP.text = _categoryModel.CurrentItemModel.Value.Name;
+            
+            VisualizeItem(_categoryModel.CurrentItemModel.Value);
         }
 
         private void VisualizeItem(ClothingAssetModel itemModel)
@@ -116,10 +120,27 @@ namespace Books.Wardrobe.View
             }
             
             int suitLayer = itemModel.Metadata.SuitLayer;
-            if (suitLayer >= 0 && suitLayer < _layers.Length)
+            if (suitLayer >= 0 && suitLayer < _layers.Length && !itemModel.IsEmptyModel)
             {
-                var (itemSprite, colorSprite) = itemModel.GetItem(0);
-                _layers[suitLayer].ShowItem(itemSprite, itemModel.GlowingSprite);
+                var items = new (Sprite item, Sprite color)[itemModel.ItemsCount];
+                for (int i = 0; i < itemModel.ItemsCount; i++)
+                {
+                    items[i] = itemModel.GetItem(i);
+                }
+                
+                Action<int> showColorVariantAction = index =>
+                {
+                    var element = items[index];
+                    itemModel.SetColorActive(index); // можно тут менять значение реактивщины
+                    _layers[suitLayer].ShowItem(element.item, itemModel.GlowingSprite);
+                };
+                showColorVariantAction.Invoke(itemModel.CurrentColorIndex);
+
+                _colorMenu.InitColors(items.Select(i => i.color).ToArray(), showColorVariantAction, itemModel.CurrentColorIndex);
+            }
+            else
+            {
+                _colorMenu.HideImmediate();
             }
             
             if (_activeCategoryHead != null && targetCategoryType == _activeCategoryHead.CategoryType)
@@ -160,7 +181,6 @@ namespace Books.Wardrobe.View
             _previousItemSelector.onClick.RemoveAllListeners();
             
             await _characterUpdateAnimation.Play(clone);
-            Debug.Log("Анимация завершена");
             
             _nextItemSelector.onClick.AddListener(NextItem);
             _previousItemSelector.onClick.AddListener(PreviousItem);
@@ -169,6 +189,7 @@ namespace Books.Wardrobe.View
         public void UnBindModel()
         {
             _disposable.Dispose();
+            _colorMenu.Clear();
             _model = null;
             _activeCategoryHead = null;
             _categoryModel = null;

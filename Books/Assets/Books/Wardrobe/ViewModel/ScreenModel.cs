@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.View;
@@ -44,6 +45,18 @@ namespace Books.Wardrobe.ViewModel
             }
             
             return _categories[type];
+        }
+
+        public void AddItem(ClothingAssetModel model)
+        {
+            int oldSize = _allAssetsModels.Length;
+            Array.Resize(ref _allAssetsModels, oldSize + 4);
+            
+            CategoryType categoryType = model.Metadata.CategoryType;
+            AssetsCategory category = GetCategory(categoryType);
+
+            _allAssetsModels[oldSize + 1] = model;
+            category.AddItem(model);
         }
     }
 }

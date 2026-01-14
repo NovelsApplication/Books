@@ -260,7 +260,7 @@ namespace Books.Wardrobe
                     EnvironmentType.Land,
                     lightBackModel,
                     assetModels.Select(o => o.Value).ToArray(),
-                    "Максим",
+                    "Элизабет",
                     darkBackModel);
                 
                 _screen.BindModel(screenModel);
@@ -307,12 +307,12 @@ namespace Books.Wardrobe
             
             if (sprite == null)
             {
-                Debug.Log($"Не удалось создать спрайт для текстуры : {texture.name}");
+                //Debug.Log($"Не удалось создать спрайт для текстуры : {texture.name}");
                 return null;
             }
             else
             {
-                Debug.Log($"Спрайт для объекта - {texture.name} создан" );
+                //Debug.Log($"Спрайт для объекта - {texture.name} создан" );
                 return sprite;
             }
         }

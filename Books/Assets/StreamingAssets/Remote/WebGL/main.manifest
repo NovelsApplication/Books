@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.60f1
-CRC: 582454313
+CRC: 2576420266
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a29a76d5ca4081c604cc6c4f2c97b0a4
+    Hash: 1f64abfdc1abb997a0433c978199cc24
   TypeTreeHash:
     serializedVersion: 2
-    Hash: a014d69c19d4195e3bcf7e66bfa03f46
+    Hash: 8b35f0a75983df5a6df781e40632bc65
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: a793f0433b5645bbecf74fdfd7b9fe18
+    Hash: 119d335d73931cb7c35face5c1152e3a
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -23,8 +23,6 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 84
   Script: {instanceID: 0}
-- Class: 114
-  Script: {fileID: 11500000, guid: df2a22cef3cf4cf6b6639aa10162df9c, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 8e1fb93923c54fa5ab1e3e13547064c3, type: 3}
 - Class: 114
@@ -52,6 +50,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 1de141310a5740e9a0173ecc94da5457, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 46ca7a7bc5ed47c2b1af4f44f5c8fe17, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: faea47712f4e443e9207f5960d039053, type: 3}
@@ -78,9 +78,13 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 2c2c64149859d8e45b6bab5c4eb99cfa, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: df2a22cef3cf4cf6b6639aa10162df9c, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 89c5594910c81d549b0b1dfdabe1de41, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 51efa18c66d84de1ab193396f91e6e6f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 15e27ee8889a4c85b31b80b100538480, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
 - Class: 114
@@ -224,6 +228,7 @@ Assets:
 - Assets/Remote/Main/Menu/Images/Particles/15.png
 - "Assets/Remote/Main/Menu/Images/PopUp/\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F
   (780 x 200 \u043F\u0438\u043A\u0441.).png"
+- "Assets/Remote/Main/Wardrobe/Visual/icons8-\u0433\u0430\u043B\u043E\u0447\u043A\u0430-100.png"
 - Assets/Remote/Main/Menu/Images/LightBackground.png
 - Assets/Remote/Main/Menu/Images/PopUp/Cloud.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Popular.png

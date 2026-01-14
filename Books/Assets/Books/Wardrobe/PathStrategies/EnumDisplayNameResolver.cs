@@ -16,7 +16,7 @@ namespace Books.Wardrobe.PathStrategies
             
             if (!cashedObj.Equals(default))
             {
-                Debug.Log($"Display name for enum ({enumVal.ToString()} is {cashedObj.strVal} finded in Cash!)");
+                //Debug.Log($"Display name for enum ({enumVal.ToString()} is {cashedObj.strVal} finded in Cash!)");
                 return cashedObj.strVal;
             }
 
@@ -34,7 +34,7 @@ namespace Books.Wardrobe.PathStrategies
 
             string strVal = attribute.Name;
             _cash.Add((enumVal, strVal));
-            Debug.Log($"Object with params: enumVal={enumVal} , strVal={strVal} added in Cash!");
+            //Debug.Log($"Object with params: enumVal={enumVal} , strVal={strVal} added in Cash!");
             
             return strVal;
         }

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Books.Wardrobe.AssetsMeta;
+using UniRx;
 using UnityEngine;
 
 namespace Books.Wardrobe.ViewModel
@@ -13,6 +15,8 @@ namespace Books.Wardrobe.ViewModel
         public string Name => Metadata.ItemName;
         public int ItemsCount => _clothes.Count;
         public bool IsEmptyModel => _clothes.Count == 0;
+        public int CurrentColorIndex => _currentColorIndex;
+        private int _currentColorIndex = 0;
 
         private List<ColorVariant> _clothes = new ();
 
@@ -29,8 +33,8 @@ namespace Books.Wardrobe.ViewModel
             
             _clothes.Add(new ColorVariant(itemSprite, colorSprite));
         }
-
-        public (Sprite itemSprite, Sprite colorSprite) GetItem(int index)
+        
+        public (Sprite, Sprite) GetItem(int index)
         {
             if (_clothes.Count == 0)
                 return default;
@@ -40,6 +44,17 @@ namespace Books.Wardrobe.ViewModel
             var colorSprite = variant.ColorSprite;
 
             return (itemSprite, colorSprite);
+        }
+
+        public bool SetColorActive(int index)
+        {
+            if (index < 0 || index >= ItemsCount)
+            {
+                return false;
+            }
+
+            _currentColorIndex = index;
+            return true;
         }
 
         private class ColorVariant

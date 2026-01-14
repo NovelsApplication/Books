@@ -53,7 +53,8 @@ namespace Books.Wardrobe.View
                 await UniTask.Yield();
             }
             _characterTransform.anchoredPosition = startPosition;
-            
+
+            characterCanvasClone.alpha = _startFadeValue;
             characterCanvasClone.gameObject.SetActive(true);
             RectTransform cloneTransform = characterCanvasClone.GetComponent<RectTransform>();
             
