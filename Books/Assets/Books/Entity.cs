@@ -55,6 +55,8 @@ namespace Books
                 ClearCash = _ctx.ClearCash,
             }).AddTo(this);
 
+            bool isLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20;
+            
             var loadingDone = false;
             var loading = new Loading.Entity(new Loading.Entity.Ctx
             {
@@ -74,7 +76,7 @@ namespace Books
                 Data = _ctx.Data.WardrobeData,
                 GetBundle = getBundle,
                 GetTexture = getTexture,
-                IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+                IsLightTheme = !isLightTheme,
                 TestData = new Wardrobe.Entity.TestData(
                     new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png", "Персонажи/ГГ/Одежда/Суша/Бар/1.png", "Персонажи/ГГ/Одежда/Вода/Житель Атлантиды-/1.png"},
                     new []{"Персонажи/ГГ/Причёски/Суша/Вперёд/Бант/Рыжий.png", "Персонажи/ГГ/Причёски/Суша/Вперёд/Бант/Каштан.png", "Персонажи/ГГ/Причёски/Вода/Назад/Сирена/Рыжий.png", "Персонажи/ГГ/Причёски/Суша/Вперёд/Афрокосички/Блонд.png"},
@@ -110,7 +112,7 @@ namespace Books
                     {
                         Data = _ctx.Data.MenuData,
                         ManifestPath = "Configs/StoryManifest.json",
-                        IsLightTheme = DateTime.Now.Hour > 9 && DateTime.Now.Hour < 20,
+                        IsLightTheme = isLightTheme,
                         GetBundle = getBundle,
                         GetText = getText,
                         GetTexture = getTexture,

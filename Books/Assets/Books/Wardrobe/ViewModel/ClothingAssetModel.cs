@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Books.Wardrobe.AssetsMeta;
-using UniRx;
 using UnityEngine;
 
 namespace Books.Wardrobe.ViewModel

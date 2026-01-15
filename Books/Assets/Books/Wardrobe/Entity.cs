@@ -79,6 +79,9 @@ namespace Books.Wardrobe
             _screen.HideImmediate();
             
             var textureTask = new ReactiveProperty<Func<UniTask<Texture2D>>>();
+            
+            int startSize = _ctx.TestData.Clothes.Length + _ctx.TestData.Accessories.Length + _ctx.TestData.Hairstyles.Length;
+            Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
 
             if (locationPath == "") // если мы открываем из главного меню
             {
@@ -97,9 +100,6 @@ namespace Books.Wardrobe
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
                 
-                
-                int startSize = _ctx.TestData.Clothes.Length + _ctx.TestData.Accessories.Length + _ctx.TestData.Hairstyles.Length;
-                Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
                 
                 string colorsFolderName = "Кружочки";
                 string hairColorsFolderName = "Цвета волос";
@@ -259,22 +259,36 @@ namespace Books.Wardrobe
                 ScreenModel screenModel = new ScreenModel(
                     EnvironmentType.Land,
                     lightBackModel,
+                    darkBackModel,
                     assetModels.Select(o => o.Value).ToArray(),
-                    "Элизабет",
-                    darkBackModel);
+                    "Элизабет");
                 
-                _screen.BindModel(screenModel);
+                _screen.BindModel(screenModel, _ctx.IsLightTheme);
 
                 screenModel.GetCategory(CategoryType.Appearance).SetElementActive(1);
                 screenModel.GetCategory(CategoryType.Suit).SetElementActive(1);
             }
             
-            else // если мы открываем из истории
+            else // открываем из истории
             {
                 string fullLocationPath = RootContentPath(storyPath) + locationPath;
 
                 LocationMetadata backTextureMetadata = _locationPathParser.ParsePath(locationPath);
-                var backTexture = await LoadTexture(textureTask, fullLocationPath);
+                Texture2D backTexture = await LoadTexture(textureTask, fullLocationPath);
+                LocationAssetModel backModel = new LocationAssetModel(backTextureMetadata, backTexture, null);
+
+                bool isLightTheme = backTextureMetadata.LightMode == LightMode.Light;
+                var lightBack = isLightTheme ? backModel : null;
+                var darkBack = !isLightTheme ? backModel : null;
+                
+                ScreenModel screenModel = new ScreenModel(
+                    EnvironmentType.Land,
+                    lightBack,
+                    darkBack,
+                    assetModels.Select(o => o.Value).ToArray(),
+                    "Элизабет");
+                
+                _screen.BindModel(screenModel, isLightTheme);
             }
             
             textureTask.Dispose();

@@ -11,8 +11,8 @@ namespace Books.Wardrobe.ViewModel
         public readonly int MaxLayerNumber = 8;
         
         public EnvironmentType EnvironmentType { get; }
-        public LocationAssetModel DefaultBackLocationModel { get; }
-        public LocationAssetModel AdditionalBackLocationModel { get; }
+        public LocationAssetModel LightBackLocationModel { get; }
+        public LocationAssetModel DarkBackLocationModel { get; }
         public ScreenVisual.Visual Visual { get; }
         public string CharacterName { get; }
         
@@ -22,17 +22,17 @@ namespace Books.Wardrobe.ViewModel
         public ScreenModel
         (
             EnvironmentType environmentType,
-            LocationAssetModel defaultBackLocationModel,
+            LocationAssetModel lightBackLocationModel,
+            LocationAssetModel darkBackLocationModel,
             ClothingAssetModel[] clothingAssetModels,
             //Screen.Visual visual,
-            string characterName, 
-            LocationAssetModel additionalBackLocationModel = null) 
+            string characterName) 
         {
             EnvironmentType = environmentType;
-            DefaultBackLocationModel = defaultBackLocationModel;
+            LightBackLocationModel = lightBackLocationModel;
+            DarkBackLocationModel = darkBackLocationModel;
             _allAssetsModels = clothingAssetModels;
             //Visual = visual;
-            AdditionalBackLocationModel = additionalBackLocationModel;
             CharacterName = characterName;
         }
 

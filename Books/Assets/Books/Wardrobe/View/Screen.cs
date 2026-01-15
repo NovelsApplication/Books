@@ -5,7 +5,6 @@ using Books.Wardrobe.ViewModel;
 using TMPro;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -13,7 +12,9 @@ namespace Books.Wardrobe.View
 {
     public interface IScreen
     {
-        public void BindModel(ScreenModel model);
+        public void BindModel(ScreenModel model, bool isLightTheme);
+
+        public void SetTheme(bool isLightTheme);
         
         public void ShowImmediate();
         public void HideImmediate();
@@ -22,8 +23,7 @@ namespace Books.Wardrobe.View
     public class Screen : MonoBehaviour, IScreen
     {
         [SerializeField] private TextMeshProUGUI _characterNameTMP;
-        [SerializeField] private RawImage _mainBack;
-        [SerializeField] private RawImage _additionalBack;
+        [SerializeField] private RawImage _background;
         [SerializeField] private ScreenVisual _visualComponent;
         [SerializeField] private CategoryHead[] _categoryHeads;
         [SerializeField] private Layer _layerPrefab;
@@ -37,23 +37,20 @@ namespace Books.Wardrobe.View
         private CategoryHead _activeCategoryHead;
         private AssetsCategory _categoryModel;
         private ScreenModel _model;
+        private bool _isLightTheme;
 
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
 
-        public void BindModel(ScreenModel model)
+        public void BindModel(ScreenModel model, bool isLightTheme)
         {
             if (model == null)
             {
                 Debug.LogError("Model is null!!!");
                 return;
             }
-            
             _model = model;
-            
             _characterNameTMP.text = model.CharacterName;
-            _mainBack.texture = model.DefaultBackLocationModel.LocationImage;
-            _additionalBack.texture = model.AdditionalBackLocationModel.LocationImage;
-            
+
             _layerPrefab.gameObject.SetActive(false);
             _layers = new Layer[model.MaxLayerNumber + 1];
             
@@ -64,6 +61,8 @@ namespace Books.Wardrobe.View
                 layerInstance.gameObject.SetActive(true);
                 _layers[i] = layerInstance;
             }
+            
+            SetTheme(isLightTheme);
             
             foreach (var categoryHead in _categoryHeads)
             {
@@ -84,7 +83,29 @@ namespace Books.Wardrobe.View
             _previousItemSelector.onClick.AddListener(PreviousItem);
         }
 
-        public void SetActiveCategory(CategoryType categoryType)
+        public void SetTheme(bool isLightTheme)
+        {
+            if (isLightTheme && _model.LightBackLocationModel != null)
+            {
+                _background.texture = _model.LightBackLocationModel.LocationImage;
+            }
+            else if (_model.DarkBackLocationModel != null)
+            {
+                _background.texture = _model.DarkBackLocationModel.LocationImage;
+            }
+
+            if (_layers != null)
+            {
+                foreach (var layer in _layers)
+                {
+                    layer.SetDark(!isLightTheme);
+                }
+            }
+
+            _isLightTheme = isLightTheme;
+        }
+
+        private void SetActiveCategory(CategoryType categoryType)
         {
             if (categoryType == CategoryType.None)
                 return;
