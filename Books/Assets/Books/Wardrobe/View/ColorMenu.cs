@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ namespace Books.Wardrobe.View
         [SerializeField] private Button _menuButton;
         [SerializeField] private ColorSelectorView _colorSelectorPrefab;
         [SerializeField] private RectTransform _containerTransform;
+
+        [SerializeField] private OpenClose_Animation _animation;
         
         public void Clear() => _clear?.Invoke();
         private Action _clear;
@@ -19,9 +22,10 @@ namespace Books.Wardrobe.View
         {
             _menuButton.onClick.AddListener(OnMenuButtonClick);
             _colorSelectorPrefab.gameObject.SetActive(false);
+            _containerTransform.gameObject.SetActive(true);
         }
 
-        public void InitColors(Sprite[] colors, Action<int> onColorSelectAction, int currentColorInx = 0)
+        public async void InitColors(Sprite[] colors, Action<int> onColorSelectAction, int currentColorInx = 0)
         {
             _clear?.Invoke();
             
@@ -30,11 +34,8 @@ namespace Books.Wardrobe.View
                 HideImmediate();
                 return;
             }
-
-            ShowImmediate();
-
-            var objects = new ColorSelectorView[colors.Length];
             
+            var objects = new ColorSelectorView[colors.Length];
             for (int i = 0; i < colors.Length; i++)
             {
                 var colorSelector = GameObject.Instantiate(_colorSelectorPrefab, _containerTransform);
@@ -57,9 +58,12 @@ namespace Books.Wardrobe.View
             foreach (var obj in objects) 
                 obj.Select(false);
             objects[currentColorInx].Select(true);
+            
+            ShowImmediate();
+            await UniTask.Yield();
+            UpdateAnimationPositions();
 
-            _clear = () =>
-            {
+            _clear = () => {
                 foreach (var obj in objects) 
                     Destroy(obj.gameObject);
                 
@@ -78,24 +82,39 @@ namespace Books.Wardrobe.View
 
         private void ShowColorsMenu()
         {
-            _containerTransform.gameObject.SetActive(true);
+            _animation.Open().Forget();
         }
         
         private void HideColorsMenu()
         {
-            _containerTransform.gameObject.SetActive(false);
+            _animation.Close().Forget();
         }
 
         public void ShowImmediate()
         {
             _menuButton.gameObject.SetActive(true);
-            _containerTransform.gameObject.SetActive(_isOpen);
+            _containerTransform.gameObject.SetActive(true);
         }
 
         public void HideImmediate()
         {
             _menuButton.gameObject.SetActive(false);
             _containerTransform.gameObject.SetActive(false);
+        }
+
+        private void UpdateAnimationPositions()
+        {
+            var animOpenPosition = _animation.OpenPos;
+            var animClosePosition = new Vector2(animOpenPosition.x, animOpenPosition.y - _containerTransform.rect.height);
+
+            if (_isOpen) _containerTransform.anchoredPosition = animOpenPosition;
+            else _containerTransform.anchoredPosition = animClosePosition;
+
+            _animation.ClosePos = animClosePosition;
+            
+            Debug.Log($"OpenPos : {animOpenPosition}");
+            Debug.Log($"NewClosePos : {animClosePosition}");
+            Debug.Log(_containerTransform.rect.height);
         }
     }
 }

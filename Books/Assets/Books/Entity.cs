@@ -76,7 +76,7 @@ namespace Books
                 Data = _ctx.Data.WardrobeData,
                 GetBundle = getBundle,
                 GetTexture = getTexture,
-                IsLightTheme = !isLightTheme,
+                IsLightTheme = isLightTheme,
                 TestData = new Wardrobe.Entity.TestData(
                     new []{"Персонажи/ГГ/Одежда/Суша/Клуб/1.png", "Персонажи/ГГ/Одежда/Суша/Бар/1.png", "Персонажи/ГГ/Одежда/Вода/Житель Атлантиды-/1.png"},
                     new []{"Персонажи/ГГ/Причёски/Суша/Вперёд/Бант/Рыжий.png", "Персонажи/ГГ/Причёски/Суша/Вперёд/Бант/Каштан.png", "Персонажи/ГГ/Причёски/Вода/Назад/Сирена/Рыжий.png", "Персонажи/ГГ/Причёски/Суша/Вперёд/Афрокосички/Блонд.png"},

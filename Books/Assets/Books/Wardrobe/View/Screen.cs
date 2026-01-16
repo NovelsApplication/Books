@@ -48,6 +48,7 @@ namespace Books.Wardrobe.View
                 Debug.LogError("Model is null!!!");
                 return;
             }
+            
             _model = model;
             _characterNameTMP.text = model.CharacterName;
 
@@ -63,7 +64,7 @@ namespace Books.Wardrobe.View
             }
             
             SetTheme(isLightTheme);
-            
+
             foreach (var categoryHead in _categoryHeads)
             {
                 AssetsCategory category = _model.GetCategory(categoryHead.CategoryType);

@@ -83,6 +83,9 @@ namespace Books.Wardrobe
             int startSize = _ctx.TestData.Clothes.Length + _ctx.TestData.Accessories.Length + _ctx.TestData.Hairstyles.Length;
             Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
 
+            ScreenModel screenModel;
+            bool isLightTheme;
+
             if (locationPath == "") // если мы открываем из главного меню
             {
                 
@@ -255,16 +258,16 @@ namespace Books.Wardrobe
                 }
                 
                 //--------------------------------//
+
+                isLightTheme = _ctx.IsLightTheme;
                 
-                ScreenModel screenModel = new ScreenModel(
+                screenModel = new ScreenModel(
                     EnvironmentType.Land,
                     lightBackModel,
                     darkBackModel,
                     assetModels.Select(o => o.Value).ToArray(),
                     "Элизабет");
                 
-                _screen.BindModel(screenModel, _ctx.IsLightTheme);
-
                 screenModel.GetCategory(CategoryType.Appearance).SetElementActive(1);
                 screenModel.GetCategory(CategoryType.Suit).SetElementActive(1);
             }
@@ -277,23 +280,23 @@ namespace Books.Wardrobe
                 Texture2D backTexture = await LoadTexture(textureTask, fullLocationPath);
                 LocationAssetModel backModel = new LocationAssetModel(backTextureMetadata, backTexture, null);
 
-                bool isLightTheme = backTextureMetadata.LightMode == LightMode.Light;
+                isLightTheme = backTextureMetadata.LightMode == LightMode.Light;
                 var lightBack = isLightTheme ? backModel : null;
                 var darkBack = !isLightTheme ? backModel : null;
                 
-                ScreenModel screenModel = new ScreenModel(
+                screenModel = new ScreenModel(
                     EnvironmentType.Land,
                     lightBack,
                     darkBack,
                     assetModels.Select(o => o.Value).ToArray(),
                     "Элизабет");
-                
-                _screen.BindModel(screenModel, isLightTheme);
             }
             
-            textureTask.Dispose();
-            
             _screen.ShowImmediate();
+            await UniTask.Yield();
+            _screen.BindModel(screenModel, isLightTheme);
+            
+            textureTask.Dispose();
         }
 
         private async UniTask<Texture2D> LoadTexture(ReactiveProperty<Func<UniTask<Texture2D>>> textureTask, string path)
