@@ -32,6 +32,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private TextMeshProUGUI _itemNameIMP;
         [SerializeField] private SuitUpdate_Animation _suitUpdateAnimation;
         [SerializeField] private ColorMenu _colorMenu;
+        [SerializeField] private Button _lightingButton;
 
         private Layer[] _layers;
         private CategoryHead _activeCategoryHead;
@@ -62,8 +63,6 @@ namespace Books.Wardrobe.View
                 layerInstance.gameObject.SetActive(true);
                 _layers[i] = layerInstance;
             }
-            
-            SetTheme(isLightTheme);
 
             foreach (var categoryHead in _categoryHeads)
             {
@@ -79,6 +78,9 @@ namespace Books.Wardrobe.View
             }
             
             SetActiveCategory(CategoryType.Suit);
+            SetTheme(isLightTheme);
+            
+            _lightingButton.onClick.AddListener(() => SetTheme(!_isLightTheme));
             
             _nextItemSelector.onClick.AddListener(NextItem);
             _previousItemSelector.onClick.AddListener(PreviousItem);
