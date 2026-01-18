@@ -54,8 +54,8 @@ MonoBehaviour:
   _targetHidePosition: {fileID: 1673409489610734969}
   _startUpdatePosition: {fileID: 5157592397008365079}
   _cloneRoot: {fileID: 1008108277403530367}
-  _duration: 0.234
-  _startFadeValue: 0.498
+  _duration: 0.225
+  _startFadeValue: 0.35
 --- !u!1 &32403388727289658
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,7 +699,7 @@ MonoBehaviour:
   _nextItemSelector: {fileID: 3271438317569924464}
   _previousItemSelector: {fileID: 559322440392305547}
   _itemNameIMP: {fileID: 4165224927787514733}
-  _characterUpdateAnimation: {fileID: 3867796667382247401}
+  _suitUpdateAnimation: {fileID: 3867796667382247401}
   _colorMenu: {fileID: 4597499062268920074}
 --- !u!114 &4346707882916850972
 MonoBehaviour:

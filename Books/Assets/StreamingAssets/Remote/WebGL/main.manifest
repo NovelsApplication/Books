@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.60f1
-CRC: 3917104694
+CRC: 3537365474
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 847e382f0dd22288b5b3584bf1fe4dde
+    Hash: b584bd8cfde0278d0178896fb9469431
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 536c995dc12d2994ee2bee033c99ea94
+    Hash: 3ee474811174b6d978e34d61ca6dba0c
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 6374f914dcfc3715bad27428d8cb0f52
+    Hash: 155fa97cd1e7db246438afeb2d444088
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -78,6 +78,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 39b12ff0b8dd4c068a950665df7b479d, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 2c2c64149859d8e45b6bab5c4eb99cfa, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: df2a22cef3cf4cf6b6639aa10162df9c, type: 3}
@@ -119,8 +121,6 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: a003718ec2ae62241b4e88538a81fb6f, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 39b12ff0b8dd4c068a950665df7b479d, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -265,6 +265,7 @@ Assets:
 - Assets/Remote/Main/Menu/Images/PopUp/SquareButtonBackground.png
 - Assets/Remote/Main/Menu/Images/Particles/2.png
 - Assets/Remote/Main/Menu/Refs/photo_2025-09-07_18-22-21.jpg
+- "Assets/Remote/Main/Wardrobe/\u0420\u044B\u0436\u0438\u0439.png"
 - "Assets/Remote/Main/Story/Refs/\u0430\u044F.png"
 - Assets/Remote/Main/Wardrobe/photo_2025-11-14_13-44-45.png
 - Assets/Remote/Main/Menu/Images/Menu/Icons/Continue.png

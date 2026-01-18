@@ -30,7 +30,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private Button _nextItemSelector;
         [SerializeField] private Button _previousItemSelector;
         [SerializeField] private TextMeshProUGUI _itemNameIMP;
-        [SerializeField] private CharacterUpdate_Animation _characterUpdateAnimation;
+        [SerializeField] private SuitUpdate_Animation _suitUpdateAnimation;
         [SerializeField] private ColorMenu _colorMenu;
 
         private Layer[] _layers;
@@ -177,7 +177,7 @@ namespace Books.Wardrobe.View
                 return;
             }
 
-            CanvasGroup clone = _characterUpdateAnimation.CreateClone();
+            CanvasGroup clone = _suitUpdateAnimation.CreateClone();
             
             _categoryModel.NextItem();
             OnSelectItem(clone);
@@ -191,7 +191,7 @@ namespace Books.Wardrobe.View
                 return;
             }
 
-            CanvasGroup clone = _characterUpdateAnimation.CreateClone();
+            CanvasGroup clone = _suitUpdateAnimation.CreateClone();
             
             _categoryModel.PreviousItem();
             OnSelectItem(clone);
@@ -202,7 +202,7 @@ namespace Books.Wardrobe.View
             _nextItemSelector.onClick.RemoveAllListeners();
             _previousItemSelector.onClick.RemoveAllListeners();
             
-            await _characterUpdateAnimation.Play(clone);
+            await _suitUpdateAnimation.Play(clone);
             
             _nextItemSelector.onClick.AddListener(NextItem);
             _previousItemSelector.onClick.AddListener(PreviousItem);
