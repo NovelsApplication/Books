@@ -28,6 +28,7 @@ namespace Books.Wardrobe.View
         public void SetDark(bool flag)
         {
             _darkElementImage.gameObject.SetActive(flag);
+            _glowingElementImage.gameObject.SetActive(flag);
         }
 
         private void SetSprite(Image image, Sprite sprite, float showAlfa = 1f)

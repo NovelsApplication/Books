@@ -109,15 +109,6 @@ namespace Books.Wardrobe
                 
                 // Одежда
 
-                ClothingMetadata emptySuitMeta = new ClothingMetadata(
-                    ItemType.Suit, CategoryType.Suit,
-                    "Без одежды",
-                    EnvironmentType.Universal,
-                    4, "");
-
-                ClothingAssetModel emptySuitModel = new ClothingAssetModel(emptySuitMeta);
-                assetModels.Add(emptySuitModel.Name, emptySuitModel);
-                
                 foreach (var path in _ctx.TestData.Clothes)
                 {
                     ClothingMetadata meta = _suitPathParser.ParsePath(path);
@@ -151,41 +142,50 @@ namespace Books.Wardrobe
                     assetModel.AddItem(itemSprite, colorSprite);
                 }
 
-                // Причёски
-
-                foreach (var path in _ctx.TestData.Hairstyles)
-                {
-                    ClothingMetadata meta = _hairstylePathParser.ParsePath(path);
-                    string relativeRootFolderPath = path.Substring(0, path.LastIndexOf('/') + 1);
-                    string fileName = Path.GetFileName(path);
-
-                    ClothingAssetModel assetModel;
-                    
-                    if (assetModels.ContainsKey(meta.ItemName))
-                    {
-                        assetModel = assetModels[meta.ItemName];
-                    }
-                    else
-                    {
-                        string glowingTexturePath = RootContentPath(storyPath) + relativeRootFolderPath + "Свечение.png";
-                        Texture2D glowingTexture = await LoadTexture(textureTask, glowingTexturePath);
-                        Sprite glowingSprite = CreateSprite(glowingTexture);
-                        
-                        assetModel = new ClothingAssetModel(meta, glowingSprite);
-                        assetModels.Add(key: meta.ItemName, value: assetModel);
-                    }
-                    
-                    string itemSpritePath = RootContentPath(storyPath) + path;
-                    var itemTexture = await LoadTexture(textureTask, itemSpritePath);
-                    Sprite itemSprite = CreateSprite(itemTexture);
-
-                    string colorSpritePath = RootContentPath(storyPath) + "Персонажи" + "/" + meta.TargetCharacterName + "/" + hairColorsFolderName + "/" + fileName;
-                    var colorTexture = await LoadTexture(textureTask, colorSpritePath);
-                    Sprite colorSprite = CreateSprite(colorTexture);
-                    
-                    assetModel.AddItem(itemSprite, colorSprite);
-                }
+                //Причёски
                 
+                string[] hairColors = { "Светлый", "Блонд", "Розовый", "Рыжий", "Каштан", "Чёрный" };
+
+                var grouped = _ctx.TestData.Hairstyles
+                    .GroupBy(path => _hairstylePathParser.ParsePath(path).ItemName)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                foreach (var (itemName, paths) in grouped)
+                {
+                    var anyPath = paths[0];
+                    string relativeRoot = anyPath.Substring(0, anyPath.LastIndexOf('/') + 1);
+                    
+                    ClothingMetadata meta = _hairstylePathParser.ParsePath(anyPath);
+                    
+                    string glowingPath = RootContentPath(storyPath) + relativeRoot + "Свечение.png";
+                    Texture2D glowingTex = await LoadTexture(textureTask, glowingPath);
+                    Sprite glowingSprite = CreateSprite(glowingTex);
+
+                    var assetModel = new ClothingAssetModel(meta, glowingSprite);
+                    assetModels.Add(key: meta.ItemName, value: assetModel);
+
+                    var orderedPaths = paths.OrderBy(p =>
+                    {
+                        string colorName = Path.GetFileNameWithoutExtension(p);
+                        int colorIndex = Array.IndexOf(hairColors, colorName);
+                        return colorIndex;
+                    });
+
+                    foreach (var path in orderedPaths)
+                    {
+                        string itemPath = RootContentPath(storyPath) + path;
+                        var itemTexture = await LoadTexture(textureTask, itemPath);
+                        Sprite itemSprite = CreateSprite(itemTexture);
+
+                        string fileName = Path.GetFileName(path);
+                        string colorPath = RootContentPath(storyPath) + "Персонажи" + "/" + meta.TargetCharacterName + "/" + hairColorsFolderName + "/" + fileName;
+                        var colorTexture = await LoadTexture(textureTask, colorPath);
+                        Sprite colorSprite = CreateSprite(colorTexture);
+
+                        assetModel.AddItem(itemSprite, colorSprite);
+                    }
+                }
+
                 //Аксессуары
                 
                 ClothingMetadata emptyAccessoriesMeta = new ClothingMetadata(

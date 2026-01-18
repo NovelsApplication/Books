@@ -111,10 +111,6 @@ namespace Books.Wardrobe.View
             else _containerTransform.anchoredPosition = animClosePosition;
 
             _animation.ClosePos = animClosePosition;
-            
-            Debug.Log($"OpenPos : {animOpenPosition}");
-            Debug.Log($"NewClosePos : {animClosePosition}");
-            Debug.Log(_containerTransform.rect.height);
         }
     }
 }

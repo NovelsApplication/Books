@@ -35,8 +35,6 @@ namespace Books.Wardrobe.View
 
             if (_openPoint != null) _openPos = _openPoint.anchoredPosition;
             if (_closePoint != null) _closePos = _closePoint.anchoredPosition;
-            
-            Debug.Log("Open_Close Anim initialized!!!");
         }
 
         public async UniTask Open()
@@ -78,7 +76,6 @@ namespace Books.Wardrobe.View
         private async UniTask AnimateToRectTransform(Vector2 targetPosition, CancellationToken cancellationToken)
         {
             Vector2 startPosition = _currentRectTransform.anchoredPosition;
-            Debug.Log($"[{gameObject.name}] Animation started - From: {startPosition}, To: {targetPosition}, Duration: {_animationDuration}s");
             
             if (IsPositionsEqual(startPosition, targetPosition))
             {
