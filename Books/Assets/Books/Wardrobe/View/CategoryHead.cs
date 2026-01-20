@@ -1,4 +1,5 @@
-﻿using Books.Wardrobe.PathStrategies;
+﻿using System;
+using Books.Wardrobe.PathStrategies;
 using Books.Wardrobe.ViewModel;
 using TMPro;
 using UniRx;
@@ -18,14 +19,17 @@ namespace Books.Wardrobe.View
         public CategoryType CategoryType => _categoryType;
         
         private AssetsCategory _category;
+        private IDisposable _disposable;
 
         public void InitCategory(AssetsCategory category)
         {
             if (category == null)
                 return;
             
+            _disposable?.Dispose();
+            
             _category = category;
-            _category.ItemsCount.Subscribe(count => SetItemsCount(count.ToString()));
+            _disposable = _category.ItemsCount.Subscribe(count => SetItemsCount(count.ToString()));
         }
 
         public void SetSelect(bool value)
@@ -40,7 +44,10 @@ namespace Books.Wardrobe.View
 
         private void SetItemsCount(string numberStr)
         {
-            _itemsCountTMP.text = numberStr;
+            if (numberStr == "0")
+                _itemsCountTMP.text = String.Empty;
+            else
+                _itemsCountTMP.text = numberStr;
         }
 
         private void ShowFavorite(bool value)

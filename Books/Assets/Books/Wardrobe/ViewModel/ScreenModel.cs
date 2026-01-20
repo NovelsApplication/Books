@@ -15,7 +15,7 @@ namespace Books.Wardrobe.ViewModel
         public LocationAssetModel DarkBackLocationModel { get; }
         public ScreenVisual.Visual Visual { get; }
         public string CharacterName { get; }
-        
+
         private ClothingAssetModel[] _allAssetsModels;
         private Dictionary<CategoryType, AssetsCategory> _categories = new (4);
 

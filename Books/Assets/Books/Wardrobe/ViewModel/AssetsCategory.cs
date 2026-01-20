@@ -8,35 +8,35 @@ namespace Books.Wardrobe.ViewModel
     public class AssetsCategory
     {
         public IReadOnlyReactiveProperty<ClothingAssetModel> CurrentItemModel => _currentItemModel;
-        public IReadOnlyReactiveProperty<int> CurrentItemIndex => _currentItemIndex;
         public IReadOnlyReactiveProperty<int> ItemsCount => _itemsCount;
         
         private readonly ReactiveProperty<ClothingAssetModel> _currentItemModel = new ReactiveProperty<ClothingAssetModel>();
-        private readonly ReactiveProperty<int> _currentItemIndex = new ReactiveProperty<int>();
         private readonly ReactiveProperty<int> _itemsCount = new ReactiveProperty<int>();
-        
+
         private readonly List<ClothingAssetModel> _items = new List<ClothingAssetModel>();
         
+        private int _currentItemIndex;
+
         public AssetsCategory(ClothingAssetModel[] clothes = null)
         {
             if (clothes != null && clothes.Length != 0)
             {
                 _items.AddRange(clothes);
-                _currentItemModel.Value = _items[_currentItemIndex.Value];
+                _currentItemModel.Value = _items[_currentItemIndex];
                 _itemsCount.Value = _items.Count(m => !m.IsEmptyModel);
             }
         }
 
         public void NextItem()
         {
-            _currentItemIndex.Value = (_currentItemIndex.Value + 1) % _items.Count;
-            SetElementActive(_currentItemIndex.Value);
+            _currentItemIndex = (_currentItemIndex + 1) % _items.Count;
+            SetElementActive(_currentItemIndex);
         }
         
         public void PreviousItem()
         {
-            _currentItemIndex.Value = (_items.Count + _currentItemIndex.Value - 1) % _items.Count;
-            SetElementActive(_currentItemIndex.Value);
+            _currentItemIndex = (_items.Count + _currentItemIndex - 1) % _items.Count;
+            SetElementActive(_currentItemIndex);
         }
         
         public void AddItem(ClothingAssetModel model)
@@ -47,7 +47,7 @@ namespace Books.Wardrobe.ViewModel
                 _itemsCount.Value += 1;
             
             if (_currentItemModel.Value == null) 
-                _currentItemModel.Value = _items[_currentItemIndex.Value];
+                _currentItemModel.Value = _items[_currentItemIndex];
         }
 
         public bool SetElementActive(int index)
@@ -57,7 +57,7 @@ namespace Books.Wardrobe.ViewModel
             
             ClothingAssetModel itemModel = _items[index];
             _currentItemModel.Value = itemModel;
-            _currentItemIndex.Value = index;
+            _currentItemIndex = index;
 
             return true;
         }

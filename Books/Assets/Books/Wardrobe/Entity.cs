@@ -10,6 +10,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Books.Wardrobe
 {
@@ -44,6 +45,7 @@ namespace Books.Wardrobe
 
         private Ctx _ctx;
         private IScreen _screen;
+        private string _storyPath;
         
         private readonly EnumDisplayNameResolver _enumResolver;
         private readonly LocationPathParser _locationPathParser;
@@ -67,6 +69,7 @@ namespace Books.Wardrobe
         public async UniTask Open(Menu.Entity.StoryManifest storyManifest, string locationPath = "")
         {
             string storyPath = storyManifest.StoryPath;
+            _storyPath = storyPath;
             
             var task = new ReactiveProperty<Func<UniTask<UnityEngine.Object>>>();
             _ctx.GetBundle.Execute(("main", _ctx.Data.ScreenName, task));
@@ -83,14 +86,12 @@ namespace Books.Wardrobe
             int startSize = _ctx.TestData.Clothes.Length + _ctx.TestData.Accessories.Length + _ctx.TestData.Hairstyles.Length;
             Dictionary<string, ClothingAssetModel> assetModels = new (startSize);
 
-            ScreenModel screenModel;
-            bool isLightTheme;
-
             if (locationPath == "") // если мы открываем из главного меню
             {
                 
-                // Локации
+                // Локации:
                 
+                    //Дефолтные
                 LocationMetadata lightBackMetadata = new LocationMetadata("Гардероб суша день", EnvironmentType.Land, LightMode.Light);
                 string lightBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightBackMetadata) + "Гардероб суша день" + ".png";
                 Texture2D lightBackTexture = await LoadTexture(textureTask, lightBackPath);
@@ -103,6 +104,19 @@ namespace Books.Wardrobe
                 
                 LocationAssetModel darkBackModel = new LocationAssetModel(darkBackMetadata, darkBackTexture, null);
                 
+                    //Водные
+                LocationMetadata lightWaterBackMetadata = new LocationMetadata("Гардероб вода день", EnvironmentType.Water, LightMode.Light);
+                string lightWaterBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(lightWaterBackMetadata) + "Гардероб вода день" + ".png";
+                Texture2D lightWaterBackTexture = await LoadTexture(textureTask, lightWaterBackPath);
+                
+                LocationAssetModel lightWaterBackModel = new LocationAssetModel(lightWaterBackMetadata, lightWaterBackTexture, null);
+                
+                LocationMetadata darkWaterBackMetadata = new LocationMetadata("Гардероб вода день", EnvironmentType.Water, LightMode.Dark);
+                string darkWaterBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkWaterBackMetadata) + "Гардероб вода день" + ".png";
+                Texture2D darkWaterBackTexture = await LoadTexture(textureTask, darkWaterBackPath);
+                
+                LocationAssetModel darkWaterBackModel = new LocationAssetModel(darkWaterBackMetadata, darkWaterBackTexture, null);
+
                 
                 string colorsFolderName = "Кружочки";
                 string hairColorsFolderName = "Цвета волос";
@@ -258,18 +272,36 @@ namespace Books.Wardrobe
                 }
                 
                 //--------------------------------//
-
-                isLightTheme = _ctx.IsLightTheme;
-                
-                screenModel = new ScreenModel(
+                var defaultScreenModel = new ScreenModel(
                     EnvironmentType.Land,
                     lightBackModel,
                     darkBackModel,
                     assetModels.Select(o => o.Value).ToArray(),
                     "Элизабет");
+
+                var waterScreenModel = new ScreenModel(
+                    EnvironmentType.Water,
+                    lightWaterBackModel,
+                    darkWaterBackModel,
+                    assetModels
+                        .Select(o => o.Value)
+                        .Where(m => m.Metadata.EnvironmentType != EnvironmentType.Land)
+                        .ToArray(),
+                    "Вода");
                 
-                screenModel.GetCategory(CategoryType.Appearance).SetElementActive(1);
-                screenModel.GetCategory(CategoryType.Suit).SetElementActive(1);
+                int modelsCount = 2;
+                ScreenModel[] screenModels = new ScreenModel[modelsCount];
+                screenModels[0] = defaultScreenModel;
+                screenModels[1] = waterScreenModel;
+
+                defaultScreenModel.GetCategory(CategoryType.Appearance).SetElementActive(1);
+                defaultScreenModel.GetCategory(CategoryType.Suit).SetElementActive(1);
+                
+                _screen.ShowImmediate();
+                await UniTask.Yield();
+                _screen.BindModel(defaultScreenModel, _ctx.IsLightTheme);
+                _screen.SetChangeEnvironmentAction((themeFlag, summand) 
+                    => ChangeScreenModel(themeFlag, _currentScreenModelIndex + summand, screenModels));
             }
             
             else // открываем из истории
@@ -280,21 +312,21 @@ namespace Books.Wardrobe
                 Texture2D backTexture = await LoadTexture(textureTask, fullLocationPath);
                 LocationAssetModel backModel = new LocationAssetModel(backTextureMetadata, backTexture, null);
 
-                isLightTheme = backTextureMetadata.LightMode == LightMode.Light;
+                bool isLightTheme = backTextureMetadata.LightMode == LightMode.Light;
                 var lightBack = isLightTheme ? backModel : null;
                 var darkBack = !isLightTheme ? backModel : null;
                 
-                screenModel = new ScreenModel(
+                var screenModel = new ScreenModel(
                     EnvironmentType.Land,
                     lightBack,
                     darkBack,
                     assetModels.Select(o => o.Value).ToArray(),
                     "Элизабет");
+                
+                _screen.ShowImmediate();
+                await UniTask.Yield();
+                _screen.BindModel(screenModel, isLightTheme);
             }
-            
-            _screen.ShowImmediate();
-            await UniTask.Yield();
-            _screen.BindModel(screenModel, isLightTheme);
             
             textureTask.Dispose();
         }
@@ -332,6 +364,14 @@ namespace Books.Wardrobe
                 //Debug.Log($"Спрайт для объекта - {texture.name} создан" );
                 return sprite;
             }
+        }
+
+        private int _currentScreenModelIndex = 0;
+        private void ChangeScreenModel(bool isLightTheme, int index, ScreenModel[] models)
+        {
+            _currentScreenModelIndex = (models.Length + index) % models.Length;
+            var model = models[_currentScreenModelIndex];
+           _screen.BindModel(model, isLightTheme);
         }
 
         private string RelativePath(string fullPath, string storyPath)
