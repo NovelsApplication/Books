@@ -4081,6 +4081,7 @@ GameObject:
   - component: {fileID: 8482740020554047504}
   - component: {fileID: 3074072829771110173}
   - component: {fileID: 7348469047214850476}
+  - component: {fileID: 5122681675936961957}
   m_Layer: 5
   m_Name: Colors_ViewPort
   m_TagString: Untagged
@@ -4160,6 +4161,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!225 &5122681675936961957
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5441453763463377430}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5597271288964759795
 GameObject:
   m_ObjectHideFlags: 0
@@ -6571,6 +6584,7 @@ MonoBehaviour:
   _colorSelectorPrefab: {fileID: 2379821495919701809}
   _containerTransform: {fileID: 4198383263717676887}
   _animation: {fileID: 8916396909911916077}
+  _viewPortCG: {fileID: 5122681675936961957}
 --- !u!1 &8477986464275488047
 GameObject:
   m_ObjectHideFlags: 0

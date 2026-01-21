@@ -18,7 +18,7 @@ namespace Books.Wardrobe.View
 
         private RectTransform _characterTransform;
 
-        private void Start()
+        private void Awake()
         {
             _characterTransform = _character.GetComponent<RectTransform>();
             

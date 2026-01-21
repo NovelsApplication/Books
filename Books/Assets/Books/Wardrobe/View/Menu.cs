@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Books.Wardrobe.View
@@ -22,19 +23,19 @@ namespace Books.Wardrobe.View
             _openButton.gameObject.SetActive(false);
             _topCanvasGroup.alpha = 1;
             
-            await _animation.Open();
-            
+            await UniTask.WhenAll(_colorMenu.ShowColorsMenu(), _animation.Open());
+
             _closeButton.gameObject.SetActive(true);
         }
 
         public async void Close()
         {
             _closeButton.gameObject.SetActive(false);
+            _topCanvasGroup.alpha = 0.7f;
+            
+            await UniTask.WhenAll(_colorMenu.HideColorsMenu(), _animation.Close());
+            
             _topCanvasGroup.alpha = 0;
-            
-            //await UniTask.WhenAll(_colorMenu.Hide(), _animation.Close());
-            await _animation.Close();
-            
             _openButton.gameObject.SetActive(true);
         }
     }

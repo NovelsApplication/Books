@@ -11,6 +11,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private ColorSelectorView _colorSelectorPrefab;
         [SerializeField] private RectTransform _containerTransform;
         [SerializeField] private OpenClose_Animation _animation;
+        [SerializeField] private CanvasGroup _viewPortCG;
 
         private bool _isOpen;
         private ColorSelectorView[] _objects;
@@ -20,6 +21,7 @@ namespace Books.Wardrobe.View
             _menuButton.onClick.AddListener(OnMenuButtonClick);
             _colorSelectorPrefab.gameObject.SetActive(false);
             _containerTransform.gameObject.SetActive(true);
+            _viewPortCG.alpha = 0;
         }
 
         public async void InitColors(Sprite[] colors, Action<int> onColorSelectAction, int currentColorInx = 0)
@@ -31,6 +33,8 @@ namespace Books.Wardrobe.View
                 HideImmediate();
                 return;
             }
+
+            _viewPortCG.alpha = 0;
             
             _objects = new ColorSelectorView[colors.Length];
             for (int i = 0; i < colors.Length; i++)
@@ -56,9 +60,10 @@ namespace Books.Wardrobe.View
                 obj.Select(false);
             _objects[currentColorInx].Select(true);
             
-            ShowImmediate();
+            _menuButton.gameObject.SetActive(true);
             await UniTask.Yield();
             UpdateAnimationPositions();
+            _viewPortCG.alpha = 1;
         }
 
         public void Clear()
@@ -77,6 +82,23 @@ namespace Books.Wardrobe.View
             _objects = null;
         }
 
+        public async UniTask ShowColorsMenu()
+        {
+            if (_isOpen) await _animation.Open();;
+        }
+
+        public async UniTask HideColorsMenu()
+        {
+            await _animation.Close();
+        }
+
+        public void HideImmediate()
+        {
+            _viewPortCG.alpha = 0;
+            _containerTransform.anchoredPosition = _animation.ClosePos;
+            _menuButton.gameObject.SetActive(false);
+        }
+
         private void OnMenuButtonClick()
         {
             _isOpen = !_isOpen;
@@ -86,57 +108,15 @@ namespace Books.Wardrobe.View
                 HideColorsMenu().Forget();
         }
 
-        // public async UniTask Show()
-        // {
-        //     await ShowColorsMenu();
-        //     _containerTransform.gameObject.SetActive(true);
-        //     _menuButton.gameObject.SetActive(true);
-        // }
-        //
-        // public async UniTask Hide()
-        // {
-        //     await HideColorsMenu();
-        //     _containerTransform.gameObject.SetActive(false);
-        //     _menuButton.gameObject.SetActive(false);
-        // }
-
-        private async UniTask ShowColorsMenu()
-        {
-            //_isOpen = true;
-            await _animation.Open();
-        }
-
-        private async UniTask HideColorsMenu()
-        {
-           // _isOpen = false;
-            await _animation.Close();
-        }
-
         private void UpdateAnimationPositions()
         {
-            var animOpenPosition = _animation.OpenPos;
-            var animClosePosition = new Vector2(animOpenPosition.x, animOpenPosition.y - _containerTransform.rect.height);
+            var openPosition = _animation.OpenPos;
+            var closePosition = new Vector2(openPosition.x, openPosition.y - _containerTransform.rect.height);
 
-            if (_isOpen) _containerTransform.anchoredPosition = animOpenPosition;
-            else _containerTransform.anchoredPosition = animClosePosition;
+            if (_isOpen) _containerTransform.anchoredPosition = openPosition;
+            else _containerTransform.anchoredPosition = closePosition;
 
-            _animation.ClosePos = animClosePosition;
-        }
-
-        public void ShowImmediate()
-        {
-            //_containerTransform.anchoredPosition = _animation.OpenPos;
-            _containerTransform.gameObject.SetActive(true);
-            _menuButton.gameObject.SetActive(true);
-            //_isOpen = true;
-        }
-
-        public void HideImmediate()
-        {
-            //_containerTransform.anchoredPosition = _animation.ClosePos;
-            _containerTransform.gameObject.SetActive(false);
-            _menuButton.gameObject.SetActive(false);
-            //_isOpen = false;
+            _animation.ClosePos = closePosition;
         }
     }
 }

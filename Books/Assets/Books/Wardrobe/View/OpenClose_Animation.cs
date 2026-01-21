@@ -29,7 +29,7 @@ namespace Books.Wardrobe.View
         private Vector2 _openPos = Vector2.zero;
         private Vector2 _closePos = Vector2.zero;
 
-        private void Start()
+        private void Awake()
         {
             _currentRectTransform = GetComponent<RectTransform>();
 
