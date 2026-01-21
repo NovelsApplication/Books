@@ -111,8 +111,8 @@ namespace Books.Wardrobe
                 
                 LocationAssetModel lightWaterBackModel = new LocationAssetModel(lightWaterBackMetadata, lightWaterBackTexture, null);
                 
-                LocationMetadata darkWaterBackMetadata = new LocationMetadata("Гардероб вода день", EnvironmentType.Water, LightMode.Dark);
-                string darkWaterBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkWaterBackMetadata) + "Гардероб вода день" + ".png";
+                LocationMetadata darkWaterBackMetadata = new LocationMetadata("Гардероб вода ночь", EnvironmentType.Water, LightMode.Dark);
+                string darkWaterBackPath = RootContentPath(storyPath) + _locationPathParser.BuildRootFolderPath(darkWaterBackMetadata) + "Гардероб вода ночь" + ".png";
                 Texture2D darkWaterBackTexture = await LoadTexture(textureTask, darkWaterBackPath);
                 
                 LocationAssetModel darkWaterBackModel = new LocationAssetModel(darkWaterBackMetadata, darkWaterBackTexture, null);
@@ -287,7 +287,7 @@ namespace Books.Wardrobe
                         .Select(o => o.Value)
                         .Where(m => m.Metadata.EnvironmentType != EnvironmentType.Land)
                         .ToArray(),
-                    "Вода");
+                    "Элизабет");
                 
                 int modelsCount = 2;
                 ScreenModel[] screenModels = new ScreenModel[modelsCount];
@@ -300,8 +300,8 @@ namespace Books.Wardrobe
                 _screen.ShowImmediate();
                 await UniTask.Yield();
                 _screen.BindModel(defaultScreenModel, _ctx.IsLightTheme);
-                _screen.SetChangeEnvironmentAction((themeFlag, summand) 
-                    => ChangeScreenModel(themeFlag, _currentScreenModelIndex + summand, screenModels));
+                _screen.SetChangeEnvironmentAction((themeFlag, directionIndex) 
+                    => ChangeScreenModel(themeFlag, _currentScreenModelIndex + directionIndex, screenModels));
             }
             
             else // открываем из истории

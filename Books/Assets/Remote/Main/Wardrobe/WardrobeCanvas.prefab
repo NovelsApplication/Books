@@ -2822,8 +2822,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _openButton: {fileID: 1439077445886244143}
   _closeButton: {fileID: 2116788250242286843}
-  _topCanvasGroup: {fileID: 3995949722417049677}
+  _topCanvasGroup: {fileID: 1827097924445869355}
   _animation: {fileID: 4815669298979026753}
+  _colorMenu: {fileID: 4597499062268920074}
 --- !u!114 &4815669298979026753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6856,7 +6857,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4267184945553559959}
-  - component: {fileID: 3995949722417049677}
+  - component: {fileID: 1827097924445869355}
   m_Layer: 5
   m_Name: Top_Anchor
   m_TagString: Untagged
@@ -6884,7 +6885,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
---- !u!225 &3995949722417049677
+--- !u!225 &1827097924445869355
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

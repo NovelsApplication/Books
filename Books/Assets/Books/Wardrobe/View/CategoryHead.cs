@@ -29,7 +29,7 @@ namespace Books.Wardrobe.View
             _disposable?.Dispose();
             
             _category = category;
-            _disposable = _category.ItemsCount.Subscribe(count => SetItemsCount(count.ToString()));
+            _disposable = _category.NotEmptyItemsCount.Subscribe(count => SetItemsCount(count.ToString()));
         }
 
         public void SetSelect(bool value)

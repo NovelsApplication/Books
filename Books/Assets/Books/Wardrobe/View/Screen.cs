@@ -43,7 +43,7 @@ namespace Books.Wardrobe.View
         private ScreenModel _model;
         private bool _isLightTheme;
 
-        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+        private CompositeDisposable _disposable;
 
         public void BindModel(ScreenModel model, bool isLightTheme)
         {
@@ -54,6 +54,7 @@ namespace Books.Wardrobe.View
                 Debug.LogError("Model is null!!!");
                 return;
             }
+            
             _model = model;
             _characterNameTMP.text = model.CharacterName;
 
@@ -71,6 +72,8 @@ namespace Books.Wardrobe.View
                 }
             }
 
+            _disposable = new CompositeDisposable();
+            
             foreach (var categoryHead in _categoryHeads)
             {
                 AssetsCategory category = _model.GetCategory(categoryHead.CategoryType);
@@ -84,13 +87,16 @@ namespace Books.Wardrobe.View
                 btn.onClick.AddListener(() => SetActiveCategory(categoryHead.CategoryType));
             }
             
-            SetActiveCategory(CategoryType.Suit);
+            if (_activeCategoryHead != null) 
+                SetActiveCategory(_activeCategoryHead.CategoryType);
+            else 
+                SetActiveCategory(CategoryType.Appearance);
+            
             SetTheme(isLightTheme);
             
             _lightingButton.onClick.AddListener(() => SetTheme(!_isLightTheme));
-            
-            _nextItemSelector.onClick.AddListener(NextItem);
-            _previousItemSelector.onClick.AddListener(PreviousItem);
+            _nextItemSelector.onClick.AddListener(() => NextItem(1));
+            _previousItemSelector.onClick.AddListener(() => NextItem(-1));
         }
 
         public void ClearModel()
@@ -115,12 +121,11 @@ namespace Books.Wardrobe.View
 
             _disposable.Dispose();
             _colorMenu.Clear();
-
+            
             _lightingButton.onClick.RemoveAllListeners();
             _nextItemSelector.onClick.RemoveAllListeners();
             _previousItemSelector.onClick.RemoveAllListeners();
 
-            _activeCategoryHead = null;
             _categoryModel = null;
             _model = null;
         }
@@ -128,10 +133,8 @@ namespace Books.Wardrobe.View
         public void SetChangeEnvironmentAction(Action<bool, int> changeEnvironmentAction)
         {
             _changeEnvironmentSwipeDetector.ClearAllSubscribers();
-            _changeEnvironmentSwipeDetector.OnHorizontalSwipe += (dir) =>
-            {
-                changeEnvironmentAction?.Invoke(_isLightTheme, dir);
-            };
+            _changeEnvironmentSwipeDetector.OnHorizontalSwipe += (dir) 
+                => changeEnvironmentAction?.Invoke(_isLightTheme, dir);
         }
 
         public void SetTheme(bool isLightTheme)
@@ -178,12 +181,11 @@ namespace Books.Wardrobe.View
         {
             if (itemModel == null) 
                 return;
-
+            
             CategoryType targetCategoryType = itemModel.Metadata.CategoryType;
             AssetsCategory targetCategory = _model.GetCategory(targetCategoryType);
             
             int[] categoryLayers = targetCategory.GetCategoryLayers();
-            
             foreach (int layer in categoryLayers)
             {
                 if (layer >= 0 && layer < _layers.Length)
@@ -207,12 +209,14 @@ namespace Books.Wardrobe.View
                     itemModel.SetColorActive(index); // можно тут менять значение реактивщины
                     _layers[suitLayer].ShowItem(element.item, itemModel.GlowingSprite);
                 };
+                
                 showColorVariantAction.Invoke(itemModel.CurrentColorIndex);
 
                 _colorMenu.InitColors(items.Select(i => i.color).ToArray(), showColorVariantAction, itemModel.CurrentColorIndex);
             }
             else
             {
+                _colorMenu.Clear();
                 _colorMenu.HideImmediate();
             }
             
@@ -220,7 +224,7 @@ namespace Books.Wardrobe.View
                 _itemNameIMP.text = itemModel.Name;
         }
 
-        private void NextItem()
+        private async void NextItem(int directionIndex)
         {
             if (_categoryModel == null)
             {
@@ -228,35 +232,25 @@ namespace Books.Wardrobe.View
                 return;
             }
 
-            CanvasGroup clone = _suitUpdateAnimation.CreateClone();
-            
-            _categoryModel.NextItem();
-            OnSelectItem(clone);
-        }
-        
-        private void PreviousItem()
-        {
-            if (_categoryModel == null)
+            if (_categoryModel.ItemsCount <= 1)
             {
-                Debug.LogError("Active category model is null");
                 return;
             }
 
             CanvasGroup clone = _suitUpdateAnimation.CreateClone();
             
-            _categoryModel.PreviousItem();
-            OnSelectItem(clone);
-        }
-
-        private async void OnSelectItem(CanvasGroup clone)
-        {
+            if (directionIndex > 0)
+                _categoryModel.NextItem();
+            else
+                _categoryModel.PreviousItem();
+            
             _nextItemSelector.onClick.RemoveAllListeners();
             _previousItemSelector.onClick.RemoveAllListeners();
             
             await _suitUpdateAnimation.Play(clone);
             
-            _nextItemSelector.onClick.AddListener(NextItem);
-            _previousItemSelector.onClick.AddListener(PreviousItem);
+            _nextItemSelector.onClick.AddListener(() => NextItem(1));
+            _previousItemSelector.onClick.AddListener(() => NextItem(-1));
         }
 
         public void ShowImmediate()

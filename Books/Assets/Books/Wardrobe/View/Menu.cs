@@ -9,6 +9,7 @@ namespace Books.Wardrobe.View
         [SerializeField] private Button _closeButton;
         [SerializeField] private CanvasGroup _topCanvasGroup;
         [SerializeField] private OpenClose_Animation _animation;
+        [SerializeField] private ColorMenu _colorMenu;
 
         private void Start()
         {
@@ -31,8 +32,9 @@ namespace Books.Wardrobe.View
             _closeButton.gameObject.SetActive(false);
             _topCanvasGroup.alpha = 0;
             
+            //await UniTask.WhenAll(_colorMenu.Hide(), _animation.Close());
             await _animation.Close();
-
+            
             _openButton.gameObject.SetActive(true);
         }
     }

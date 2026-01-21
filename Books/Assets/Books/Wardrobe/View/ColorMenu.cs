@@ -10,14 +10,11 @@ namespace Books.Wardrobe.View
         [SerializeField] private Button _menuButton;
         [SerializeField] private ColorSelectorView _colorSelectorPrefab;
         [SerializeField] private RectTransform _containerTransform;
-
         [SerializeField] private OpenClose_Animation _animation;
-        
-        public void Clear() => _clear?.Invoke();
-        private Action _clear;
-        
+
         private bool _isOpen;
-        
+        private ColorSelectorView[] _objects;
+
         private void Start()
         {
             _menuButton.onClick.AddListener(OnMenuButtonClick);
@@ -27,7 +24,7 @@ namespace Books.Wardrobe.View
 
         public async void InitColors(Sprite[] colors, Action<int> onColorSelectAction, int currentColorInx = 0)
         {
-            _clear?.Invoke();
+            Clear();
             
             if (colors.Length <= 1 || Array.Exists(colors, i => i == null))
             {
@@ -35,7 +32,7 @@ namespace Books.Wardrobe.View
                 return;
             }
             
-            var objects = new ColorSelectorView[colors.Length];
+            _objects = new ColorSelectorView[colors.Length];
             for (int i = 0; i < colors.Length; i++)
             {
                 var colorSelector = GameObject.Instantiate(_colorSelectorPrefab, _containerTransform);
@@ -46,60 +43,73 @@ namespace Books.Wardrobe.View
                 var btn = colorSelector.GetComponent<Button>();
                 btn.onClick.AddListener(() =>
                 {
-                    foreach (var obj in objects) 
+                    foreach (var obj in _objects) 
                         obj.Select(false);
                     colorSelector.Select(true);
                     onColorSelectAction?.Invoke(contextIndex);
                 });
                 
-                objects[i] = colorSelector;
+                _objects[i] = colorSelector;
             }
             
-            foreach (var obj in objects) 
+            foreach (var obj in _objects) 
                 obj.Select(false);
-            objects[currentColorInx].Select(true);
+            _objects[currentColorInx].Select(true);
             
             ShowImmediate();
             await UniTask.Yield();
             UpdateAnimationPositions();
+        }
 
-            _clear = () => {
-                foreach (var obj in objects) 
-                    Destroy(obj.gameObject);
-                
-                _clear = null;
-            };
+        public void Clear()
+        {
+            if (_objects == null)
+                return;
+
+            foreach (var obj in _objects)
+            {
+                var btn = obj.GetComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+            
+                Destroy(obj.gameObject);
+            }
+
+            _objects = null;
         }
 
         private void OnMenuButtonClick()
         {
             _isOpen = !_isOpen;
             if (_isOpen)
-                ShowColorsMenu();
+                ShowColorsMenu().Forget();
             else
-                HideColorsMenu();
+                HideColorsMenu().Forget();
         }
 
-        private void ShowColorsMenu()
+        // public async UniTask Show()
+        // {
+        //     await ShowColorsMenu();
+        //     _containerTransform.gameObject.SetActive(true);
+        //     _menuButton.gameObject.SetActive(true);
+        // }
+        //
+        // public async UniTask Hide()
+        // {
+        //     await HideColorsMenu();
+        //     _containerTransform.gameObject.SetActive(false);
+        //     _menuButton.gameObject.SetActive(false);
+        // }
+
+        private async UniTask ShowColorsMenu()
         {
-            _animation.Open().Forget();
-        }
-        
-        private void HideColorsMenu()
-        {
-            _animation.Close().Forget();
+            //_isOpen = true;
+            await _animation.Open();
         }
 
-        public void ShowImmediate()
+        private async UniTask HideColorsMenu()
         {
-            _menuButton.gameObject.SetActive(true);
-            _containerTransform.gameObject.SetActive(true);
-        }
-
-        public void HideImmediate()
-        {
-            _menuButton.gameObject.SetActive(false);
-            _containerTransform.gameObject.SetActive(false);
+           // _isOpen = false;
+            await _animation.Close();
         }
 
         private void UpdateAnimationPositions()
@@ -111,6 +121,22 @@ namespace Books.Wardrobe.View
             else _containerTransform.anchoredPosition = animClosePosition;
 
             _animation.ClosePos = animClosePosition;
+        }
+
+        public void ShowImmediate()
+        {
+            //_containerTransform.anchoredPosition = _animation.OpenPos;
+            _containerTransform.gameObject.SetActive(true);
+            _menuButton.gameObject.SetActive(true);
+            //_isOpen = true;
+        }
+
+        public void HideImmediate()
+        {
+            //_containerTransform.anchoredPosition = _animation.ClosePos;
+            _containerTransform.gameObject.SetActive(false);
+            _menuButton.gameObject.SetActive(false);
+            //_isOpen = false;
         }
     }
 }
