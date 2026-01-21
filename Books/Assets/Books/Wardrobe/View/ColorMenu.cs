@@ -111,7 +111,7 @@ namespace Books.Wardrobe.View
         private void UpdateAnimationPositions()
         {
             var openPosition = _animation.OpenPos;
-            var closePosition = new Vector2(openPosition.x, openPosition.y - _containerTransform.rect.height);
+            var closePosition = new Vector2(openPosition.x, openPosition.y - _containerTransform.rect.height - 15);
 
             if (_isOpen) _containerTransform.anchoredPosition = openPosition;
             else _containerTransform.anchoredPosition = closePosition;
